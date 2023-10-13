@@ -18,11 +18,10 @@ FILE * IRcode;
 
 
 void yyerror(const char* s);
-char currentScope[50] = "global"; // "global" or the name of the function
-int semanticCheckPassed = 1; // flags to record correctness of semantic checks
+	char currentScope[50] = "global"; // "global" or the name of the function
+	int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %}
 
-%define parse.trace
 
 %union {
 	int number;
@@ -34,7 +33,7 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %token <string> TYPE
 %token <string> ID
 %token <character> SEMICOLON
-%token <character> EQ 
+%token <character> EQ
 %token <string> OP
 %token <number> NUMBER
 %token <string> WRITE
@@ -44,32 +43,50 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%d", $$); } NUMBER;
 
-%type <ast_node> Program DeclList Decl VarDecl Stmt StmtList Expr
+%type <ast_node> Program Code PieceOfCode VarDecl Stmt StmtList Expr FunctList Funct
 
 %start Program
 
 %%
 
-Program: DeclList  { 
+// program, the big kahuna, the whole program in a single node
+Program: 
+	| Code { 
 		$$ = $1;
 		printf("\nEnd Program\n\n");
 	}
 ;
 
-DeclList:	Decl DeclList	{ 
+// code is made up of pieces of code
+Code:	
+	| PieceOfCode Code { 
 		$1->data.binary_op.left = $2;
 		$$ = $1;
 	}
-	| Decl	{ 
+	// a piece of code
+	| PieceOfCode {
 		$$ = $1; 
 	}
 ;
 
-Decl:	VarDecl
+// the types of pieces of code
+PieceOfCode:
+	| VarDecl
 	| StmtList
+	//| FunctList
 ;
 
-VarDecl:	TYPE ID SEMICOLON	{ 
+// // the function piece of code
+// FunctList:	
+// 	// what the hell is a functt?
+// 	| Funct {
+
+// 	}
+// ;
+
+// variable declaration piece of code
+VarDecl:	
+	|	TYPE ID SEMICOLON { 
 		printf("\n RECOGNIZED RULE: Variable declaration %s\n", $2);
 		// Symbol Table
 		int inSymTab = found($2, currentScope);		
@@ -84,14 +101,16 @@ VarDecl:	TYPE ID SEMICOLON	{
 	}
 ;
 
+// statements, anything that involves operators, or isn't a function or vardecl
 StmtList:	
 	| Stmt StmtList
 ;
 
-Stmt:	SEMICOLON	{
-
-	}
-	| ID EQ Expr SEMICOLON	{
+Stmt:	
+	// Literally just a semicolon
+	| SEMICOLON	
+	// x = some math or something ;
+	| ID EQ Expr SEMICOLON {
 		// Semantic check
 		if (found($1, currentScope)) {
 			$$ = astCreateVar($1);  // this looks sus, might just be bad naming
@@ -105,7 +124,8 @@ Stmt:	SEMICOLON	{
 		}
 		
 	}
-	| WRITE ID SEMICOLON	{ 
+	// write x;
+	| WRITE ID SEMICOLON {
 		printf("\n RECOGNIZED RULE: WRITE statement\n");
 		
 		// Check if identifiers have been declared
@@ -119,16 +139,21 @@ Stmt:	SEMICOLON	{
 		}
 	}
 ;
-Expr:	ID { 
+// some math or something
+Expr:	
+	// just a variable value for use in a statment
+	| ID { 
 		printf("\n RECOGNIZED RULE: ID, %s\n", $1); 
 		$$ = astCreateVar($1);
 		// char* result = generateTempVar();
 		// emitAssignment(result, $1);
 	}
-	| NUMBER      { 
+	// a number literal for use in a statement
+	| NUMBER { 
 		$$ = astCreateNumber($1);
 		printf("\n RECOGNIZED RULE: NUMBER, %d\n", $1); 
 	}
+	// x + some math or something
 	| ID PLUS Expr {
 		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", $1);
 
@@ -213,11 +238,13 @@ int main(int argc, char**argv)
 
 	// Initialize IR and MIPS files
 	initIRcodeFile();
-	initAssemblyFile();
+	//initAssemblyFile();
 
 	// Start parser
 	yyparse();
 
+
+	initAssemblyFile();
 	// Add the closing part required for any MIPS file
 	emitEndOfAssemblyCode();
 
