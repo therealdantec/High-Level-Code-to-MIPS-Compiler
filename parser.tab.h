@@ -57,15 +57,30 @@ extern int yydebug;
     TYPE = 258,                    /* TYPE  */
     ID = 259,                      /* ID  */
     SEMICOLON = 260,               /* SEMICOLON  */
-    EQ = 261,                      /* EQ  */
-    OP = 262,                      /* OP  */
-    NUMBER = 263,                  /* NUMBER  */
-    WRITE = 264,                   /* WRITE  */
-    KEY = 265,                     /* KEY  */
-    PLUS = 266,                    /* PLUS  */
-    MINUS = 267,                   /* MINUS  */
-    TIMES = 268,                   /* TIMES  */
-    DIVIDE = 269                   /* DIVIDE  */
+    COMMA = 261,                   /* COMMA  */
+    UNDERSCORE = 262,              /* UNDERSCORE  */
+    PERIOD = 263,                  /* PERIOD  */
+    LT = 264,                      /* LT  */
+    GT = 265,                      /* GT  */
+    LTE = 266,                     /* LTE  */
+    GTE = 267,                     /* GTE  */
+    NE = 268,                      /* NE  */
+    AND = 269,                     /* AND  */
+    OR = 270,                      /* OR  */
+    EQ = 271,                      /* EQ  */
+    ASS = 272,                     /* ASS  */
+    NUMBER = 273,                  /* NUMBER  */
+    WRITE = 274,                   /* WRITE  */
+    PLUS = 275,                    /* PLUS  */
+    MINUS = 276,                   /* MINUS  */
+    TIMES = 277,                   /* TIMES  */
+    DIVIDE = 278,                  /* DIVIDE  */
+    LPRN = 279,                    /* LPRN  */
+    RPRN = 280,                    /* RPRN  */
+    LCB = 281,                     /* LCB  */
+    RCB = 282,                     /* RCB  */
+    LSB = 283,                     /* LSB  */
+    RSB = 284                      /* RSB  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -81,7 +96,7 @@ union YYSTYPE
 	char* string;
 	struct node* ast_node;
 
-#line 85 "parser.tab.h"
+#line 100 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+// hi
 FILE* IRcode = NULL;
 int numIds;
 int tempCounter = 0; // To generate temporary variable names

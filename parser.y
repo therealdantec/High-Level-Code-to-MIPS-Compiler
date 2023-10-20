@@ -30,20 +30,20 @@ void yyerror(const char* s);
 	struct node* ast_node;
 }
 
-%token <string> TYPE
-%token <string> ID
-%token <character> SEMICOLON
-%token <character> EQ
-%token <string> OP
-%token <number> NUMBER
+%token <string> INTEGER CHARACTER STRING BOOL
+%token <string> ID NUMBER
+%token <string> SEMICOLON COMMA UNDERSCORE PERIOD
+%token <string> LT GT 
+%token <string> LTE GTE NE AND OR EQ
+%token <string> ASS
 %token <string> WRITE
-%token <string> KEY
-%token <character> PLUS MINUS TIMES DIVIDE
+%token <string> PLUS MINUS TIMES DIVIDE
+%token <string> LPRN RPRN LCB RCB LSB RSB
 
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%d", $$); } NUMBER;
 
-%type <ast_node> Program Code PieceOfCode VarDecl Stmt StmtList Expr FunctList Funct
+%type <ast_node> Program Code PieceOfCode Type VarDecl Stmt StmtList Expr FunctList Funct Param ParamsList FunctBlock
 
 %start Program
 
@@ -51,7 +51,7 @@ void yyerror(const char* s);
 
 // program, the big kahuna, the whole program in a single node
 Program: 
-	| Code { 
+	Code { 
 		$$ = $1;
 		printf("\nEnd Program\n\n");
 	}
@@ -59,7 +59,7 @@ Program:
 
 // code is made up of pieces of code
 Code:	
-	| PieceOfCode Code { 
+	PieceOfCode Code { 
 		$1->data.binary_op.left = $2;
 		$$ = $1;
 	}
@@ -71,27 +71,55 @@ Code:
 
 // the types of pieces of code
 PieceOfCode:
-	| VarDecl
-	| StmtList
-	//| FunctList
+	VarDecl {}
+	| StmtList {}
+	| FunctList {}
 ;
 
-// // the function piece of code
-// FunctList:	
-// 	// what the hell is a functt?
-// 	| Funct {
+// Value types
+Type: 
+	INTEGER
+	| CHARACTER
+	| STRING
+	| BOOL
+;
 
-// 	}
-// ;
+// the function piece of code
+FunctList:	
+	// what the hell is a functt?
+	FunctList Funct {
 
+	}
+;
+
+// a function
+Funct:
+	Type ID LPRN ParamsList RPRN FunctBlock
+;
+
+// parameters
+ParamsList:
+	ParamsList COMMA Param
+;
+
+Param: 
+	Type ID
+;
+	
+FunctBlock:
+	LCB PieceOfCode REEE Expr RCB SEMICOLON {
+	}
+;
 // variable declaration piece of code
 VarDecl:	
-	|	TYPE ID SEMICOLON { 
+	Type ID SEMICOLON { 
 		printf("\n RECOGNIZED RULE: Variable declaration %s\n", $2);
-		// Symbol Table
-		int inSymTab = found($2, currentScope);		
+		// Symbol Table operations
+		int inSymTab = found($2, currentScope);
+		// semantic checks
 		if (inSymTab == 0) {
 			addItem($2, "Var", $1,0, currentScope);
+			// AST operations
 			$$ = astCreateVarDecl($1, $2);
 		}
 		else {
@@ -99,21 +127,26 @@ VarDecl:
 		}
 		showSymTable();
 	}
+	| Type ID LSB NUMBER RSB {
+		// ARRAY decvlaration. Automatically initialize all values to zero or null or whatever. So some type checking required.
+		//
+	}
 ;
 
 // statements, anything that involves operators, or isn't a function or vardecl
 StmtList:	
-	| Stmt StmtList
+	Stmt StmtList
 ;
 
 Stmt:	
 	// Literally just a semicolon
-	| SEMICOLON	
+	SEMICOLON	
 	// x = some math or something ;
-	| ID EQ Expr SEMICOLON {
+	| ID ASS Expr SEMICOLON {
 		// Semantic check
+		// TODO implement type checking
 		if (found($1, currentScope)) {
-			$$ = astCreateVar($1);  // this looks sus, might just be bad naming
+			$$ = astCreateVar($1);  
 			emitAssignment($1, nodeToString($3));
 
 			char* dante = generateTempReg();
@@ -122,6 +155,10 @@ Stmt:
 		else {
 			printf("SEMANTIC ERROR: Var %s has not been declared\n", $1);
 		}
+		
+	}
+	// array assignment
+	| ID LSB NUMBER RSB ASS Expr SEMICOLON {
 		
 	}
 	// write x;
@@ -139,18 +176,23 @@ Stmt:
 		}
 	}
 ;
+
 // some math or something
 Expr:	
 	// just a variable value for use in a statment
-	| ID { 
+	ID { 
 		printf("\n RECOGNIZED RULE: ID, %s\n", $1); 
 		$$ = astCreateVar($1);
 		// char* result = generateTempVar();
 		// emitAssignment(result, $1);
 	}
+	// array variable
+	| ID LSB NUMBER RSB {
+		
+	}
 	// a number literal for use in a statement
 	| NUMBER { 
-		$$ = astCreateNumber($1);
+		$$ = astCreateInt($1);
 		printf("\n RECOGNIZED RULE: NUMBER, %d\n", $1); 
 	}
 	// x + some math or something
