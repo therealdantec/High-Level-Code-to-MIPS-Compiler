@@ -31,7 +31,7 @@ void yyerror(const char* s);
 }
 
 %token <string> INTEGER CHARACTER STRING BOOL
-%token <string> ID
+%token <string> ID NUMBER
 %token <string> SEMICOLON COMMA UNDERSCORE PERIOD
 %token <string> LT GT 
 %token <string> LTE GTE NE AND OR EQ
@@ -43,7 +43,7 @@ void yyerror(const char* s);
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%d", $$); } NUMBER;
 
-%type <ast_node> Program Code PieceOfCode Type VarDecl Stmt StmtList Expr FunctList Funct Param ParamsList Block
+%type <ast_node> Program Code PieceOfCode Type VarDecl Stmt StmtList Expr FunctList Funct Param ParamsList FunctBlock
 
 %start Program
 
@@ -71,9 +71,9 @@ Code:
 
 // the types of pieces of code
 PieceOfCode:
-	VarDecl
-	| StmtList
-	| FunctList
+	VarDecl {}
+	| StmtList {}
+	| FunctList {}
 ;
 
 // Value types
@@ -87,12 +87,14 @@ Type:
 // the function piece of code
 FunctList:	
 	// what the hell is a functt?
-	Funct 
+	FunctList Funct {
+
+	}
 ;
 
 // a function
 Funct:
-	Type ID LPRN ParamsList RPRN Block
+	Type ID LPRN ParamsList RPRN FunctBlock
 ;
 
 // parameters
@@ -104,24 +106,30 @@ Param:
 	Type ID
 ;
 	
-
-Block:
-	LCB PieceOfCode RCB SEMICOLON
+FunctBlock:
+	LCB PieceOfCode REEE Expr RCB SEMICOLON {
+	}
 ;
 // variable declaration piece of code
 VarDecl:	
 	Type ID SEMICOLON { 
 		printf("\n RECOGNIZED RULE: Variable declaration %s\n", $2);
-		// Symbol Table
-		int inSymTab = found($2, currentScope);		
+		// Symbol Table operations
+		int inSymTab = found($2, currentScope);
+		// semantic checks
 		if (inSymTab == 0) {
 			addItem($2, "Var", $1,0, currentScope);
+			// AST operations
 			$$ = astCreateVarDecl($1, $2);
 		}
 		else {
 			printf("SEMANTIC ERROR: Var %s is already declared\n", $2);
 		}
 		showSymTable();
+	}
+	| Type ID LSB NUMBER RSB {
+		// ARRAY decvlaration. Automatically initialize all values to zero or null or whatever. So some type checking required.
+		//
 	}
 ;
 
@@ -130,15 +138,15 @@ StmtList:
 	Stmt StmtList
 ;
 
-  
 Stmt:	
 	// Literally just a semicolon
 	SEMICOLON	
 	// x = some math or something ;
 	| ID ASS Expr SEMICOLON {
 		// Semantic check
+		// TODO implement type checking
 		if (found($1, currentScope)) {
-			$$ = astCreateVar($1);  // this looks sus, might just be bad naming
+			$$ = astCreateVar($1);  
 			emitAssignment($1, nodeToString($3));
 
 			char* dante = generateTempReg();
@@ -147,6 +155,10 @@ Stmt:
 		else {
 			printf("SEMANTIC ERROR: Var %s has not been declared\n", $1);
 		}
+		
+	}
+	// array assignment
+	| ID LSB NUMBER RSB ASS Expr SEMICOLON {
 		
 	}
 	// write x;
@@ -164,6 +176,7 @@ Stmt:
 		}
 	}
 ;
+
 // some math or something
 Expr:	
 	// just a variable value for use in a statment
@@ -173,9 +186,13 @@ Expr:
 		// char* result = generateTempVar();
 		// emitAssignment(result, $1);
 	}
+	// array variable
+	| ID LSB NUMBER RSB {
+		
+	}
 	// a number literal for use in a statement
 	| NUMBER { 
-		$$ = astCreateNumber($1);
+		$$ = astCreateInt($1);
 		printf("\n RECOGNIZED RULE: NUMBER, %d\n", $1); 
 	}
 	// x + some math or something
