@@ -3,20 +3,17 @@
 #include <stdlib.h>
 
 
-typedef enum { NUM, BINARY_OP, PRINT, VAR_DECL, VAR } nodeType;
+typedef enum { NUM, BINARY_OP, PRINT, VAR_DECL, VAR, FUNCT } nodeType;
 
 typedef struct node {
     nodeType type;
     union {
-        char* var_id; // for VAR type, which is just a symbol.
-        //char* var_connor;
+        char* var_id; // for VAR
         int value; // for NUM
         char* id; // for PRINT, might want to change this to a blanket node for all special keywords
-        //char* connor;
         struct { // for VAR_DECL, using a blanket node for all value types for now
             char* type; 
             char* id;
-            //char* connor;
         } var;
         struct { // for BINARY_OP
             char* IRCode;
@@ -24,6 +21,12 @@ typedef struct node {
             struct node* left;
             struct node* right;
         } binary_op;
+        struct { // for FUNCT
+            char* id;
+            char* returnType;
+            struct node* left;
+            struct node* right;
+        }
     } data;  
 } node;
 
