@@ -4,4 +4,5 @@ How to handle types in AST?
 - the astCreateType functions are for creating literal nodes.
 - binaryOp, 
 Need function node
--
+Need struc node
+Need array node
