@@ -100,6 +100,8 @@ Funct:
 // parameters
 ParamsList:
 	ParamsList COMMA Param
+	| Param
+	| ""
 ;
 
 Param: 
@@ -107,9 +109,18 @@ Param:
 ;
 	
 FunctBlock:
-	LCB PieceOfCode REEE Expr RCB SEMICOLON {
+	LCB PieceOfCode REEE Expr SEMICOLON RCB SEMICOLON {
 	}
 ;
+
+FunctCall:
+	ID LPR CallParamsList RPR {}
+
+CallParamsList:
+	CallParamsList , Expr
+	| Expr
+	| ""
+
 // variable declaration piece of code
 VarDecl:	
 	Type ID SEMICOLON { 
@@ -189,6 +200,10 @@ Expr:
 	// array variable
 	| ID LSB NUMBER RSB {
 		
+	}
+	// function call
+	| FunctCall {
+
 	}
 	// a number literal for use in a statement
 	| NUMBER { 
