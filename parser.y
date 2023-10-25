@@ -30,7 +30,7 @@ void yyerror(const char* s);
 	struct node* ast_node;
 }
 
-%token <string> INTEGER CHARACTER STRING BOOL
+%token <string> INT CHAR STRING BOOL STRUC
 %token <string> ID NUMBER
 %token <string> SEMICOLON COMMA UNDERSCORE PERIOD
 %token <string> LT GT 
@@ -71,15 +71,15 @@ Code:
 
 // the types of pieces of code
 PieceOfCode:
-	VarDecl {}
+	VarDeclList {}
 	| StmtList {}
 	| FunctList {}
 ;
 
 // Value types
 Type: 
-	INTEGER
-	| CHARACTER
+	INT
+	| CHAR
 	| STRING
 	| BOOL
 ;
@@ -100,6 +100,8 @@ Funct:
 // parameters
 ParamsList:
 	ParamsList COMMA Param
+	| Param
+	| ""
 ;
 
 Param: 
@@ -107,9 +109,26 @@ Param:
 ;
 	
 FunctBlock:
-	LCB PieceOfCode REEE Expr RCB SEMICOLON {
+	LCB PieceOfCode REEE Expr SEMICOLON RCB SEMICOLON {
 	}
 ;
+
+FunctCall:
+	ID LPR CallParamsList RPR {}
+
+CallParamsList:
+	CallParamsList , Expr
+	| Expr
+	| ""
+
+// struc access
+StrucAccess:
+	StucAccess PERIOD ID
+	| ID PERIOD ID
+
+VarDeclList:
+	VarDeclList VarDecl
+	| VarDecl
 // variable declaration piece of code
 VarDecl:	
 	Type ID SEMICOLON { 
@@ -127,9 +146,13 @@ VarDecl:
 		}
 		showSymTable();
 	}
+	// ARRAY decvlaration. Automatically initialize all values to zero or null or whatever. So some type checking required.
 	| Type ID LSB NUMBER RSB {
-		// ARRAY decvlaration. Automatically initialize all values to zero or null or whatever. So some type checking required.
-		//
+		
+	}
+	//struct decl
+	| STRUC ID LCB VarDeclList RCB {
+
 	}
 ;
 
@@ -189,6 +212,15 @@ Expr:
 	// array variable
 	| ID LSB NUMBER RSB {
 		
+	}
+	// function call
+	| FunctCall {
+
+	}
+	// struc access. The period is the access operator
+	// but how to nested strucs?
+	| StrucAccess {
+
 	}
 	// a number literal for use in a statement
 	| NUMBER { 

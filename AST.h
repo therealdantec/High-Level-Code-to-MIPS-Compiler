@@ -2,14 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-//typedef enum { INT, BINARY_OP, PRINT, VAR_DECL, VAR, FUNCT } nodeType;
-
 typedef struct node {
-    char* type;
+    char* type; // the type of node
     union {
         char* var_id; // for VAR
-        char* value; // for INT
+        char* value; // for
         char* id; // for PRINT, might want to change this to a blanket node for all special keywords
         struct { // for VAR_DECL, using a blanket node for all value types
             char* type; 
@@ -26,23 +23,42 @@ typedef struct node {
             struct node* left; // params
             struct node* right; // block of code
         } funct;
+        struct { // for ARRAY. shouldn't need to worry about type
+            char* data_type;
+            char* id;
+            node** values;
+        } array;
+        struct { // for STRUC
+            char* id;
+            node** vars;
+        } struc;
     } data;  
 } node;
+
+node* astCreateFunct() {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "FUNCT";
+    //new_node->funct.
+};
+
+node* astCreateArray() {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "ARRAY";
+
+};
+
+node* astCreateStruc() {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "STRUC";
+    
+};
 
 node* astCreateVar(char* id) {
     node* new_node = (node*)malloc(sizeof(node));
     new_node->type = "VAR";
     new_node->data.var_id = id; 
     return new_node;
-}
-
-
-// node* astCreateConnor(char* connor) {
-//     node* new_node = (node*)malloc(sizeof(node));
-//     new_node->type = VAR;
-//     new_node->data.var_connor = connor; 
-//     return new_node;
-// }
+};
 
 // for var declaration, takes type and id
 node* astCreateVarDecl(char* type, char* id) {
@@ -51,7 +67,7 @@ node* astCreateVarDecl(char* type, char* id) {
     new_node->data.var_decl.type = type; 
     new_node->data.var_decl.id = id;
     return new_node;
-}
+};
 
 // binary operations
 node* astCreateBinaryOp(char* op, node* left, node* right) { 
@@ -63,10 +79,34 @@ node* astCreateBinaryOp(char* op, node* left, node* right) {
     return new_node;
 };
 
-// ints
+// int literal
 node* astCreateInt(char* value) {
     node* new_node = (node*)malloc(sizeof(node));
-    new_node->type = "INTEGER";
+    new_node->type = "INT_LITERAL";
+    new_node->data.value = value; 
+    return new_node;
+};
+
+// char literal
+node* astCreateChar(char* value) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "CHAR_LITERAL";
+    new_node->data.value = value; 
+    return new_node;
+};
+
+// string literal
+node* astCreateString(char* value) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "STRING_LITERAL";
+    new_node->data.value = value; 
+    return new_node;
+};
+
+// bool literal
+node* astCreateBool(char* value) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "BOOL_LITERAL";
     new_node->data.value = value; 
     return new_node;
 };
@@ -78,6 +118,30 @@ node* astCreateWrite(char* id) {
     new_node->data.id = id;
     return new_node;
 };
+
+// make a string out of the node
+char* nodeToString(node* n) {
+    if (strcmp(n->type, "INT_LITERAL") == 0)    return n->data.value;
+    if (strcmp(n->type, "BOOL_LITERAL") == 0)    return n->data.value;
+    if (strcmp(n->type, "CHAR_LITERAL") == 0)    return n->data.value;
+    if (strcmp(n->type, "STRING_LITERAL") == 0)    return n->data.value;
+    if (strcmp(n->type, "BINARY_OP") == 0)  return nodeToString(n->data.binary_op.left);
+    if (strcmp(n->type, "WRITE") == 0)      return n->data.id;
+    if (strcmp(n->type, "VAR_DECL") == 0)   return n->type;
+    if (strcmp(n->type, "VAR") == 0)        return n->data.var_id;
+};
+
+// freeing da tree
+void free_ast(node* root) {
+    if (root == NULL) return;
+
+    if (strcmp(root->type, "BINARY_OP") == 0) {
+        free_ast(root->data.binary_op.left);  
+        free_ast(root->data.binary_op.right);  
+    }
+    free(root);
+};
+
 
 // void print_ast(node* root) {
 //     if (root == NULL) return;
@@ -92,22 +156,3 @@ node* astCreateWrite(char* id) {
 //         printf(")");
 //     }
 // };
-
-char* nodeToString(node* n) {
-    if (strcmp(n->type, "INTEGER") == 0)    return n->data.value;
-    if (strcmp(n->type, "BINARY_OP") == 0)  return nodeToString(n->data.binary_op.left);
-    if (strcmp(n->type, "WRITE") == 0)      return n->data.id;
-    if (strcmp(n->type, "VAR_DECL") == 0)   return n->type;
-    if (strcmp(n->type, "VAR") == 0)        return n->data.var_id;
-}
-
-
-void free_ast(node* root) {
-    if (root == NULL) return;
-
-    if (strcmp(root->type, "BINARY_OP") == 0) {
-        free_ast(root->data.binary_op.left);  
-        free_ast(root->data.binary_op.right);  
-    }
-    free(root);
-};
