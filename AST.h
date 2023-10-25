@@ -6,12 +6,17 @@ typedef struct node {
     char* type; // the type of node
     union {
         char* var_id; // for VAR
-        char* value; // for
+        char* value; // for LITERALS
+        char* data_type; // for DATA_TYPE
         char* id; // for PRINT, might want to change this to a blanket node for all special keywords
-        struct { // for VAR_DECL, using a blanket node for all value types
+        struct { // for VAR_DECL
             char* type; 
             char* id;
         } var_decl;
+         struct { // for FUNCT_PARAM
+            char* type; 
+            char* id;
+        } funct_param;
         struct { // for BINARY_OP
             char* op; 
             struct node* left;
@@ -26,31 +31,51 @@ typedef struct node {
         struct { // for ARRAY. shouldn't need to worry about type
             char* data_type;
             char* id;
-            node** values;
+            struct node** values;
         } array;
         struct { // for STRUC
             char* id;
-            node** vars;
+            struct node** vars;
         } struc;
     } data;  
 } node;
 
-node* astCreateFunct() {
+node* astCreateType(char* data_type) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "DATA_TYPE";
+    new_node->data.data_type = data_type;
+    return new_node;
+};
+
+node* astCreateFunct(char* id, char* return_type, node* params, node* functBlock) {
     node* new_node = (node*)malloc(sizeof(node));
     new_node->type = "FUNCT";
-    //new_node->funct.
+    new_node->data.funct.id = id;
+    new_node->data.funct.return_type = return_type;
+    new_node->data.funct.left = params;
+    new_node->data.funct.right = functBlock;
+    return new_node;
 };
+
+node* astCreateFunctParam(char* type, char* id) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "FUNCT_PARAM";
+    new_node->data.funct_param.type = type;
+    new_node->data.funct_param.id = id;
+    return new_node;
+};
+
 
 node* astCreateArray() {
     node* new_node = (node*)malloc(sizeof(node));
     new_node->type = "ARRAY";
-
+    return new_node;
 };
 
 node* astCreateStruc() {
     node* new_node = (node*)malloc(sizeof(node));
     new_node->type = "STRUC";
-    
+    return new_node;
 };
 
 node* astCreateVar(char* id) {
@@ -129,6 +154,11 @@ char* nodeToString(node* n) {
     if (strcmp(n->type, "WRITE") == 0)      return n->data.id;
     if (strcmp(n->type, "VAR_DECL") == 0)   return n->type;
     if (strcmp(n->type, "VAR") == 0)        return n->data.var_id;
+    if (strcmp(n->type, "DATA_TYPE") == 0)        return n->data.data_type;
+    if (strcmp(n->type, "FUNCT") == 0)        return n->data.funct.id;
+    if (strcmp(n->type, "FUNCT_PARAM") == 0)        return "";
+    if (strcmp(n->type, "ARRAY") == 0)        return "";
+    if (strcmp(n->type, "STRUC") == 0)        return "";
 };
 
 // freeing da tree

@@ -36,14 +36,14 @@ void yyerror(const char* s);
 %token <string> LT GT 
 %token <string> LTE GTE NE AND OR EQ
 %token <string> ASS
-%token <string> WRITE
+%token <string> WRITE REEE
 %token <string> PLUS MINUS TIMES DIVIDE
 %token <string> LPRN RPRN LCB RCB LSB RSB
 
 %printer { fprintf(yyoutput, "%s", $$); } ID;
-%printer { fprintf(yyoutput, "%d", $$); } NUMBER;
+%printer { fprintf(yyoutput, "%s", $$); } NUMBER;
 
-%type <ast_node> Program Code PieceOfCode Type VarDecl Stmt StmtList Expr FunctList Funct Param ParamsList FunctBlock
+%type <ast_node> Program Code PieceOfCode Type VarDecl VarDeclList Stmt StmtList Expr FunctList Funct Param ParamsList FunctBlock FunctCall CallParamsList StrucAccess
 
 %start Program
 
@@ -71,64 +71,114 @@ Code:
 
 // the types of pieces of code
 PieceOfCode:
-	VarDeclList {}
-	| StmtList {}
-	| FunctList {}
+	VarDeclList {
+		$$ = $1;
+	}
+	| StmtList {
+		$$ = $1;
+	}
+	| FunctList {
+		$$ = $1
+	}
 ;
 
 // Value types
 Type: 
-	INT
-	| CHAR
-	| STRING
-	| BOOL
+	INT {
+		$$ = astCreateType($1);
+	}
+	| CHAR {
+		$$ = astCreateType($1);
+	}
+	| STRING {
+		$$ = astCreateType($1);
+	}
+	| BOOL {
+		$$ = astCreateType($1);
+	}
 ;
 
 // the function piece of code
 FunctList:	
 	// what the hell is a functt?
 	FunctList Funct {
-
+		$$ = $2;
 	}
 ;
 
 // a function
 Funct:
-	Type ID LPRN ParamsList RPRN FunctBlock
+	Type ID LPRN ParamsList RPRN FunctBlock {
+		$$ = astCreateFunct($2, nodeToString($1), $4, $6);
+	}
 ;
 
 // parameters
 ParamsList:
-	ParamsList COMMA Param
-	| Param
-	| ""
+	ParamsList COMMA Param {
+		$$ = $3;
+	}
+	| Param {
+		$$ = $1
+	}
+	| "" {
+
+	}
 ;
 
 Param: 
-	Type ID
+	Type ID {
+		$$ = astCreateFunctParam(nodeToString($1), $2);	
+	}
 ;
 	
 FunctBlock:
-	LCB PieceOfCode REEE Expr SEMICOLON RCB SEMICOLON {
+	LCB PieceOfCode RCB SEMICOLON {
+		$$ = $2;
+		printf("\n RECOGNIZED RULE: Function Block %s\n", $2);
 	}
 ;
 
 FunctCall:
-	ID LPR CallParamsList RPR {}
+	ID LPRN CallParamsList RPRN {
+		printf("\n RECOGNIZED RULE: Function Call\n", $1);
+		// Check if function exists and generate the respective IR Code
+		if(!found($1, currentScope)){
+			printf("SEMANTIC ERROR: Function %s has not been declared\n", $1);
+			semanticCheckPassed = 0;
+		} else {
+			printf("HELLO MR ANDERSON");
+		}
+		
+	}
 
 CallParamsList:
-	CallParamsList , Expr
-	| Expr
-	| ""
+	CallParamsList COMMA Expr {
+		$$ = $3;
+	}
+	| Expr {
+		$$ = $1;
+	}
+	| "" {
+
+	}
 
 // struc access
 StrucAccess:
-	StucAccess PERIOD ID
-	| ID PERIOD ID
+	StrucAccess PERIOD ID {
+		
+	}
+	| ID PERIOD ID {
+
+	}
 
 VarDeclList:
-	VarDeclList VarDecl
-	| VarDecl
+	VarDeclList VarDecl {
+		
+	}
+	| VarDecl {
+		
+	}
 // variable declaration piece of code
 VarDecl:	
 	Type ID SEMICOLON { 
@@ -137,9 +187,9 @@ VarDecl:
 		int inSymTab = found($2, currentScope);
 		// semantic checks
 		if (inSymTab == 0) {
-			addItem($2, "Var", $1,0, currentScope);
+			addItem($2, "Var", nodeToString($1), 0, currentScope);
 			// AST operations
-			$$ = astCreateVarDecl($1, $2);
+			$$ = astCreateVarDecl(nodeToString($1), $2);
 		}
 		else {
 			printf("SEMANTIC ERROR: Var %s is already declared\n", $2);
@@ -148,17 +198,21 @@ VarDecl:
 	}
 	// ARRAY decvlaration. Automatically initialize all values to zero or null or whatever. So some type checking required.
 	| Type ID LSB NUMBER RSB {
+		printf("\n RECOGNIZED RULE: Array Declaration\n");
 		
 	}
 	//struct decl
 	| STRUC ID LCB VarDeclList RCB {
-
+		printf("\n RECOGNIZED RULE: Struct Declaration\n");
+		
 	}
 ;
 
 // statements, anything that involves operators, or isn't a function or vardecl
 StmtList:	
-	Stmt StmtList
+	Stmt StmtList {
+		
+	}
 ;
 
 Stmt:	
@@ -166,14 +220,17 @@ Stmt:
 	SEMICOLON	
 	// x = some math or something ;
 	| ID ASS Expr SEMICOLON {
+		printf("\n RECOGNIZED RULE: x = some math or something\n")
 		// Semantic check
 		// TODO implement type checking
 		if (found($1, currentScope)) {
 			$$ = astCreateVar($1);  
-			emitAssignment($1, nodeToString($3));
 
-			char* dante = generateTempReg();
-			emitMIPSAssignment(dante, $1, nodeToString($3));
+			char* result = generateTempVar()
+			emitAssignment(result, nodeToString($3));
+
+			// char* dante = generateTempReg();
+			emitMIPSAssignment(result, nodeToString($3));
 		} 
 		else {
 			printf("SEMANTIC ERROR: Var %s has not been declared\n", $1);
@@ -182,7 +239,7 @@ Stmt:
 	}
 	// array assignment
 	| ID LSB NUMBER RSB ASS Expr SEMICOLON {
-		
+		printf("\n RECOGNIZED RULE: ARRAY ASSIGNMENT\n")
 	}
 	// write x;
 	| WRITE ID SEMICOLON {
@@ -198,6 +255,9 @@ Stmt:
 			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", $2, currentScope);
 		}
 	}
+	| REEE Expr SEMICOLON {
+		
+	}
 ;
 
 // some math or something
@@ -206,26 +266,26 @@ Expr:
 	ID { 
 		printf("\n RECOGNIZED RULE: ID, %s\n", $1); 
 		$$ = astCreateVar($1);
-		// char* result = generateTempVar();
-		// emitAssignment(result, $1);
+		char* result = generateTempVar();
+		emitAssignment(result, $1);
 	}
 	// array variable
 	| ID LSB NUMBER RSB {
-		
+		printf("\n RECOGNIZED RULE: Array Variable\n")
 	}
 	// function call
 	| FunctCall {
-
+		printf("\n RECOGNIZED RULE: Function Call\n")
 	}
 	// struc access. The period is the access operator
 	// but how to nested strucs?
 	| StrucAccess {
-
+		printf("\n RECOGNIZED RULE: Struct Access\n")
 	}
 	// a number literal for use in a statement
 	| NUMBER { 
 		$$ = astCreateInt($1);
-		printf("\n RECOGNIZED RULE: NUMBER, %d\n", $1); 
+		printf("\n RECOGNIZED RULE: NUMBER, %s\n", $1); 
 	}
 	// x + some math or something
 	| ID PLUS Expr {
@@ -250,11 +310,8 @@ Expr:
 
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			emitBinaryOperation("+", result, $1, nodeToString($3));
+			emitMIPSBinaryOp(result, $1, nodeToString($3));
 			$$ = astCreateVar(result);
-
-			// For MIPS
-			char* reg = generateTempReg();
-			emitMIPSBinaryOp(reg, $1, nodeToString($3));
 			
 		}		
 	}
@@ -276,17 +333,10 @@ Expr:
 			sprintf(str, "%d", $1);
 			sprintf(str1, "%s", nodeToString($3));
 			emitBinaryOperation("+", result, str, str1);
+			emitMIPSBinaryOp(result, str, str1)
 			// Update the current expression result
 			$$ = astCreateVar(result);
 
-			// For MIPS
-			char* abc = generateTempReg();
-			char* str2 = (char*)malloc(15);
-			char* str3 = (char*)malloc(15);
-			sprintf(str2, "%d", $1);
-			sprintf(str3, "%s", nodeToString($3));
-			emitMIPSBinaryOp(abc, str2, str3);
-			//$$ = astCreateConnor(abc);
 
 		}
 	}
@@ -312,13 +362,13 @@ int main(int argc, char**argv)
 
 	// Initialize IR and MIPS files
 	initIRcodeFile();
-	//initAssemblyFile();
+	initAssemblyFile();
 
 	// Start parser
 	yyparse();
 
 
-	initAssemblyFile();
+	// initAssemblyFile();
 	// Add the closing part required for any MIPS file
 	emitEndOfAssemblyCode();
 

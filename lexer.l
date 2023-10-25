@@ -34,60 +34,69 @@ ws          {delim}+
         }
 						
 "int"	        {
-                        words++; chars += strlen(yytext);
+                        words++; 
+                        chars += strlen(yytext);
                         printf("%s : TYPE\n", yytext);
                         yylval.string = strdup(yytext); 
                         return INT;
 		}
 
 "char"	        {
-                        words++; chars += strlen(yytext);
+                        words++; 
+                        chars += strlen(yytext);
                         printf("%s : TYPE\n", yytext);
                         yylval.string = strdup(yytext); 
                         return CHAR;
 		}
 
 "string"	{
-                        words++; chars += strlen(yytext);
+                        words++; 
+                        chars += strlen(yytext);
                         printf("%s : TYPE\n", yytext);
                         yylval.string = strdup(yytext); 
                         return STRING;
 		}
 
 "bool"	        {
-                        words++; chars += strlen(yytext);
+                        words++; 
+                        chars += strlen(yytext);
                         printf("%s : TYPE\n", yytext);
                         yylval.string = strdup(yytext); 
                         return BOOL;
 		}
 
 "struc"	        {
-                        words++; chars += strlen(yytext);
+                        words++; 
+                        chars += strlen(yytext);
                         printf("%s : TYPE\n", yytext);
                         yylval.string = strdup(yytext); 
                         return STRUC;
 		}
 		
-"write"	{words++; chars += strlen(yytext);
+"write"	{words++; 
+                        chars += strlen(yytext);
 			printf("%s : KEYWORD\n", yytext);
 			yylval.string = strdup(yytext); 
 			return WRITE;
 		}
 		
-"reee"	{words++; chars += strlen(yytext);
+"reee"	{words++; 
+                        chars += strlen(yytext);
 			printf("%s : KEYWORD\n", yytext);
 			yylval.string = strdup(yytext); 
 			return REEE;
 		}
 
-{ID}	{words++; chars += strlen(yytext);
+{ID}	{words++; 
+                          chars += strlen(yytext);
 			  printf("%s : IDENTIFIER\n",yytext);
 			  yylval.string = strdup(yytext); 
 			  return ID;
 			}
 			
 {NUMBER}	{
-                        words++; chars += strlen(yytext);
+                        words++; 
+                        chars += strlen(yytext);
                         printf("%s : NUMBER\n",yytext);
                         yylval.number = atoi(strdup(yytext)); 
                         return NUMBER;

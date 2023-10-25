@@ -1,6 +1,7 @@
 int num1;
 int num2;
 int num3;
+char c1;
 
 num1 = 12;
 num2 = 2500;
