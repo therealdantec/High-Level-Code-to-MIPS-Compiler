@@ -37,14 +37,14 @@ ws          {delim}+
                         words++; chars += strlen(yytext);
                         printf("%s : TYPE\n", yytext);
                         yylval.string = strdup(yytext); 
-                        return INTEGER;
+                        return INT;
 		}
 
 "char"	        {
                         words++; chars += strlen(yytext);
                         printf("%s : TYPE\n", yytext);
                         yylval.string = strdup(yytext); 
-                        return CHARACTER;
+                        return CHAR;
 		}
 
 "string"	{
@@ -59,6 +59,13 @@ ws          {delim}+
                         printf("%s : TYPE\n", yytext);
                         yylval.string = strdup(yytext); 
                         return BOOL;
+		}
+
+"struc"	        {
+                        words++; chars += strlen(yytext);
+                        printf("%s : TYPE\n", yytext);
+                        yylval.string = strdup(yytext); 
+                        return STRUC;
 		}
 		
 "write"	{words++; chars += strlen(yytext);
