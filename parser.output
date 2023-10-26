@@ -1,0 +1,1018 @@
+Terminals unused in grammar
+
+    UNDERSCORE
+    LT
+    GT
+    LTE
+    GTE
+    NE
+    AND
+    OR
+    EQ
+    MINUS
+    TIMES
+    DIVIDE
+
+
+State 1 conflicts: 1 reduce/reduce
+State 2 conflicts: 1 reduce/reduce
+State 3 conflicts: 1 reduce/reduce
+State 4 conflicts: 1 reduce/reduce
+State 14 conflicts: 4 shift/reduce
+State 16 conflicts: 5 shift/reduce
+State 19 conflicts: 3 shift/reduce
+
+
+Grammar
+
+    0 $accept: Program $end
+
+    1 Program: Code
+
+    2 Code: PieceOfCode Code
+    3     | PieceOfCode
+
+    4 PieceOfCode: FunctList
+    5            | VarDeclList
+    6            | StmtList
+
+    7 Type: INT
+    8     | CHAR
+    9     | STRING
+   10     | BOOL
+
+   11 ReturnType: INT
+   12           | CHAR
+   13           | STRING
+   14           | BOOL
+
+   15 FunctList: FunctList Funct
+   16          | Funct
+
+   17 Funct: ReturnType ID LPRN ParamsList RPRN FunctBlock
+
+   18 ParamsList: ParamsList COMMA Param
+   19           | Param
+
+   20 Param: Type ID
+
+   21 FunctBlock: LCB PieceOfCode RCB SEMICOLON
+
+   22 FunctCall: ID LPRN CallParamsList RPRN
+
+   23 CallParamsList: CallParamsList COMMA Expr
+   24               | Expr
+
+   25 StrucAccess: StrucAccess PERIOD ID
+   26            | ID PERIOD ID
+
+   27 VarDeclList: VarDeclList VarDecl
+   28            | VarDecl
+
+   29 VarDecl: Type ID SEMICOLON
+   30        | Type ID LSB NUMBER RSB
+   31        | STRUC ID LCB VarDeclList RCB
+
+   32 StmtList: Stmt StmtList
+   33         | Stmt
+
+   34 Stmt: ID ASS Expr SEMICOLON
+   35     | ID LSB NUMBER RSB ASS Expr SEMICOLON
+   36     | WRITE ID SEMICOLON
+   37     | REEE Expr SEMICOLON
+
+   38 Expr: ID
+   39     | ID LSB NUMBER RSB
+   40     | FunctCall
+   41     | StrucAccess
+   42     | NUMBER
+   43     | ID PLUS Expr
+   44     | NUMBER PLUS Expr
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    INT <string> (258) 7 11
+    CHAR <string> (259) 8 12
+    STRING <string> (260) 9 13
+    BOOL <string> (261) 10 14
+    STRUC <string> (262) 31
+    ID <string> (263) 17 20 22 25 26 29 30 31 34 35 36 38 39 43
+    NUMBER <string> (264) 30 35 39 42 44
+    SEMICOLON <string> (265) 21 29 34 35 36 37
+    COMMA <string> (266) 18 23
+    UNDERSCORE <string> (267)
+    PERIOD <string> (268) 25 26
+    LT <string> (269)
+    GT <string> (270)
+    LTE <string> (271)
+    GTE <string> (272)
+    NE <string> (273)
+    AND <string> (274)
+    OR <string> (275)
+    EQ <string> (276)
+    ASS <string> (277) 34 35
+    WRITE <string> (278) 36
+    REEE <string> (279) 37
+    PLUS <string> (280) 43 44
+    MINUS <string> (281)
+    TIMES <string> (282)
+    DIVIDE <string> (283)
+    LPRN <string> (284) 17 22
+    RPRN <string> (285) 17 22
+    LCB <string> (286) 21 31
+    RCB <string> (287) 21 31
+    LSB <string> (288) 30 35 39
+    RSB <string> (289) 30 35 39
+
+
+Nonterminals, with rules where they appear
+
+    $accept (35)
+        on left: 0
+    Program <ast_node> (36)
+        on left: 1
+        on right: 0
+    Code <ast_node> (37)
+        on left: 2 3
+        on right: 1 2
+    PieceOfCode <ast_node> (38)
+        on left: 4 5 6
+        on right: 2 3 21
+    Type <ast_node> (39)
+        on left: 7 8 9 10
+        on right: 20 29 30
+    ReturnType <ast_node> (40)
+        on left: 11 12 13 14
+        on right: 17
+    FunctList <ast_node> (41)
+        on left: 15 16
+        on right: 4 15
+    Funct <ast_node> (42)
+        on left: 17
+        on right: 15 16
+    ParamsList <ast_node> (43)
+        on left: 18 19
+        on right: 17 18
+    Param <ast_node> (44)
+        on left: 20
+        on right: 18 19
+    FunctBlock <ast_node> (45)
+        on left: 21
+        on right: 17
+    FunctCall <ast_node> (46)
+        on left: 22
+        on right: 40
+    CallParamsList <ast_node> (47)
+        on left: 23 24
+        on right: 22 23
+    StrucAccess <ast_node> (48)
+        on left: 25 26
+        on right: 25 41
+    VarDeclList <ast_node> (49)
+        on left: 27 28
+        on right: 5 27 31
+    VarDecl <ast_node> (50)
+        on left: 29 30 31
+        on right: 27 28
+    StmtList <ast_node> (51)
+        on left: 32 33
+        on right: 6 32
+    Stmt <ast_node> (52)
+        on left: 34 35 36 37
+        on right: 32 33
+    Expr <ast_node> (53)
+        on left: 38 39 40 41 42 43 44
+        on right: 23 24 34 35 37 43 44
+
+
+State 0
+
+    0 $accept: • Program $end
+
+    INT     shift, and go to state 1
+    CHAR    shift, and go to state 2
+    STRING  shift, and go to state 3
+    BOOL    shift, and go to state 4
+    STRUC   shift, and go to state 5
+    ID      shift, and go to state 6
+    WRITE   shift, and go to state 7
+    REEE    shift, and go to state 8
+
+    Program      go to state 9
+    Code         go to state 10
+    PieceOfCode  go to state 11
+    Type         go to state 12
+    ReturnType   go to state 13
+    FunctList    go to state 14
+    Funct        go to state 15
+    VarDeclList  go to state 16
+    VarDecl      go to state 17
+    StmtList     go to state 18
+    Stmt         go to state 19
+
+
+State 1
+
+    7 Type: INT •
+   11 ReturnType: INT •
+
+    ID        reduce using rule 7 (Type)
+    ID        [reduce using rule 11 (ReturnType)]
+    $default  reduce using rule 7 (Type)
+
+
+State 2
+
+    8 Type: CHAR •
+   12 ReturnType: CHAR •
+
+    ID        reduce using rule 8 (Type)
+    ID        [reduce using rule 12 (ReturnType)]
+    $default  reduce using rule 8 (Type)
+
+
+State 3
+
+    9 Type: STRING •
+   13 ReturnType: STRING •
+
+    ID        reduce using rule 9 (Type)
+    ID        [reduce using rule 13 (ReturnType)]
+    $default  reduce using rule 9 (Type)
+
+
+State 4
+
+   10 Type: BOOL •
+   14 ReturnType: BOOL •
+
+    ID        reduce using rule 10 (Type)
+    ID        [reduce using rule 14 (ReturnType)]
+    $default  reduce using rule 10 (Type)
+
+
+State 5
+
+   31 VarDecl: STRUC • ID LCB VarDeclList RCB
+
+    ID  shift, and go to state 20
+
+
+State 6
+
+   34 Stmt: ID • ASS Expr SEMICOLON
+   35     | ID • LSB NUMBER RSB ASS Expr SEMICOLON
+
+    ASS  shift, and go to state 21
+    LSB  shift, and go to state 22
+
+
+State 7
+
+   36 Stmt: WRITE • ID SEMICOLON
+
+    ID  shift, and go to state 23
+
+
+State 8
+
+   37 Stmt: REEE • Expr SEMICOLON
+
+    ID      shift, and go to state 24
+    NUMBER  shift, and go to state 25
+
+    FunctCall    go to state 26
+    StrucAccess  go to state 27
+    Expr         go to state 28
+
+
+State 9
+
+    0 $accept: Program • $end
+
+    $end  shift, and go to state 29
+
+
+State 10
+
+    1 Program: Code •
+
+    $default  reduce using rule 1 (Program)
+
+
+State 11
+
+    2 Code: PieceOfCode • Code
+    3     | PieceOfCode •
+
+    INT     shift, and go to state 1
+    CHAR    shift, and go to state 2
+    STRING  shift, and go to state 3
+    BOOL    shift, and go to state 4
+    STRUC   shift, and go to state 5
+    ID      shift, and go to state 6
+    WRITE   shift, and go to state 7
+    REEE    shift, and go to state 8
+
+    $default  reduce using rule 3 (Code)
+
+    Code         go to state 30
+    PieceOfCode  go to state 11
+    Type         go to state 12
+    ReturnType   go to state 13
+    FunctList    go to state 14
+    Funct        go to state 15
+    VarDeclList  go to state 16
+    VarDecl      go to state 17
+    StmtList     go to state 18
+    Stmt         go to state 19
+
+
+State 12
+
+   29 VarDecl: Type • ID SEMICOLON
+   30        | Type • ID LSB NUMBER RSB
+
+    ID  shift, and go to state 31
+
+
+State 13
+
+   17 Funct: ReturnType • ID LPRN ParamsList RPRN FunctBlock
+
+    ID  shift, and go to state 32
+
+
+State 14
+
+    4 PieceOfCode: FunctList •
+   15 FunctList: FunctList • Funct
+
+    INT     shift, and go to state 33
+    CHAR    shift, and go to state 34
+    STRING  shift, and go to state 35
+    BOOL    shift, and go to state 36
+
+    INT       [reduce using rule 4 (PieceOfCode)]
+    CHAR      [reduce using rule 4 (PieceOfCode)]
+    STRING    [reduce using rule 4 (PieceOfCode)]
+    BOOL      [reduce using rule 4 (PieceOfCode)]
+    $default  reduce using rule 4 (PieceOfCode)
+
+    ReturnType  go to state 13
+    Funct       go to state 37
+
+
+State 15
+
+   16 FunctList: Funct •
+
+    $default  reduce using rule 16 (FunctList)
+
+
+State 16
+
+    5 PieceOfCode: VarDeclList •
+   27 VarDeclList: VarDeclList • VarDecl
+
+    INT     shift, and go to state 38
+    CHAR    shift, and go to state 39
+    STRING  shift, and go to state 40
+    BOOL    shift, and go to state 41
+    STRUC   shift, and go to state 5
+
+    INT       [reduce using rule 5 (PieceOfCode)]
+    CHAR      [reduce using rule 5 (PieceOfCode)]
+    STRING    [reduce using rule 5 (PieceOfCode)]
+    BOOL      [reduce using rule 5 (PieceOfCode)]
+    STRUC     [reduce using rule 5 (PieceOfCode)]
+    $default  reduce using rule 5 (PieceOfCode)
+
+    Type     go to state 12
+    VarDecl  go to state 42
+
+
+State 17
+
+   28 VarDeclList: VarDecl •
+
+    $default  reduce using rule 28 (VarDeclList)
+
+
+State 18
+
+    6 PieceOfCode: StmtList •
+
+    $default  reduce using rule 6 (PieceOfCode)
+
+
+State 19
+
+   32 StmtList: Stmt • StmtList
+   33         | Stmt •
+
+    ID     shift, and go to state 6
+    WRITE  shift, and go to state 7
+    REEE   shift, and go to state 8
+
+    ID        [reduce using rule 33 (StmtList)]
+    WRITE     [reduce using rule 33 (StmtList)]
+    REEE      [reduce using rule 33 (StmtList)]
+    $default  reduce using rule 33 (StmtList)
+
+    StmtList  go to state 43
+    Stmt      go to state 19
+
+
+State 20
+
+   31 VarDecl: STRUC ID • LCB VarDeclList RCB
+
+    LCB  shift, and go to state 44
+
+
+State 21
+
+   34 Stmt: ID ASS • Expr SEMICOLON
+
+    ID      shift, and go to state 24
+    NUMBER  shift, and go to state 25
+
+    FunctCall    go to state 26
+    StrucAccess  go to state 27
+    Expr         go to state 45
+
+
+State 22
+
+   35 Stmt: ID LSB • NUMBER RSB ASS Expr SEMICOLON
+
+    NUMBER  shift, and go to state 46
+
+
+State 23
+
+   36 Stmt: WRITE ID • SEMICOLON
+
+    SEMICOLON  shift, and go to state 47
+
+
+State 24
+
+   22 FunctCall: ID • LPRN CallParamsList RPRN
+   26 StrucAccess: ID • PERIOD ID
+   38 Expr: ID •
+   39     | ID • LSB NUMBER RSB
+   43     | ID • PLUS Expr
+
+    PERIOD  shift, and go to state 48
+    PLUS    shift, and go to state 49
+    LPRN    shift, and go to state 50
+    LSB     shift, and go to state 51
+
+    $default  reduce using rule 38 (Expr)
+
+
+State 25
+
+   42 Expr: NUMBER •
+   44     | NUMBER • PLUS Expr
+
+    PLUS  shift, and go to state 52
+
+    $default  reduce using rule 42 (Expr)
+
+
+State 26
+
+   40 Expr: FunctCall •
+
+    $default  reduce using rule 40 (Expr)
+
+
+State 27
+
+   25 StrucAccess: StrucAccess • PERIOD ID
+   41 Expr: StrucAccess •
+
+    PERIOD  shift, and go to state 53
+
+    $default  reduce using rule 41 (Expr)
+
+
+State 28
+
+   37 Stmt: REEE Expr • SEMICOLON
+
+    SEMICOLON  shift, and go to state 54
+
+
+State 29
+
+    0 $accept: Program $end •
+
+    $default  accept
+
+
+State 30
+
+    2 Code: PieceOfCode Code •
+
+    $default  reduce using rule 2 (Code)
+
+
+State 31
+
+   29 VarDecl: Type ID • SEMICOLON
+   30        | Type ID • LSB NUMBER RSB
+
+    SEMICOLON  shift, and go to state 55
+    LSB        shift, and go to state 56
+
+
+State 32
+
+   17 Funct: ReturnType ID • LPRN ParamsList RPRN FunctBlock
+
+    LPRN  shift, and go to state 57
+
+
+State 33
+
+   11 ReturnType: INT •
+
+    $default  reduce using rule 11 (ReturnType)
+
+
+State 34
+
+   12 ReturnType: CHAR •
+
+    $default  reduce using rule 12 (ReturnType)
+
+
+State 35
+
+   13 ReturnType: STRING •
+
+    $default  reduce using rule 13 (ReturnType)
+
+
+State 36
+
+   14 ReturnType: BOOL •
+
+    $default  reduce using rule 14 (ReturnType)
+
+
+State 37
+
+   15 FunctList: FunctList Funct •
+
+    $default  reduce using rule 15 (FunctList)
+
+
+State 38
+
+    7 Type: INT •
+
+    $default  reduce using rule 7 (Type)
+
+
+State 39
+
+    8 Type: CHAR •
+
+    $default  reduce using rule 8 (Type)
+
+
+State 40
+
+    9 Type: STRING •
+
+    $default  reduce using rule 9 (Type)
+
+
+State 41
+
+   10 Type: BOOL •
+
+    $default  reduce using rule 10 (Type)
+
+
+State 42
+
+   27 VarDeclList: VarDeclList VarDecl •
+
+    $default  reduce using rule 27 (VarDeclList)
+
+
+State 43
+
+   32 StmtList: Stmt StmtList •
+
+    $default  reduce using rule 32 (StmtList)
+
+
+State 44
+
+   31 VarDecl: STRUC ID LCB • VarDeclList RCB
+
+    INT     shift, and go to state 38
+    CHAR    shift, and go to state 39
+    STRING  shift, and go to state 40
+    BOOL    shift, and go to state 41
+    STRUC   shift, and go to state 5
+
+    Type         go to state 12
+    VarDeclList  go to state 58
+    VarDecl      go to state 17
+
+
+State 45
+
+   34 Stmt: ID ASS Expr • SEMICOLON
+
+    SEMICOLON  shift, and go to state 59
+
+
+State 46
+
+   35 Stmt: ID LSB NUMBER • RSB ASS Expr SEMICOLON
+
+    RSB  shift, and go to state 60
+
+
+State 47
+
+   36 Stmt: WRITE ID SEMICOLON •
+
+    $default  reduce using rule 36 (Stmt)
+
+
+State 48
+
+   26 StrucAccess: ID PERIOD • ID
+
+    ID  shift, and go to state 61
+
+
+State 49
+
+   43 Expr: ID PLUS • Expr
+
+    ID      shift, and go to state 24
+    NUMBER  shift, and go to state 25
+
+    FunctCall    go to state 26
+    StrucAccess  go to state 27
+    Expr         go to state 62
+
+
+State 50
+
+   22 FunctCall: ID LPRN • CallParamsList RPRN
+
+    ID      shift, and go to state 24
+    NUMBER  shift, and go to state 25
+
+    FunctCall       go to state 26
+    CallParamsList  go to state 63
+    StrucAccess     go to state 27
+    Expr            go to state 64
+
+
+State 51
+
+   39 Expr: ID LSB • NUMBER RSB
+
+    NUMBER  shift, and go to state 65
+
+
+State 52
+
+   44 Expr: NUMBER PLUS • Expr
+
+    ID      shift, and go to state 24
+    NUMBER  shift, and go to state 25
+
+    FunctCall    go to state 26
+    StrucAccess  go to state 27
+    Expr         go to state 66
+
+
+State 53
+
+   25 StrucAccess: StrucAccess PERIOD • ID
+
+    ID  shift, and go to state 67
+
+
+State 54
+
+   37 Stmt: REEE Expr SEMICOLON •
+
+    $default  reduce using rule 37 (Stmt)
+
+
+State 55
+
+   29 VarDecl: Type ID SEMICOLON •
+
+    $default  reduce using rule 29 (VarDecl)
+
+
+State 56
+
+   30 VarDecl: Type ID LSB • NUMBER RSB
+
+    NUMBER  shift, and go to state 68
+
+
+State 57
+
+   17 Funct: ReturnType ID LPRN • ParamsList RPRN FunctBlock
+
+    INT     shift, and go to state 38
+    CHAR    shift, and go to state 39
+    STRING  shift, and go to state 40
+    BOOL    shift, and go to state 41
+
+    Type        go to state 69
+    ParamsList  go to state 70
+    Param       go to state 71
+
+
+State 58
+
+   27 VarDeclList: VarDeclList • VarDecl
+   31 VarDecl: STRUC ID LCB VarDeclList • RCB
+
+    INT     shift, and go to state 38
+    CHAR    shift, and go to state 39
+    STRING  shift, and go to state 40
+    BOOL    shift, and go to state 41
+    STRUC   shift, and go to state 5
+    RCB     shift, and go to state 72
+
+    Type     go to state 12
+    VarDecl  go to state 42
+
+
+State 59
+
+   34 Stmt: ID ASS Expr SEMICOLON •
+
+    $default  reduce using rule 34 (Stmt)
+
+
+State 60
+
+   35 Stmt: ID LSB NUMBER RSB • ASS Expr SEMICOLON
+
+    ASS  shift, and go to state 73
+
+
+State 61
+
+   26 StrucAccess: ID PERIOD ID •
+
+    $default  reduce using rule 26 (StrucAccess)
+
+
+State 62
+
+   43 Expr: ID PLUS Expr •
+
+    $default  reduce using rule 43 (Expr)
+
+
+State 63
+
+   22 FunctCall: ID LPRN CallParamsList • RPRN
+   23 CallParamsList: CallParamsList • COMMA Expr
+
+    COMMA  shift, and go to state 74
+    RPRN   shift, and go to state 75
+
+
+State 64
+
+   24 CallParamsList: Expr •
+
+    $default  reduce using rule 24 (CallParamsList)
+
+
+State 65
+
+   39 Expr: ID LSB NUMBER • RSB
+
+    RSB  shift, and go to state 76
+
+
+State 66
+
+   44 Expr: NUMBER PLUS Expr •
+
+    $default  reduce using rule 44 (Expr)
+
+
+State 67
+
+   25 StrucAccess: StrucAccess PERIOD ID •
+
+    $default  reduce using rule 25 (StrucAccess)
+
+
+State 68
+
+   30 VarDecl: Type ID LSB NUMBER • RSB
+
+    RSB  shift, and go to state 77
+
+
+State 69
+
+   20 Param: Type • ID
+
+    ID  shift, and go to state 78
+
+
+State 70
+
+   17 Funct: ReturnType ID LPRN ParamsList • RPRN FunctBlock
+   18 ParamsList: ParamsList • COMMA Param
+
+    COMMA  shift, and go to state 79
+    RPRN   shift, and go to state 80
+
+
+State 71
+
+   19 ParamsList: Param •
+
+    $default  reduce using rule 19 (ParamsList)
+
+
+State 72
+
+   31 VarDecl: STRUC ID LCB VarDeclList RCB •
+
+    $default  reduce using rule 31 (VarDecl)
+
+
+State 73
+
+   35 Stmt: ID LSB NUMBER RSB ASS • Expr SEMICOLON
+
+    ID      shift, and go to state 24
+    NUMBER  shift, and go to state 25
+
+    FunctCall    go to state 26
+    StrucAccess  go to state 27
+    Expr         go to state 81
+
+
+State 74
+
+   23 CallParamsList: CallParamsList COMMA • Expr
+
+    ID      shift, and go to state 24
+    NUMBER  shift, and go to state 25
+
+    FunctCall    go to state 26
+    StrucAccess  go to state 27
+    Expr         go to state 82
+
+
+State 75
+
+   22 FunctCall: ID LPRN CallParamsList RPRN •
+
+    $default  reduce using rule 22 (FunctCall)
+
+
+State 76
+
+   39 Expr: ID LSB NUMBER RSB •
+
+    $default  reduce using rule 39 (Expr)
+
+
+State 77
+
+   30 VarDecl: Type ID LSB NUMBER RSB •
+
+    $default  reduce using rule 30 (VarDecl)
+
+
+State 78
+
+   20 Param: Type ID •
+
+    $default  reduce using rule 20 (Param)
+
+
+State 79
+
+   18 ParamsList: ParamsList COMMA • Param
+
+    INT     shift, and go to state 38
+    CHAR    shift, and go to state 39
+    STRING  shift, and go to state 40
+    BOOL    shift, and go to state 41
+
+    Type   go to state 69
+    Param  go to state 83
+
+
+State 80
+
+   17 Funct: ReturnType ID LPRN ParamsList RPRN • FunctBlock
+
+    LCB  shift, and go to state 84
+
+    FunctBlock  go to state 85
+
+
+State 81
+
+   35 Stmt: ID LSB NUMBER RSB ASS Expr • SEMICOLON
+
+    SEMICOLON  shift, and go to state 86
+
+
+State 82
+
+   23 CallParamsList: CallParamsList COMMA Expr •
+
+    $default  reduce using rule 23 (CallParamsList)
+
+
+State 83
+
+   18 ParamsList: ParamsList COMMA Param •
+
+    $default  reduce using rule 18 (ParamsList)
+
+
+State 84
+
+   21 FunctBlock: LCB • PieceOfCode RCB SEMICOLON
+
+    INT     shift, and go to state 1
+    CHAR    shift, and go to state 2
+    STRING  shift, and go to state 3
+    BOOL    shift, and go to state 4
+    STRUC   shift, and go to state 5
+    ID      shift, and go to state 6
+    WRITE   shift, and go to state 7
+    REEE    shift, and go to state 8
+
+    PieceOfCode  go to state 87
+    Type         go to state 12
+    ReturnType   go to state 13
+    FunctList    go to state 14
+    Funct        go to state 15
+    VarDeclList  go to state 16
+    VarDecl      go to state 17
+    StmtList     go to state 18
+    Stmt         go to state 19
+
+
+State 85
+
+   17 Funct: ReturnType ID LPRN ParamsList RPRN FunctBlock •
+
+    $default  reduce using rule 17 (Funct)
+
+
+State 86
+
+   35 Stmt: ID LSB NUMBER RSB ASS Expr SEMICOLON •
+
+    $default  reduce using rule 35 (Stmt)
+
+
+State 87
+
+   21 FunctBlock: LCB PieceOfCode • RCB SEMICOLON
+
+    RCB  shift, and go to state 88
+
+
+State 88
+
+   21 FunctBlock: LCB PieceOfCode RCB • SEMICOLON
+
+    SEMICOLON  shift, and go to state 89
+
+
+State 89
+
+   21 FunctBlock: LCB PieceOfCode RCB SEMICOLON •
+
+    $default  reduce using rule 21 (FunctBlock)

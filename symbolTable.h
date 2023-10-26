@@ -7,8 +7,8 @@ struct Entry
 {
 	int itemID;
 	char itemName[50];  //the name of the identifier
-	char itemKind[8];  //is it a function or a variable?
-	char itemType[8];  // Is it int, char, etc.?
+	char itemKind[20];  //is it a function or a variable?
+	char itemType[20];  // Is it int, char, etc.?
 	int arrayLength;
 	char scope[50];     // global, or the name of the function
 };
@@ -17,7 +17,7 @@ struct Entry symTabItems[100];
 int symTabIndex = 0;
 int SYMTAB_SIZE = 20;
 
-void addItem(char itemName[50], char itemKind[8], char itemType[8], int arrayLength, char scope[50]){
+void addItem(char *itemName, char *itemKind, char *itemType, int arrayLength, char *scope){
 	
 
 		// what about scope? should you add scope to this function?

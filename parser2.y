@@ -74,18 +74,34 @@ Code:
 
 // the types of pieces of code
 PieceOfCode:
-	FunctList {
-		printf("RULE PieceOfCode: FunctList\n");
-		$$ = $1;
+	// FunctList {
+	// 	printf("RULE PieceOfCode: FunctList\n");
+	// 	$$ = $1;
+	// }
+	// | VarDeclList {
+	// 	printf("RULE PieceOfCode: VarDeclList\n");
+	// 	$$ = $1;
+	// }
+	// | StmtList {
+	// 	printf("RULE PieceOfCode: StmtList\n");
+	// 	$$ = $1;
+	// }
+    Type ID LPRN ParamsList RPRN FunctBlock {
+		printf("RULE Funct: ID=%s\n", $2);
+		$$ = astCreateFunct($2, nodeToString($1), $4, $6);
 	}
-	| VarDeclList {
-		printf("RULE PieceOfCode: VarDeclList\n");
-		$$ = $1;
+    | ID LPRN CallParamsList RPRN {
+		printf("\n RECOGNIZED RULE: Function Call %s\n", $1);
+		// Check if function exists and generate the respective IR Code
+		if(!found($1, currentScope)){
+			printf("SEMANTIC ERROR: Function %s has not been declared\n", $1);
+			semanticCheckPassed = 0;
+		} else {
+			printf("HELLO MR ANDERSON");
+		}
+		
 	}
-	| StmtList {
-		printf("RULE PieceOfCode: StmtList\n");
-		$$ = $1;
-	}
+
 ;
 
 // Value types
@@ -108,25 +124,25 @@ Type:
 	}
 ;
 
-// the function piece of code
-FunctList:	
-	FunctList Funct {
-		printf("RULE FunctList: FunctList Funct\n");
-		$$ = $2;
-	}
-	| Funct {
-		printf("RULE FunctList: Funct");
-		$$ = $1;
-	}
-;
+// // the function piece of code
+// FunctList:	
+// 	FunctList Funct {
+// 		printf("RULE FunctList: FunctList Funct\n");
+// 		$$ = $2;
+// 	}
+// 	| Funct {
+// 		printf("RULE FunctList: Funct");
+// 		$$ = $1;
+// 	}
+// ;
 
-// a function
-Funct:
-	Type ID LPRN ParamsList RPRN FunctBlock {
-		printf("RULE Funct: ID=%s\n", $2);
-		$$ = astCreateFunct($2, nodeToString($1), $4, $6);
-	}
-;
+// // a function
+// Funct:
+// 	Type ID LPRN ParamsList RPRN FunctBlock {
+// 		printf("RULE Funct: ID=%s\n", $2);
+// 		$$ = astCreateFunct($2, nodeToString($1), $4, $6);
+// 	}
+// ;
 
 // parameters
 ParamsList:
@@ -155,19 +171,19 @@ FunctBlock:
 	}
 ;
 
-FunctCall:
-	ID LPRN CallParamsList RPRN {
-		printf("\n RECOGNIZED RULE: Function Call %s\n", $1);
-		// Check if function exists and generate the respective IR Code
-		if(!found($1, currentScope)){
-			printf("SEMANTIC ERROR: Function %s has not been declared\n", $1);
-			semanticCheckPassed = 0;
-		} else {
-			printf("HELLO MR ANDERSON");
-		}
+// FunctCall:
+// 	ID LPRN CallParamsList RPRN {
+// 		printf("\n RECOGNIZED RULE: Function Call %s\n", $1);
+// 		// Check if function exists and generate the respective IR Code
+// 		if(!found($1, currentScope)){
+// 			printf("SEMANTIC ERROR: Function %s has not been declared\n", $1);
+// 			semanticCheckPassed = 0;
+// 		} else {
+// 			printf("HELLO MR ANDERSON");
+// 		}
 		
-	}
-;
+// 	}
+// ;
 
 CallParamsList:
 	CallParamsList COMMA Expr {
