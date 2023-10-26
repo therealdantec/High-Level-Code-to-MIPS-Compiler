@@ -2,7 +2,7 @@ int num1;
 int num2;
 int num3;
 char c1;
-int doAThing(int p1) {
+funct int doAThing(int p1) {
     reee p1 + 1;
 };
 

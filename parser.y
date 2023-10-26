@@ -30,7 +30,7 @@ void yyerror(const char* s);
 	struct node* ast_node;
 }
 
-%token <string> INT CHAR STRING BOOL STRUC
+%token <string> INT CHAR STRING BOOL STRUC FUNCT
 %token <string> ID NUMBER
 %token <string> SEMICOLON COMMA UNDERSCORE PERIOD
 %token <string> LT GT 
@@ -122,7 +122,7 @@ FunctList:
 
 // a function
 Funct:
-	Type ID LPRN ParamsList RPRN FunctBlock {
+	FUNCT Type ID LPRN ParamsList RPRN FunctBlock {
 		printf("RULE Funct: ID=%s\n", $2);
 		$$ = astCreateFunct($2, nodeToString($1), $4, $6);
 	}
@@ -278,8 +278,9 @@ Stmt:
 			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", $2, currentScope);
 		}
 	}
+	// return keyword returns node* to expr value
 	| REEE Expr SEMICOLON {
-		
+		$$ = $2;
 	}
 ;
 

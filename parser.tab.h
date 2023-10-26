@@ -59,33 +59,34 @@ extern int yydebug;
     STRING = 260,                  /* STRING  */
     BOOL = 261,                    /* BOOL  */
     STRUC = 262,                   /* STRUC  */
-    ID = 263,                      /* ID  */
-    NUMBER = 264,                  /* NUMBER  */
-    SEMICOLON = 265,               /* SEMICOLON  */
-    COMMA = 266,                   /* COMMA  */
-    UNDERSCORE = 267,              /* UNDERSCORE  */
-    PERIOD = 268,                  /* PERIOD  */
-    LT = 269,                      /* LT  */
-    GT = 270,                      /* GT  */
-    LTE = 271,                     /* LTE  */
-    GTE = 272,                     /* GTE  */
-    NE = 273,                      /* NE  */
-    AND = 274,                     /* AND  */
-    OR = 275,                      /* OR  */
-    EQ = 276,                      /* EQ  */
-    ASS = 277,                     /* ASS  */
-    WRITE = 278,                   /* WRITE  */
-    REEE = 279,                    /* REEE  */
-    PLUS = 280,                    /* PLUS  */
-    MINUS = 281,                   /* MINUS  */
-    TIMES = 282,                   /* TIMES  */
-    DIVIDE = 283,                  /* DIVIDE  */
-    LPRN = 284,                    /* LPRN  */
-    RPRN = 285,                    /* RPRN  */
-    LCB = 286,                     /* LCB  */
-    RCB = 287,                     /* RCB  */
-    LSB = 288,                     /* LSB  */
-    RSB = 289                      /* RSB  */
+    FUNCT = 263,                   /* FUNCT  */
+    ID = 264,                      /* ID  */
+    NUMBER = 265,                  /* NUMBER  */
+    SEMICOLON = 266,               /* SEMICOLON  */
+    COMMA = 267,                   /* COMMA  */
+    UNDERSCORE = 268,              /* UNDERSCORE  */
+    PERIOD = 269,                  /* PERIOD  */
+    LT = 270,                      /* LT  */
+    GT = 271,                      /* GT  */
+    LTE = 272,                     /* LTE  */
+    GTE = 273,                     /* GTE  */
+    NE = 274,                      /* NE  */
+    AND = 275,                     /* AND  */
+    OR = 276,                      /* OR  */
+    EQ = 277,                      /* EQ  */
+    ASS = 278,                     /* ASS  */
+    WRITE = 279,                   /* WRITE  */
+    REEE = 280,                    /* REEE  */
+    PLUS = 281,                    /* PLUS  */
+    MINUS = 282,                   /* MINUS  */
+    TIMES = 283,                   /* TIMES  */
+    DIVIDE = 284,                  /* DIVIDE  */
+    LPRN = 285,                    /* LPRN  */
+    RPRN = 286,                    /* RPRN  */
+    LCB = 287,                     /* LCB  */
+    RCB = 288,                     /* RCB  */
+    LSB = 289,                     /* LSB  */
+    RSB = 290                      /* RSB  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -101,7 +102,7 @@ union YYSTYPE
 	char* string;
 	struct node* ast_node;
 
-#line 105 "parser.tab.h"
+#line 106 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
