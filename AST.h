@@ -156,9 +156,9 @@ char* nodeToString(node* n) {
     if (strcmp(n->type, "VAR") == 0)        return n->data.var_id;
     if (strcmp(n->type, "DATA_TYPE") == 0)        return n->data.data_type;
     if (strcmp(n->type, "FUNCT") == 0)        return n->data.funct.id;
-    if (strcmp(n->type, "FUNCT_PARAM") == 0)        return "";
-    if (strcmp(n->type, "ARRAY") == 0)        return "";
-    if (strcmp(n->type, "STRUC") == 0)        return "";
+    if (strcmp(n->type, "FUNCT_PARAM") == 0)        return n->data.funct_param.id;
+    if (strcmp(n->type, "ARRAY") == 0)        return "ARRAY";
+    if (strcmp(n->type, "STRUC") == 0)        return "STRUC";
 };
 
 // freeing da tree

@@ -79,6 +79,13 @@ ws          {delim}+
 			yylval.string = strdup(yytext); 
 			return WRITE;
 		}
+        
+"funct"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return FUNCT;
+		}
 		
 "reee"	{words++; 
                         chars += strlen(yytext);
