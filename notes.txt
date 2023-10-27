@@ -6,3 +6,6 @@ How to handle types in AST?
 Need function node
 Need struc node
 Need array node
+
+Symtab
+- keeps track of scope, functions and they're paramters. 

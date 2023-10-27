@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "AST.h"
+//#include "AST.h"
 
 struct Entry
 {
@@ -150,28 +150,28 @@ int areTypesCompatible(char* type1, char* type2){
 	return 0;
 }
 
-int validateFunctionArgs(char* functionName, node* arguments){
+// int validateFunctionArgs(char* functionName, node* arguments){
 
-	node* arg = arguments;
-	node* param = expectedParams;
+// 	node* arg = arguments;
+// 	node* param = expectedParams;
 
-	// Look up function's expected parameter list by functionName
-	node* expectedParams = findFunctionParameters(functionName, currentScope);
+// 	// Look up function's expected parameter list by functionName
+// 	node* expectedParams = findFunctionParameters(functionName, currentScope);
 
 
-	// Check if the number or arguments matches number of expected parameters
-	if(countArguments(arguments, currentScope) != countParameters(expectedParams)){
-		printf("SEMANTIC ERROR: Argument count mismatch in function call %s\n", functionName);
-		return 0; // Validation failed
-	}
+// 	// Check if the number or arguments matches number of expected parameters
+// 	if(countArguments(arguments, currentScope) != countParameters(expectedParams)){
+// 		printf("SEMANTIC ERROR: Argument count mismatch in function call %s\n", functionName);
+// 		return 0; // Validation failed
+// 	}
 
-	while (arg != NULL && param != NULL){
-		if(!areTypesCompatible(arg->type, param->type)){
-			printf("SEMANTIC ERROR: Argument type mismatch in function call %s\n", functionName);
-			return 0;
-		}
-	}
+// 	while (arg != NULL && param != NULL){
+// 		if(!areTypesCompatible(arg->type, param->type)){
+// 			printf("SEMANTIC ERROR: Argument type mismatch in function call %s\n", functionName);
+// 			return 0;
+// 		}
+// 	}
 
-	// If all checks passed, the arguments are valid
-	return 1;
-}
+// 	// If all checks passed, the arguments are valid
+// 	return 1;
+// }

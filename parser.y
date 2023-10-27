@@ -43,48 +43,50 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%s", $$); } NUMBER;
 
-%type <ast_node> Program Code PieceOfCode Type VarDecl VarDeclList Stmt StmtList Expr FunctList Funct Param ParamsList FunctBlock FunctCall CallParamsList StrucAccess
+%type <ast_node> Program Code Type VarDecl Stmt Expr Param ParamsList FunctCall CallParamsList 
 
 %start Program
 
 %%
 
+// Start:
+// 	Program
+// ;
+
 // program, the big kahuna, the whole program in a single node
 Program: 
-	Code { 
-		printf("RULE Program: Code\n");
+	// function definition
+	FUNCT Type ID LPRN ParamsList RPRN LCB Code RCB SEMICOLON { 
+		printf("RULE Program: FunctDeclaration\n");
+		$$ = astCreateFunct($4, nodeToString($3), $6, $9);
+	}
+	| FunctCall SEMICOLON {
+		printf("RULE Program: FunctCall");
 		$$ = $1;
-		printf("\nEnd Program\n\n");
+	}
+	| Program Program {
+		$$ = $1;
 	}
 ;
 
-// code is made up of pieces of code
-Code:	
-	PieceOfCode Code { 
-		printf("RULE Code: PieceOfCode Code\n");
-		$1->data.binary_op.left = $2;
-		$$ = $1;
-	}
-	// a piece of code
-	| PieceOfCode {
-		printf("RULE Code: PieceOfCode\n");
-		$$ = $1; 
-	}
-;
 
 // the types of pieces of code
-PieceOfCode:
-	FunctList {
-		printf("RULE PieceOfCode: FunctList\n");
-		$$ = $1;
-	}
-	| VarDeclList {
+Code:
+	Code VarDecl {
 		printf("RULE PieceOfCode: VarDeclList\n");
 		$$ = $1;
 	}
-	| StmtList {
-		printf("RULE PieceOfCode: StmtList\n");
+	| Code Stmt {
+		printf("RULE Code: Stmt\n");
 		$$ = $1;
+	}
+;
+
+// function call
+FunctCall:
+	ID LPRN CallParamsList RPRN {
+		printf("RULE RECOGNIZED: FunctCall\n");
+		$$ = $3;
 	}
 ;
 
@@ -108,26 +110,6 @@ Type:
 	}
 ;
 
-// the function piece of code
-FunctList:	
-	FunctList Funct {
-		printf("RULE FunctList: FunctList Funct\n");
-		$$ = $2;
-	}
-	| Funct {
-		printf("RULE FunctList: Funct");
-		$$ = $1;
-	}
-;
-
-// a function
-Funct:
-	FUNCT Type ID LPRN ParamsList RPRN FunctBlock {
-		printf("RULE Funct: ID=%s\n", $3);
-		$$ = astCreateFunct($3, nodeToString($2), $5, $7);
-	}
-;
-
 // parameters
 ParamsList:
 	ParamsList COMMA Param {
@@ -138,35 +120,14 @@ ParamsList:
 		printf("RULE ParamsList: Param\n");
 		$$ = $1;
 	}
+	| 
 ;
 
 Param: 
 	Type ID {
 		printf("RULE Param: ID=%s\n", $2);
 		$$ = astCreateFunctParam(nodeToString($1), $2);	
-	}
-;
-	
-FunctBlock:
-	LCB PieceOfCode RCB SEMICOLON {
-		printf("RULE FunctBlock\n");
-		$$ = $2;
-		printf("\n RECOGNIZED RULE: Function Block\n");
-	}
-;
 
-FunctCall:
-	ID LPRN CallParamsList RPRN {
-		printf("\n RECOGNIZED RULE: Function Call %s\n", $1);
-		// Check if this call works
-		//validateFunctionArgs($1, $3); // need to see if this works with multiple params
-		if(!found($1, currentScope)){
-			printf("SEMANTIC ERROR: Function %s has not been declared\n", $1);
-			semanticCheckPassed = 0;
-		} else {
-			printf("HELLO MR ANDERSON");
-		}
-		
 	}
 ;
 
@@ -181,26 +142,17 @@ CallParamsList:
 	}
 ;
 
-// struc access
-StrucAccess:
-	StrucAccess PERIOD ID {
-		printf("RULE StructAccess: StrucAccess PERIOD ID\n");
-	}
-	| ID PERIOD ID {
-		printf("RULE StructAccess: ID PERIOD ID\n");
-	}
-;
+// // struc access
+// StrucAccess:
+// 	StrucAccess PERIOD ID {
+// 		printf("RULE StructAccess: StrucAccess PERIOD ID\n");
+// 	}
+// 	| ID PERIOD ID {
+// 		printf("RULE StructAccess: ID PERIOD ID\n");
+// 	}
+// ;
 
-VarDeclList:
-	VarDeclList VarDecl {
-		printf("RULE VarDeclList: VarDeclList VarDecl\n");
-		$$ = $2;
-	}
-	| VarDecl {
-		printf("RULE VarDeclList: VarDecl\n");
-		$$ = $1;
-	}
-;
+
 
 // variable declaration piece of code
 VarDecl:	
@@ -225,21 +177,12 @@ VarDecl:
 		
 	}
 	//struct decl
-	| STRUC ID LCB VarDeclList RCB {
+	| STRUC ID LCB VarDecl RCB {
 		printf("\n RECOGNIZED RULE: Struct Declaration\n");
 		
 	}
 ;
 
-// statements, anything that involves operators, or isn't a function or vardecl
-StmtList:	
-	Stmt StmtList {
-		$$ = $2;
-	}
-	| Stmt {
-		$$ = $1;
-	}
-;
 
 Stmt:
 	// x = some math or something ;
@@ -294,19 +237,19 @@ Expr:
 		char* result = generateTempVar();
 		emitAssignment(result, $1);
 	}
-	// array variable
-	| ID LSB NUMBER RSB {
-		printf("\n RECOGNIZED RULE: Array Variable\n");
-	}
+	// // array variable
+	// | ID LSB NUMBER RSB {
+	// 	printf("\n RECOGNIZED RULE: Array Variable\n");
+	// }
 	// function call
 	| FunctCall {
 		printf("\n RECOGNIZED RULE: Function Call\n");
 	}
 	// struc access. The period is the access operator
 	// but how to nested strucs?
-	| StrucAccess {
-		printf("\n RECOGNIZED RULE: Struct Access\n");
-	}
+	// | StrucAccess {
+	// 	printf("\n RECOGNIZED RULE: Struct Access\n");
+	// }
 	// a number literal for use in a statement
 	| NUMBER { 
 		$$ = astCreateInt($1);
@@ -365,6 +308,27 @@ Expr:
 		}
 	}
 ;
+
+// VarDeclList:
+// 	VarDeclList VarDecl {
+// 		printf("RULE VarDeclList: VarDeclList VarDecl\n");
+// 		$$ = $2;
+// 	}
+// 	| VarDecl {
+// 		printf("RULE VarDeclList: VarDecl\n");
+// 		$$ = $1;
+// 	}
+// ;
+
+// // statements, anything that involves operators, or isn't a function or vardecl
+// StmtList:	
+// 	Stmt StmtList {
+// 		$$ = $2;
+// 	}
+// 	| Stmt {
+// 		$$ = $1;
+// 	}
+// ;
 
 %%
 int main(int argc, char**argv)
