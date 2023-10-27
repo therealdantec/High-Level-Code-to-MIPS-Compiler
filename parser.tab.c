@@ -88,8 +88,8 @@ FILE * IRcode;
 
 
 void yyerror(const char* s);
-	char* currentScope = "global"; // "global" or the name of the function
-	int semanticCheckPassed = 1; // flags to record correctness of semantic checks
+char* currentScope = "global"; // "global" or the name of the function
+int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 
 #line 95 "parser.tab.c"
 
@@ -564,9 +564,9 @@ static const yytype_int16 yyrline[] =
 {
        0,    54,    54,    63,    69,    77,    81,    85,    93,    97,
      101,   105,   113,   117,   125,   133,   137,   144,   151,   159,
-     173,   177,   185,   188,   194,   198,   206,   222,   227,   235,
-     238,   245,   264,   268,   282,   290,   297,   301,   306,   310,
-     315,   342
+     174,   178,   186,   189,   195,   199,   207,   223,   228,   236,
+     239,   246,   265,   269,   283,   291,   298,   302,   307,   311,
+     316,   345
 };
 #endif
 
@@ -1307,8 +1307,8 @@ yyreduce:
   case 14: /* Funct: FUNCT Type ID LPRN ParamsList RPRN FunctBlock  */
 #line 125 "parser.y"
                                                       {
-		printf("RULE Funct: ID=%s\n", (yyvsp[-5].ast_node));
-		(yyval.ast_node) = astCreateFunct((yyvsp[-5].ast_node), nodeToString((yyvsp[-6].string)), (yyvsp[-3].string), (yyvsp[-1].string));
+		printf("RULE Funct: ID=%s\n", (yyvsp[-4].string));
+		(yyval.ast_node) = astCreateFunct((yyvsp[-4].string), nodeToString((yyvsp[-5].ast_node)), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
 	}
 #line 1314 "parser.tab.c"
     break;
@@ -1354,7 +1354,8 @@ yyreduce:
 #line 159 "parser.y"
                                     {
 		printf("\n RECOGNIZED RULE: Function Call %s\n", (yyvsp[-3].string));
-		// Check if function exists and generate the respective IR Code
+		// Check if this call works
+		//validateFunctionArgs($1, $3); // need to see if this works with multiple params
 		if(!found((yyvsp[-3].string), currentScope)){
 			printf("SEMANTIC ERROR: Function %s has not been declared\n", (yyvsp[-3].string));
 			semanticCheckPassed = 0;
@@ -1363,63 +1364,63 @@ yyreduce:
 		}
 		
 	}
-#line 1367 "parser.tab.c"
+#line 1368 "parser.tab.c"
     break;
 
   case 20: /* CallParamsList: CallParamsList COMMA Expr  */
-#line 173 "parser.y"
+#line 174 "parser.y"
                                   {
 		printf("RULE CallParamsList: CallParamsList COMMA Expr\n");
 		(yyval.ast_node) = (yyvsp[0].ast_node);
 	}
-#line 1376 "parser.tab.c"
+#line 1377 "parser.tab.c"
     break;
 
   case 21: /* CallParamsList: Expr  */
-#line 177 "parser.y"
+#line 178 "parser.y"
                {
 		printf("RULE CallParamsList: Expr\n");
 		(yyval.ast_node) = (yyvsp[0].ast_node);
 	}
-#line 1385 "parser.tab.c"
+#line 1386 "parser.tab.c"
     break;
 
   case 22: /* StrucAccess: StrucAccess PERIOD ID  */
-#line 185 "parser.y"
+#line 186 "parser.y"
                               {
 		printf("RULE StructAccess: StrucAccess PERIOD ID\n");
 	}
-#line 1393 "parser.tab.c"
+#line 1394 "parser.tab.c"
     break;
 
   case 23: /* StrucAccess: ID PERIOD ID  */
-#line 188 "parser.y"
+#line 189 "parser.y"
                        {
 		printf("RULE StructAccess: ID PERIOD ID\n");
 	}
-#line 1401 "parser.tab.c"
+#line 1402 "parser.tab.c"
     break;
 
   case 24: /* VarDeclList: VarDeclList VarDecl  */
-#line 194 "parser.y"
+#line 195 "parser.y"
                             {
 		printf("RULE VarDeclList: VarDeclList VarDecl\n");
 		(yyval.ast_node) = (yyvsp[0].ast_node);
 	}
-#line 1410 "parser.tab.c"
+#line 1411 "parser.tab.c"
     break;
 
   case 25: /* VarDeclList: VarDecl  */
-#line 198 "parser.y"
+#line 199 "parser.y"
                   {
 		printf("RULE VarDeclList: VarDecl\n");
 		(yyval.ast_node) = (yyvsp[0].ast_node);
 	}
-#line 1419 "parser.tab.c"
+#line 1420 "parser.tab.c"
     break;
 
   case 26: /* VarDecl: Type ID SEMICOLON  */
-#line 206 "parser.y"
+#line 207 "parser.y"
                           { 
 		printf("\n RECOGNIZED RULE: Variable declaration %s\n", (yyvsp[-1].string));
 		// Symbol Table operations
@@ -1435,45 +1436,45 @@ yyreduce:
 		}
 		showSymTable();
 	}
-#line 1439 "parser.tab.c"
+#line 1440 "parser.tab.c"
     break;
 
   case 27: /* VarDecl: Type ID LSB NUMBER RSB  */
-#line 222 "parser.y"
+#line 223 "parser.y"
                                  {
 		printf("\n RECOGNIZED RULE: Array Declaration\n");
 		
 	}
-#line 1448 "parser.tab.c"
+#line 1449 "parser.tab.c"
     break;
 
   case 28: /* VarDecl: STRUC ID LCB VarDeclList RCB  */
-#line 227 "parser.y"
+#line 228 "parser.y"
                                        {
 		printf("\n RECOGNIZED RULE: Struct Declaration\n");
 		
 	}
-#line 1457 "parser.tab.c"
+#line 1458 "parser.tab.c"
     break;
 
   case 29: /* StmtList: Stmt StmtList  */
-#line 235 "parser.y"
+#line 236 "parser.y"
                       {
 		(yyval.ast_node) = (yyvsp[0].ast_node);
 	}
-#line 1465 "parser.tab.c"
+#line 1466 "parser.tab.c"
     break;
 
   case 30: /* StmtList: Stmt  */
-#line 238 "parser.y"
+#line 239 "parser.y"
                {
 		(yyval.ast_node) = (yyvsp[0].ast_node);
 	}
-#line 1473 "parser.tab.c"
+#line 1474 "parser.tab.c"
     break;
 
   case 31: /* Stmt: ID ASS Expr SEMICOLON  */
-#line 245 "parser.y"
+#line 246 "parser.y"
                               {
 		printf("\n RECOGNIZED RULE: x = some math or something\n");
 		// Semantic check
@@ -1492,19 +1493,19 @@ yyreduce:
 		}
 		
 	}
-#line 1496 "parser.tab.c"
+#line 1497 "parser.tab.c"
     break;
 
   case 32: /* Stmt: ID LSB NUMBER RSB ASS Expr SEMICOLON  */
-#line 264 "parser.y"
+#line 265 "parser.y"
                                                {
 		printf("\n RECOGNIZED RULE: ARRAY ASSIGNMENT\n");
 	}
-#line 1504 "parser.tab.c"
+#line 1505 "parser.tab.c"
     break;
 
   case 33: /* Stmt: WRITE ID SEMICOLON  */
-#line 268 "parser.y"
+#line 269 "parser.y"
                              {
 		printf("\n RECOGNIZED RULE: WRITE statement\n");
 		
@@ -1518,67 +1519,67 @@ yyreduce:
 			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[-1].string), currentScope);
 		}
 	}
-#line 1522 "parser.tab.c"
+#line 1523 "parser.tab.c"
     break;
 
   case 34: /* Stmt: REEE Expr SEMICOLON  */
-#line 282 "parser.y"
+#line 283 "parser.y"
                               {
 		(yyval.ast_node) = (yyvsp[-1].ast_node);
 	}
-#line 1530 "parser.tab.c"
+#line 1531 "parser.tab.c"
     break;
 
   case 35: /* Expr: ID  */
-#line 290 "parser.y"
+#line 291 "parser.y"
            { 
 		printf("\n RECOGNIZED RULE: ID, %s\n", (yyvsp[0].string)); 
 		(yyval.ast_node) = astCreateVar((yyvsp[0].string));
 		char* result = generateTempVar();
 		emitAssignment(result, (yyvsp[0].string));
 	}
-#line 1541 "parser.tab.c"
+#line 1542 "parser.tab.c"
     break;
 
   case 36: /* Expr: ID LSB NUMBER RSB  */
-#line 297 "parser.y"
+#line 298 "parser.y"
                             {
 		printf("\n RECOGNIZED RULE: Array Variable\n");
 	}
-#line 1549 "parser.tab.c"
+#line 1550 "parser.tab.c"
     break;
 
   case 37: /* Expr: FunctCall  */
-#line 301 "parser.y"
+#line 302 "parser.y"
                     {
 		printf("\n RECOGNIZED RULE: Function Call\n");
 	}
-#line 1557 "parser.tab.c"
+#line 1558 "parser.tab.c"
     break;
 
   case 38: /* Expr: StrucAccess  */
-#line 306 "parser.y"
+#line 307 "parser.y"
                       {
 		printf("\n RECOGNIZED RULE: Struct Access\n");
 	}
-#line 1565 "parser.tab.c"
+#line 1566 "parser.tab.c"
     break;
 
   case 39: /* Expr: NUMBER  */
-#line 310 "parser.y"
+#line 311 "parser.y"
                  { 
 		(yyval.ast_node) = astCreateInt((yyvsp[0].string));
 		printf("\n RECOGNIZED RULE: NUMBER, %s\n", (yyvsp[0].string)); 
 	}
-#line 1574 "parser.tab.c"
+#line 1575 "parser.tab.c"
     break;
 
   case 40: /* Expr: ID PLUS Expr  */
-#line 315 "parser.y"
+#line 316 "parser.y"
                        {
 		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", (yyvsp[-2].string));
 
-		(yyval.ast_node) = astCreateBinaryOp("+", astCreateVar((yyvsp[-2].string)), (yyvsp[0].ast_node));
+		
 
 		// Check if identifiers have been declared
 		if (!found((yyvsp[-2].string), currentScope)) {
@@ -1592,25 +1593,25 @@ yyreduce:
 		// 	semanticCheckPassed = 0;
 		// }
 
+
+		// this is some wizard temp register shit
 		if (semanticCheckPassed) {
 			//$$ = astCreateVar($1);
-
+			(yyval.ast_node) = astCreateBinaryOp("+", astCreateVar((yyvsp[-2].string)), (yyvsp[0].ast_node));
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			emitBinaryOperation("+", result, (yyvsp[-2].string), nodeToString((yyvsp[0].ast_node)));
 			emitMIPSBinaryOp(result, (yyvsp[-2].string), nodeToString((yyvsp[0].ast_node)));
-			(yyval.ast_node) = astCreateVar(result);
+			//$$ = astCreateVar(result);
 			
 		}		
 	}
-#line 1606 "parser.tab.c"
+#line 1609 "parser.tab.c"
     break;
 
   case 41: /* Expr: NUMBER PLUS Expr  */
-#line 342 "parser.y"
+#line 345 "parser.y"
                            {
 		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", (yyvsp[-2].string));
-		
-		(yyval.ast_node) = astCreateBinaryOp("+", astCreateInt((yyvsp[-2].string)), (yyvsp[0].ast_node));
 		
 		// see if types are compatible, currently causing segfault cuz nodes
 		// if (!compareTypes($1, $3, currentScope);) {
@@ -1627,9 +1628,8 @@ yyreduce:
 			emitBinaryOperation("+", result, str, str1);
 			emitMIPSBinaryOp(result, str, str1);
 			// Update the current expression result
-			(yyval.ast_node) = astCreateVar(result);
-
-
+			//$$ = astCreateVar(result);
+			(yyval.ast_node) = astCreateBinaryOp("+", astCreateInt((yyvsp[-2].string)), (yyvsp[0].ast_node));
 		}
 	}
 #line 1636 "parser.tab.c"
@@ -1834,9 +1834,9 @@ yyreturnlab:
 int main(int argc, char**argv)
 {
 
-	// #ifdef YYDEBUG
-	// 	yydebug = 1;
-	// #endif
+	#ifdef YYDEBUG
+		yydebug = 1;
+	#endif
 
 	printf("\n\n##### COMPILER STARTED #####\n\n");
 	

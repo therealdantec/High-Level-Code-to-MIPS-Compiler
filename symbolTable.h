@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "AST.h"
 
 struct Entry
 {
@@ -88,4 +89,89 @@ int compareTypes(char itemName1[50], char itemName2[50],char scope[50]){
 		return 1; // types are matching
 	}
 	else return 0;
+}
+
+// Function to find the parameters of a function based on its name and scope
+int findFunctionParameters(const char* functionName, const char* scope){
+	int count = 0;
+
+	// Loop through the symbol table to find parameters of the specified function
+	for (int i = 0; i < symTabIndex; i++){
+		if(strcmp(symTabItems[i].itemName, functionName) == 0 && 
+		   strcmp(symTabItems[i].itemKind, "Param") == 0 && 
+		   strcmp(symTabItems[i].scope, scope) == 0){
+			count++;
+		}
+	}
+
+	return count;
+}
+
+// Function to count the number of arguments in a function call
+int countArguments(const char* functionName, const char* scope){
+	int count = 0;
+
+	// Loop through the symbol table to find function calls with matching names and scope
+	for (int i = 0; i < symTabIndex; i++){
+		if(strcmp(symTabItems[i].itemName, functionName) == 0 && 
+		   strcmp(symTabItems[i].itemKind, "Funct") == 0 && 
+		   strcmp(symTabItems[i].scope, scope) == 0){
+			count++;
+		}
+	}
+
+	return count;
+}
+
+int countParameters(const char* functionName, const char* scope){
+	int count = 0;
+
+	for (int i = 0; i < symTabIndex; i++){
+		if(strcmp(symTabItems[i].itemName, functionName) == 0 && 
+		   strcmp(symTabItems[i].itemKind, "Param") == 0 && 
+		   strcmp(symTabItems[i].scope, scope) == 0){
+			count++;
+		}
+	}
+
+	return count;
+}
+
+int areTypesCompatible(char* type1, char* type2){
+	if(strcmp(type1, type2) == 0){
+		// Types match exactly
+		return 1;
+	} else if ((strcmp(type1, "INT") == 0 && strcmp(type2, "CHAR") == 0) ||
+	            strcmp(type1, "CHAR") == 0 && strcmp(type2, "INT") == 0){
+					// INT and CHAR are considered compatible
+					return 1;
+				}
+	// Types are not compatible
+	return 0;
+}
+
+int validateFunctionArgs(char* functionName, node* arguments){
+
+	node* arg = arguments;
+	node* param = expectedParams;
+
+	// Look up function's expected parameter list by functionName
+	node* expectedParams = findFunctionParameters(functionName, currentScope);
+
+
+	// Check if the number or arguments matches number of expected parameters
+	if(countArguments(arguments, currentScope) != countParameters(expectedParams)){
+		printf("SEMANTIC ERROR: Argument count mismatch in function call %s\n", functionName);
+		return 0; // Validation failed
+	}
+
+	while (arg != NULL && param != NULL){
+		if(!areTypesCompatible(arg->type, param->type)){
+			printf("SEMANTIC ERROR: Argument type mismatch in function call %s\n", functionName);
+			return 0;
+		}
+	}
+
+	// If all checks passed, the arguments are valid
+	return 1;
 }
