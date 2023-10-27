@@ -18,8 +18,8 @@ FILE * IRcode;
 
 
 void yyerror(const char* s);
-	char* currentScope = "global"; // "global" or the name of the function
-	int semanticCheckPassed = 1; // flags to record correctness of semantic checks
+char* currentScope = "global"; // "global" or the name of the function
+int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %}
 
 
@@ -123,8 +123,8 @@ FunctList:
 // a function
 Funct:
 	FUNCT Type ID LPRN ParamsList RPRN FunctBlock {
-		printf("RULE Funct: ID=%s\n", $2);
-		$$ = astCreateFunct($2, nodeToString($1), $4, $6);
+		printf("RULE Funct: ID=%s\n", $3);
+		$$ = astCreateFunct($3, nodeToString($2), $5, $7);
 	}
 ;
 
@@ -158,7 +158,8 @@ FunctBlock:
 FunctCall:
 	ID LPRN CallParamsList RPRN {
 		printf("\n RECOGNIZED RULE: Function Call %s\n", $1);
-		// Check if function exists and generate the respective IR Code
+		// Check if this call works
+		//validateFunctionArgs($1, $3); // need to see if this works with multiple params
 		if(!found($1, currentScope)){
 			printf("SEMANTIC ERROR: Function %s has not been declared\n", $1);
 			semanticCheckPassed = 0;
@@ -315,7 +316,7 @@ Expr:
 	| ID PLUS Expr {
 		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", $1);
 
-		$$ = astCreateBinaryOp("+", astCreateVar($1), $3);
+		
 
 		// Check if identifiers have been declared
 		if (!found($1, currentScope)) {
@@ -329,20 +330,20 @@ Expr:
 		// 	semanticCheckPassed = 0;
 		// }
 
+
+		// this is some wizard temp register shit
 		if (semanticCheckPassed) {
 			//$$ = astCreateVar($1);
-
+			$$ = astCreateBinaryOp("+", astCreateVar($1), $3);
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			emitBinaryOperation("+", result, $1, nodeToString($3));
 			emitMIPSBinaryOp(result, $1, nodeToString($3));
-			$$ = astCreateVar(result);
+			//$$ = astCreateVar(result);
 			
 		}		
 	}
 	| NUMBER PLUS Expr {
 		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", $1);
-		
-		$$ = astCreateBinaryOp("+", astCreateInt($1), $3);
 		
 		// see if types are compatible, currently causing segfault cuz nodes
 		// if (!compareTypes($1, $3, currentScope);) {
@@ -359,9 +360,8 @@ Expr:
 			emitBinaryOperation("+", result, str, str1);
 			emitMIPSBinaryOp(result, str, str1);
 			// Update the current expression result
-			$$ = astCreateVar(result);
-
-
+			//$$ = astCreateVar(result);
+			$$ = astCreateBinaryOp("+", astCreateInt($1), $3);
 		}
 	}
 ;
@@ -370,9 +370,9 @@ Expr:
 int main(int argc, char**argv)
 {
 
-	// #ifdef YYDEBUG
-	// 	yydebug = 1;
-	// #endif
+	#ifdef YYDEBUG
+		yydebug = 1;
+	#endif
 
 	printf("\n\n##### COMPILER STARTED #####\n\n");
 	

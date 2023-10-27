@@ -25,8 +25,8 @@ typedef struct node {
         struct { // for FUNCT
             char* id;
             char* return_type;
-            struct node* left; // params
-            struct node* right; // block of code
+            struct node* params; // params
+            struct node* funct_block; // block of code
         } funct;
         struct { // for ARRAY. shouldn't need to worry about type
             char* data_type;
@@ -52,8 +52,8 @@ node* astCreateFunct(char* id, char* return_type, node* params, node* functBlock
     new_node->type = "FUNCT";
     new_node->data.funct.id = id;
     new_node->data.funct.return_type = return_type;
-    new_node->data.funct.left = params;
-    new_node->data.funct.right = functBlock;
+    new_node->data.funct.params = params;
+    new_node->data.funct.funct_block = functBlock;
     return new_node;
 };
 
