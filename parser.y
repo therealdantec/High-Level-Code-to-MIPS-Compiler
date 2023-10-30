@@ -80,6 +80,14 @@ Code:
 		printf("RULE Code: Stmt\n");
 		$$ = $1;
 	}
+	| VarDecl {
+        printf("RULE PieceOfCode: VarDeclList\n");
+		$$ = $1;
+    }
+    | Stmt {
+        printf("RULE Code: Stmt\n");
+		$$ = $1;
+    }
 ;
 
 // function call
