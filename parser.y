@@ -59,6 +59,7 @@ Program:
 	FUNCT Type ID LPRN ParamsList RPRN LCB Code RCB SEMICOLON { 
 		printf("RULE Program: FunctDeclaration\n");
 		$$ = astCreateFunct($4, nodeToString($3), $6, $9);
+		function(nodeToString($2), nodeToString($3));
 	}
 	| FunctCall SEMICOLON {
 		printf("RULE Program: FunctCall");

@@ -56,3 +56,7 @@ void emitLabel(char* label) {
     fprintf(IRcode, "%s:\n", label);
 }
 
+// Function to create IR code for a function name and type
+void function(char* type, char* name){
+    fprintf(IRcode, "function %s %s\n", type, name);
+}
