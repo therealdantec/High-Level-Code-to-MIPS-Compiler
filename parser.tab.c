@@ -487,16 +487,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  5
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   19
+#define YYLAST   32
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  36
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  5
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  11
+#define YYNRULES  17
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  20
+#define YYNSTATES  32
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   290
@@ -549,8 +549,8 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    59,    63,    67,    87,   134,   138,   233,   244,   253,
-     258,   287
+       0,    59,    63,    67,    87,   135,   139,   234,   245,   254,
+     259,   288,   310,   339,   361,   390,   412,   441
 };
 #endif
 
@@ -595,8 +595,10 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       0,   -16,     1,     4,    -4,   -24,     0,   -24,   -23,   -10,
-     -24,   -12,   -24,    -4,    -4,    -4,   -24,   -24,   -24,   -24
+      -6,   -23,     1,    -2,    -4,   -24,    -6,   -24,   -15,     3,
+     -24,   -12,   -24,    -4,    -4,    -4,    -4,    -4,    -4,    -4,
+      -4,    -4,   -24,   -24,   -24,   -24,   -24,   -24,   -24,   -24,
+     -24,   -24
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -605,13 +607,15 @@ static const yytype_int8 yypact[] =
 static const yytype_int8 yydefact[] =
 {
        0,     0,     0,     0,     0,     1,     3,     2,     7,     9,
-       8,     0,     6,     0,     0,     0,     4,    10,    11,     5
+       8,     0,     6,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     4,    10,    12,    14,    16,    11,    13,    15,
+      17,     5
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -24,    17,     2,   -24,    -2
+     -24,    16,     2,   -24,     7
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -625,14 +629,18 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      15,     5,     3,    13,     3,     8,     9,     4,     3,     1,
-       1,    17,    18,    19,     4,     7,    14,     2,     0,    16
+      21,     5,     3,     1,     3,     8,     9,     4,     3,     7,
+       1,    13,    14,    15,    16,     4,     2,     0,     0,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    17,
+      18,    19,    20
 };
 
 static const yytype_int8 yycheck[] =
 {
-      12,     0,     0,    26,     2,     9,    10,    30,     6,     9,
-       9,    13,    14,    15,    30,    11,    26,     0,    -1,    31
+      12,     0,     0,     9,     2,     9,    10,    30,     6,    11,
+       9,    26,    27,    28,    29,    30,     0,    -1,    -1,    31,
+      13,    14,    15,    16,    17,    18,    19,    20,    21,    26,
+      27,    28,    29
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
@@ -640,21 +648,23 @@ static const yytype_int8 yycheck[] =
 static const yytype_int8 yystos[] =
 {
        0,     9,    37,    38,    30,     0,    37,    11,     9,    10,
-      38,    39,    40,    26,    26,    12,    31,    40,    40,    40
+      38,    39,    40,    26,    27,    28,    29,    26,    27,    28,
+      29,    12,    31,    40,    40,    40,    40,    40,    40,    40,
+      40,    40
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
        0,    36,    37,    37,    38,    39,    39,    40,    40,    40,
-      40,    40
+      40,    40,    40,    40,    40,    40,    40,    40
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     2,     2,     4,     3,     1,     1,     1,     1,
-       3,     3
+       3,     3,     3,     3,     3,     3,     3,     3
 };
 
 
@@ -740,13 +750,13 @@ yy_symbol_value_print (FILE *yyo,
     case YYSYMBOL_ID: /* ID  */
 #line 43 "parser.y"
          { fprintf(yyoutput, "%s", ((*yyvaluep).string)); }
-#line 744 "parser.tab.c"
+#line 754 "parser.tab.c"
         break;
 
     case YYSYMBOL_NUMBER: /* NUMBER  */
 #line 44 "parser.y"
          { fprintf(yyoutput, "%s", ((*yyvaluep).string)); }
-#line 750 "parser.tab.c"
+#line 760 "parser.tab.c"
         break;
 
       default:
@@ -1139,7 +1149,7 @@ yyreduce:
 		printf("RULE Program: FunctCall");
 		(yyval.ast_node) = (yyvsp[-1].ast_node);
 	}
-#line 1143 "parser.tab.c"
+#line 1153 "parser.tab.c"
     break;
 
   case 3: /* Program: Program Program  */
@@ -1147,7 +1157,7 @@ yyreduce:
                           {
 		(yyval.ast_node) = (yyvsp[-1].ast_node);
 	}
-#line 1151 "parser.tab.c"
+#line 1161 "parser.tab.c"
     break;
 
   case 4: /* FunctCall: ID LPRN CallParamsList RPRN  */
@@ -1156,57 +1166,57 @@ yyreduce:
 		printf("RULE RECOGNIZED: FunctCall\n");
 		(yyval.ast_node) = (yyvsp[-1].ast_node);
 	}
-#line 1160 "parser.tab.c"
+#line 1170 "parser.tab.c"
     break;
 
   case 5: /* CallParamsList: CallParamsList COMMA Expr  */
-#line 134 "parser.y"
+#line 135 "parser.y"
                                   {
 		printf("RULE CallParamsList: CallParamsList COMMA Expr\n");
 		(yyval.ast_node) = (yyvsp[0].ast_node);
 	}
-#line 1169 "parser.tab.c"
+#line 1179 "parser.tab.c"
     break;
 
   case 6: /* CallParamsList: Expr  */
-#line 138 "parser.y"
+#line 139 "parser.y"
                {
 		printf("RULE CallParamsList: Expr\n");
 		(yyval.ast_node) = (yyvsp[0].ast_node);
 	}
-#line 1178 "parser.tab.c"
+#line 1188 "parser.tab.c"
     break;
 
   case 7: /* Expr: ID  */
-#line 233 "parser.y"
+#line 234 "parser.y"
            { 
 		printf("\n RECOGNIZED RULE: ID, %s\n", (yyvsp[0].string)); 
 		(yyval.ast_node) = astCreateVar((yyvsp[0].string));
 		char* result = generateTempVar();
 		emitAssignment(result, (yyvsp[0].string));
 	}
-#line 1189 "parser.tab.c"
+#line 1199 "parser.tab.c"
     break;
 
   case 8: /* Expr: FunctCall  */
-#line 244 "parser.y"
+#line 245 "parser.y"
                     {
 		printf("\n RECOGNIZED RULE: Function Call\n");
 	}
-#line 1197 "parser.tab.c"
+#line 1207 "parser.tab.c"
     break;
 
   case 9: /* Expr: NUMBER  */
-#line 253 "parser.y"
+#line 254 "parser.y"
                  { 
 		(yyval.ast_node) = astCreateInt((yyvsp[0].string));
 		printf("\n RECOGNIZED RULE: NUMBER, %s\n", (yyvsp[0].string)); 
 	}
-#line 1206 "parser.tab.c"
+#line 1216 "parser.tab.c"
     break;
 
   case 10: /* Expr: ID PLUS Expr  */
-#line 258 "parser.y"
+#line 259 "parser.y"
                        {
 		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", (yyvsp[-2].string));
 
@@ -1231,16 +1241,16 @@ yyreduce:
 			(yyval.ast_node) = astCreateBinaryOp("+", astCreateVar((yyvsp[-2].string)), (yyvsp[0].ast_node));
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			emitBinaryOperation("+", result, (yyvsp[-2].string), nodeToString((yyvsp[0].ast_node)));
-			emitMIPSBinaryOp(result, (yyvsp[-2].string), nodeToString((yyvsp[0].ast_node)));
+			emitMIPSBinaryOp("add", result, (yyvsp[-2].string), nodeToString((yyvsp[0].ast_node)));
 			//$$ = astCreateVar(result);
 			
 		}		
 	}
-#line 1240 "parser.tab.c"
+#line 1250 "parser.tab.c"
     break;
 
   case 11: /* Expr: NUMBER PLUS Expr  */
-#line 287 "parser.y"
+#line 288 "parser.y"
                            {
 		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", (yyvsp[-2].string));
 		
@@ -1257,17 +1267,200 @@ yyreduce:
 			sprintf(str, "%s", (yyvsp[-2].string));
 			sprintf(str1, "%s", nodeToString((yyvsp[0].ast_node)));
 			emitBinaryOperation("+", result, str, str1);
-			emitMIPSBinaryOp(result, str, str1);
+			emitMIPSBinaryOp("add", result, str, str1);
 			// Update the current expression result
 			//$$ = astCreateVar(result);
 			(yyval.ast_node) = astCreateBinaryOp("+", astCreateInt((yyvsp[-2].string)), (yyvsp[0].ast_node));
 		}
 	}
-#line 1267 "parser.tab.c"
+#line 1277 "parser.tab.c"
+    break;
+
+  case 12: /* Expr: ID MINUS Expr  */
+#line 310 "parser.y"
+                        {
+		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", (yyvsp[-2].string));
+
+		
+
+		// Check if identifiers have been declared
+		if (!found((yyvsp[-2].string), currentScope)) {
+			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[-2].string), currentScope);
+			semanticCheckPassed = 0;
+		}
+		
+		// see if types are compatible, currently causing segfault cuz nodes
+		// if (!compareTypes($1, $3, currentScope);) {
+		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
+		// 	semanticCheckPassed = 0;
+		// }
+
+
+		// this is some wizard temp register shit
+		if (semanticCheckPassed) {
+			//$$ = astCreateVar($1);
+			(yyval.ast_node) = astCreateBinaryOp("-", astCreateVar((yyvsp[-2].string)), (yyvsp[0].ast_node));
+			char* result = generateTempVar();  // Generate a temporary variable for the result
+			emitBinaryOperation("-", result, (yyvsp[-2].string), nodeToString((yyvsp[0].ast_node)));
+			emitMIPSBinaryOp("sub", result, (yyvsp[-2].string), nodeToString((yyvsp[0].ast_node)));
+			//$$ = astCreateVar(result);
+			
+		}		
+	}
+#line 1311 "parser.tab.c"
+    break;
+
+  case 13: /* Expr: NUMBER MINUS Expr  */
+#line 339 "parser.y"
+                            {
+		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", (yyvsp[-2].string));
+		
+		// see if types are compatible, currently causing segfault cuz nodes
+		// if (!compareTypes($1, $3, currentScope);) {
+		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
+		// 	semanticCheckPassed = 0;
+		// }
+
+		if (semanticCheckPassed) {
+			char* result = generateTempVar();  // Generate a temporary variable for the result
+			char* str = (char*)malloc(15);
+			char* str1 = (char*)malloc(15);
+			sprintf(str, "%s", (yyvsp[-2].string));
+			sprintf(str1, "%s", nodeToString((yyvsp[0].ast_node)));
+			emitBinaryOperation("-", result, str, str1);
+			emitMIPSBinaryOp("sub", result, str, str1);
+			// Update the current expression result
+			//$$ = astCreateVar(result);
+			(yyval.ast_node) = astCreateBinaryOp("-", astCreateInt((yyvsp[-2].string)), (yyvsp[0].ast_node));
+		}
+	}
+#line 1338 "parser.tab.c"
+    break;
+
+  case 14: /* Expr: ID TIMES Expr  */
+#line 361 "parser.y"
+                        {
+		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", (yyvsp[-2].string));
+
+		
+
+		// Check if identifiers have been declared
+		if (!found((yyvsp[-2].string), currentScope)) {
+			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[-2].string), currentScope);
+			semanticCheckPassed = 0;
+		}
+		
+		// see if types are compatible, currently causing segfault cuz nodes
+		// if (!compareTypes($1, $3, currentScope);) {
+		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
+		// 	semanticCheckPassed = 0;
+		// }
+
+
+		// this is some wizard temp register shit
+		if (semanticCheckPassed) {
+			//$$ = astCreateVar($1);
+			(yyval.ast_node) = astCreateBinaryOp("*", astCreateVar((yyvsp[-2].string)), (yyvsp[0].ast_node));
+			char* result = generateTempVar();  // Generate a temporary variable for the result
+			emitBinaryOperation("*", result, (yyvsp[-2].string), nodeToString((yyvsp[0].ast_node)));
+			emitMIPSBinaryOp("mult", result, (yyvsp[-2].string), nodeToString((yyvsp[0].ast_node)));
+			//$$ = astCreateVar(result);
+			
+		}		
+	}
+#line 1372 "parser.tab.c"
+    break;
+
+  case 15: /* Expr: NUMBER TIMES Expr  */
+#line 390 "parser.y"
+                            {
+		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", (yyvsp[-2].string));
+		
+		// see if types are compatible, currently causing segfault cuz nodes
+		// if (!compareTypes($1, $3, currentScope);) {
+		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
+		// 	semanticCheckPassed = 0;
+		// }
+
+		if (semanticCheckPassed) {
+			char* result = generateTempVar();  // Generate a temporary variable for the result
+			char* str = (char*)malloc(15);
+			char* str1 = (char*)malloc(15);
+			sprintf(str, "%s", (yyvsp[-2].string));
+			sprintf(str1, "%s", nodeToString((yyvsp[0].ast_node)));
+			emitBinaryOperation("*", result, str, str1);
+			emitMIPSBinaryOp("mult", result, str, str1);
+			// Update the current expression result
+			//$$ = astCreateVar(result);
+			(yyval.ast_node) = astCreateBinaryOp("*", astCreateInt((yyvsp[-2].string)), (yyvsp[0].ast_node));
+		}
+	}
+#line 1399 "parser.tab.c"
+    break;
+
+  case 16: /* Expr: ID DIVIDE Expr  */
+#line 412 "parser.y"
+                         {
+		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", (yyvsp[-2].string));
+
+		
+
+		// Check if identifiers have been declared
+		if (!found((yyvsp[-2].string), currentScope)) {
+			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", (yyvsp[-2].string), currentScope);
+			semanticCheckPassed = 0;
+		}
+		
+		// see if types are compatible, currently causing segfault cuz nodes
+		// if (!compareTypes($1, $3, currentScope);) {
+		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
+		// 	semanticCheckPassed = 0;
+		// }
+
+
+		// this is some wizard temp register shit
+		if (semanticCheckPassed) {
+			//$$ = astCreateVar($1);
+			(yyval.ast_node) = astCreateBinaryOp("/", astCreateVar((yyvsp[-2].string)), (yyvsp[0].ast_node));
+			char* result = generateTempVar();  // Generate a temporary variable for the result
+			emitBinaryOperation("/", result, (yyvsp[-2].string), nodeToString((yyvsp[0].ast_node)));
+			emitMIPSBinaryOp("div", result, (yyvsp[-2].string), nodeToString((yyvsp[0].ast_node)));
+			//$$ = astCreateVar(result);
+			
+		}		
+	}
+#line 1433 "parser.tab.c"
+    break;
+
+  case 17: /* Expr: NUMBER DIVIDE Expr  */
+#line 441 "parser.y"
+                             {
+		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", (yyvsp[-2].string));
+		
+		// see if types are compatible, currently causing segfault cuz nodes
+		// if (!compareTypes($1, $3, currentScope);) {
+		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
+		// 	semanticCheckPassed = 0;
+		// }
+
+		if (semanticCheckPassed) {
+			char* result = generateTempVar();  // Generate a temporary variable for the result
+			char* str = (char*)malloc(15);
+			char* str1 = (char*)malloc(15);
+			sprintf(str, "%s", (yyvsp[-2].string));
+			sprintf(str1, "%s", nodeToString((yyvsp[0].ast_node)));
+			emitBinaryOperation("/", result, str, str1);
+			emitMIPSBinaryOp("div", result, str, str1);
+			// Update the current expression result
+			//$$ = astCreateVar(result);
+			(yyval.ast_node) = astCreateBinaryOp("/", astCreateInt((yyvsp[-2].string)), (yyvsp[0].ast_node));
+		}
+	}
+#line 1460 "parser.tab.c"
     break;
 
 
-#line 1271 "parser.tab.c"
+#line 1464 "parser.tab.c"
 
       default: break;
     }
@@ -1460,7 +1653,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 332 "parser.y"
+#line 486 "parser.y"
 
 int main(int argc, char**argv)
 {

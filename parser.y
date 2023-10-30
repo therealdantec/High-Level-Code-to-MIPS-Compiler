@@ -280,7 +280,7 @@ Expr:
 			$$ = astCreateBinaryOp("+", astCreateVar($1), $3);
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			emitBinaryOperation("+", result, $1, nodeToString($3));
-			emitMIPSBinaryOp(result, $1, nodeToString($3));
+			emitMIPSBinaryOp("add", result, $1, nodeToString($3));
 			//$$ = astCreateVar(result);
 			
 		}		
@@ -301,10 +301,163 @@ Expr:
 			sprintf(str, "%s", $1);
 			sprintf(str1, "%s", nodeToString($3));
 			emitBinaryOperation("+", result, str, str1);
-			emitMIPSBinaryOp(result, str, str1);
+			emitMIPSBinaryOp("add", result, str, str1);
 			// Update the current expression result
 			//$$ = astCreateVar(result);
 			$$ = astCreateBinaryOp("+", astCreateInt($1), $3);
+		}
+	}
+	| ID MINUS Expr {
+		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", $1);
+
+		
+
+		// Check if identifiers have been declared
+		if (!found($1, currentScope)) {
+			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", $1, currentScope);
+			semanticCheckPassed = 0;
+		}
+		
+		// see if types are compatible, currently causing segfault cuz nodes
+		// if (!compareTypes($1, $3, currentScope);) {
+		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
+		// 	semanticCheckPassed = 0;
+		// }
+
+
+		// this is some wizard temp register shit
+		if (semanticCheckPassed) {
+			//$$ = astCreateVar($1);
+			$$ = astCreateBinaryOp("-", astCreateVar($1), $3);
+			char* result = generateTempVar();  // Generate a temporary variable for the result
+			emitBinaryOperation("-", result, $1, nodeToString($3));
+			emitMIPSBinaryOp("sub", result, $1, nodeToString($3));
+			//$$ = astCreateVar(result);
+			
+		}		
+	}
+	| NUMBER MINUS Expr {
+		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", $1);
+		
+		// see if types are compatible, currently causing segfault cuz nodes
+		// if (!compareTypes($1, $3, currentScope);) {
+		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
+		// 	semanticCheckPassed = 0;
+		// }
+
+		if (semanticCheckPassed) {
+			char* result = generateTempVar();  // Generate a temporary variable for the result
+			char* str = (char*)malloc(15);
+			char* str1 = (char*)malloc(15);
+			sprintf(str, "%s", $1);
+			sprintf(str1, "%s", nodeToString($3));
+			emitBinaryOperation("-", result, str, str1);
+			emitMIPSBinaryOp("sub", result, str, str1);
+			// Update the current expression result
+			//$$ = astCreateVar(result);
+			$$ = astCreateBinaryOp("-", astCreateInt($1), $3);
+		}
+	}
+	| ID TIMES Expr {
+		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", $1);
+
+		
+
+		// Check if identifiers have been declared
+		if (!found($1, currentScope)) {
+			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", $1, currentScope);
+			semanticCheckPassed = 0;
+		}
+		
+		// see if types are compatible, currently causing segfault cuz nodes
+		// if (!compareTypes($1, $3, currentScope);) {
+		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
+		// 	semanticCheckPassed = 0;
+		// }
+
+
+		// this is some wizard temp register shit
+		if (semanticCheckPassed) {
+			//$$ = astCreateVar($1);
+			$$ = astCreateBinaryOp("*", astCreateVar($1), $3);
+			char* result = generateTempVar();  // Generate a temporary variable for the result
+			emitBinaryOperation("*", result, $1, nodeToString($3));
+			emitMIPSBinaryOp("mult", result, $1, nodeToString($3));
+			//$$ = astCreateVar(result);
+			
+		}		
+	}
+	| NUMBER TIMES Expr {
+		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", $1);
+		
+		// see if types are compatible, currently causing segfault cuz nodes
+		// if (!compareTypes($1, $3, currentScope);) {
+		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
+		// 	semanticCheckPassed = 0;
+		// }
+
+		if (semanticCheckPassed) {
+			char* result = generateTempVar();  // Generate a temporary variable for the result
+			char* str = (char*)malloc(15);
+			char* str1 = (char*)malloc(15);
+			sprintf(str, "%s", $1);
+			sprintf(str1, "%s", nodeToString($3));
+			emitBinaryOperation("*", result, str, str1);
+			emitMIPSBinaryOp("mult", result, str, str1);
+			// Update the current expression result
+			//$$ = astCreateVar(result);
+			$$ = astCreateBinaryOp("*", astCreateInt($1), $3);
+		}
+	}
+	| ID DIVIDE Expr {
+		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", $1);
+
+		
+
+		// Check if identifiers have been declared
+		if (!found($1, currentScope)) {
+			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", $1, currentScope);
+			semanticCheckPassed = 0;
+		}
+		
+		// see if types are compatible, currently causing segfault cuz nodes
+		// if (!compareTypes($1, $3, currentScope);) {
+		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
+		// 	semanticCheckPassed = 0;
+		// }
+
+
+		// this is some wizard temp register shit
+		if (semanticCheckPassed) {
+			//$$ = astCreateVar($1);
+			$$ = astCreateBinaryOp("/", astCreateVar($1), $3);
+			char* result = generateTempVar();  // Generate a temporary variable for the result
+			emitBinaryOperation("/", result, $1, nodeToString($3));
+			emitMIPSBinaryOp("div", result, $1, nodeToString($3));
+			//$$ = astCreateVar(result);
+			
+		}		
+	}
+	| NUMBER DIVIDE Expr {
+		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", $1);
+		
+		// see if types are compatible, currently causing segfault cuz nodes
+		// if (!compareTypes($1, $3, currentScope);) {
+		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
+		// 	semanticCheckPassed = 0;
+		// }
+
+		if (semanticCheckPassed) {
+			char* result = generateTempVar();  // Generate a temporary variable for the result
+			char* str = (char*)malloc(15);
+			char* str1 = (char*)malloc(15);
+			sprintf(str, "%s", $1);
+			sprintf(str1, "%s", nodeToString($3));
+			emitBinaryOperation("/", result, str, str1);
+			emitMIPSBinaryOp("div", result, str, str1);
+			// Update the current expression result
+			//$$ = astCreateVar(result);
+			$$ = astCreateBinaryOp("/", astCreateInt($1), $3);
 		}
 	}
 ;

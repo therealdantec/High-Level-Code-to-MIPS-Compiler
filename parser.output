@@ -29,9 +29,6 @@ Terminals unused in grammar
     ASS
     WRITE
     REEE
-    MINUS
-    TIMES
-    DIVIDE
     LCB
     RCB
     LSB
@@ -40,29 +37,30 @@ Terminals unused in grammar
 
 Rules useless in grammar
 
-   11 Program: FUNCT Type ID LPRN ParamsList RPRN LCB Code RCB SEMICOLON
+   17 Program: FUNCT Type ID LPRN ParamsList RPRN LCB Code RCB SEMICOLON
 
-   12 Code: Code VarDecl
-   13     | Code Stmt
+   18 Code: Code VarDecl
+   19     | Code Stmt
 
-   14 Type: INT
-   15     | CHAR
-   16     | STRING
-   17     | BOOL
+   20 Type: INT
+   21     | CHAR
+   22     | STRING
+   23     | BOOL
 
-   18 ParamsList: ParamsList COMMA Param
-   19           | Param
+   24 ParamsList: ParamsList COMMA Param
+   25           | Param
+   26           | ε
 
-   20 Param: Type ID
+   27 Param: Type ID
 
-   21 VarDecl: Type ID SEMICOLON
-   22        | Type ID LSB NUMBER RSB
-   23        | STRUC ID LCB VarDecl RCB
+   28 VarDecl: Type ID SEMICOLON
+   29        | Type ID LSB NUMBER RSB
+   30        | STRUC ID LCB VarDecl RCB
 
-   24 Stmt: ID ASS Expr SEMICOLON
-   25     | ID LSB NUMBER RSB ASS Expr SEMICOLON
-   26     | WRITE ID SEMICOLON
-   27     | REEE Expr SEMICOLON
+   31 Stmt: ID ASS Expr SEMICOLON
+   32     | ID LSB NUMBER RSB ASS Expr SEMICOLON
+   33     | WRITE ID SEMICOLON
+   34     | REEE Expr SEMICOLON
 
 
 State 6 conflicts: 1 shift/reduce
@@ -85,6 +83,12 @@ Grammar
     8     | NUMBER
     9     | ID PLUS Expr
    10     | NUMBER PLUS Expr
+   11     | ID MINUS Expr
+   12     | NUMBER MINUS Expr
+   13     | ID TIMES Expr
+   14     | NUMBER TIMES Expr
+   15     | ID DIVIDE Expr
+   16     | NUMBER DIVIDE Expr
 
 
 Terminals, with rules where they appear
@@ -97,8 +101,8 @@ Terminals, with rules where they appear
     BOOL <string> (261)
     STRUC <string> (262)
     FUNCT <string> (263)
-    ID <string> (264) 3 6 9
-    NUMBER <string> (265) 8 10
+    ID <string> (264) 3 6 9 11 13 15
+    NUMBER <string> (265) 8 10 12 14 16
     SEMICOLON <string> (266) 1
     COMMA <string> (267) 4
     UNDERSCORE <string> (268)
@@ -115,9 +119,9 @@ Terminals, with rules where they appear
     WRITE <string> (279)
     REEE <string> (280)
     PLUS <string> (281) 9 10
-    MINUS <string> (282)
-    TIMES <string> (283)
-    DIVIDE <string> (284)
+    MINUS <string> (282) 11 12
+    TIMES <string> (283) 13 14
+    DIVIDE <string> (284) 15 16
     LPRN <string> (285) 3
     RPRN <string> (286) 3
     LCB <string> (287)
@@ -140,8 +144,8 @@ Nonterminals, with rules where they appear
         on left: 4 5
         on right: 3 4
     Expr <ast_node> (40)
-        on left: 6 7 8 9 10
-        on right: 4 5 9 10
+        on left: 6 7 8 9 10 11 12 13 14 15 16
+        on right: 4 5 9 10 11 12 13 14 15 16
 
 
 State 0
@@ -225,9 +229,15 @@ State 8
     3 FunctCall: ID • LPRN CallParamsList RPRN
     6 Expr: ID •
     9     | ID • PLUS Expr
+   11     | ID • MINUS Expr
+   13     | ID • TIMES Expr
+   15     | ID • DIVIDE Expr
 
-    PLUS  shift, and go to state 13
-    LPRN  shift, and go to state 4
+    PLUS    shift, and go to state 13
+    MINUS   shift, and go to state 14
+    TIMES   shift, and go to state 15
+    DIVIDE  shift, and go to state 16
+    LPRN    shift, and go to state 4
 
     $default  reduce using rule 6 (Expr)
 
@@ -236,8 +246,14 @@ State 9
 
     8 Expr: NUMBER •
    10     | NUMBER • PLUS Expr
+   12     | NUMBER • MINUS Expr
+   14     | NUMBER • TIMES Expr
+   16     | NUMBER • DIVIDE Expr
 
-    PLUS  shift, and go to state 14
+    PLUS    shift, and go to state 17
+    MINUS   shift, and go to state 18
+    TIMES   shift, and go to state 19
+    DIVIDE  shift, and go to state 20
 
     $default  reduce using rule 8 (Expr)
 
@@ -254,8 +270,8 @@ State 11
     3 FunctCall: ID LPRN CallParamsList • RPRN
     4 CallParamsList: CallParamsList • COMMA Expr
 
-    COMMA  shift, and go to state 15
-    RPRN   shift, and go to state 16
+    COMMA  shift, and go to state 21
+    RPRN   shift, and go to state 22
 
 
 State 12
@@ -273,10 +289,43 @@ State 13
     NUMBER  shift, and go to state 9
 
     FunctCall  go to state 10
-    Expr       go to state 17
+    Expr       go to state 23
 
 
 State 14
+
+   11 Expr: ID MINUS • Expr
+
+    ID      shift, and go to state 8
+    NUMBER  shift, and go to state 9
+
+    FunctCall  go to state 10
+    Expr       go to state 24
+
+
+State 15
+
+   13 Expr: ID TIMES • Expr
+
+    ID      shift, and go to state 8
+    NUMBER  shift, and go to state 9
+
+    FunctCall  go to state 10
+    Expr       go to state 25
+
+
+State 16
+
+   15 Expr: ID DIVIDE • Expr
+
+    ID      shift, and go to state 8
+    NUMBER  shift, and go to state 9
+
+    FunctCall  go to state 10
+    Expr       go to state 26
+
+
+State 17
 
    10 Expr: NUMBER PLUS • Expr
 
@@ -284,10 +333,43 @@ State 14
     NUMBER  shift, and go to state 9
 
     FunctCall  go to state 10
-    Expr       go to state 18
+    Expr       go to state 27
 
 
-State 15
+State 18
+
+   12 Expr: NUMBER MINUS • Expr
+
+    ID      shift, and go to state 8
+    NUMBER  shift, and go to state 9
+
+    FunctCall  go to state 10
+    Expr       go to state 28
+
+
+State 19
+
+   14 Expr: NUMBER TIMES • Expr
+
+    ID      shift, and go to state 8
+    NUMBER  shift, and go to state 9
+
+    FunctCall  go to state 10
+    Expr       go to state 29
+
+
+State 20
+
+   16 Expr: NUMBER DIVIDE • Expr
+
+    ID      shift, and go to state 8
+    NUMBER  shift, and go to state 9
+
+    FunctCall  go to state 10
+    Expr       go to state 30
+
+
+State 21
 
     4 CallParamsList: CallParamsList COMMA • Expr
 
@@ -295,31 +377,73 @@ State 15
     NUMBER  shift, and go to state 9
 
     FunctCall  go to state 10
-    Expr       go to state 19
+    Expr       go to state 31
 
 
-State 16
+State 22
 
     3 FunctCall: ID LPRN CallParamsList RPRN •
 
     $default  reduce using rule 3 (FunctCall)
 
 
-State 17
+State 23
 
     9 Expr: ID PLUS Expr •
 
     $default  reduce using rule 9 (Expr)
 
 
-State 18
+State 24
+
+   11 Expr: ID MINUS Expr •
+
+    $default  reduce using rule 11 (Expr)
+
+
+State 25
+
+   13 Expr: ID TIMES Expr •
+
+    $default  reduce using rule 13 (Expr)
+
+
+State 26
+
+   15 Expr: ID DIVIDE Expr •
+
+    $default  reduce using rule 15 (Expr)
+
+
+State 27
 
    10 Expr: NUMBER PLUS Expr •
 
     $default  reduce using rule 10 (Expr)
 
 
-State 19
+State 28
+
+   12 Expr: NUMBER MINUS Expr •
+
+    $default  reduce using rule 12 (Expr)
+
+
+State 29
+
+   14 Expr: NUMBER TIMES Expr •
+
+    $default  reduce using rule 14 (Expr)
+
+
+State 30
+
+   16 Expr: NUMBER DIVIDE Expr •
+
+    $default  reduce using rule 16 (Expr)
+
+
+State 31
 
     4 CallParamsList: CallParamsList COMMA Expr •
 

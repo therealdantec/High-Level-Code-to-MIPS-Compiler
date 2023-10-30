@@ -43,8 +43,8 @@ void emitMIPSAssignment(char * id1, char * id2){
 
 }
 
-void emitMIPSBinaryOp(char* xyz, char* id4, char* id3){
-    fprintf(MIPScode, "add %s, %s, %s\n", xyz, id4, id3);
+void emitMIPSBinaryOp(char* operator, char* xyz, char* id4, char* id3){
+    fprintf(MIPScode, "%s %s, %s, %s\n", operator, xyz, id4, id3);
 }
 
 void emitMIPSConstantIntAssignment(char id1[50], char id2[50]){
