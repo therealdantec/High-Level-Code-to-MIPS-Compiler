@@ -1,10 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define MAX_TEMP_VARS 100
+
 // hi
 FILE* IRcode = NULL;
 int numIds;
 int tempCounter = 0; // To generate temporary variable names
+
+struct TempVarAssignment {
+    char varName[100];
+    int isAssigned;
+};
+
+struct TempVarAssignment tempAssignments[MAX_TEMP_VARS];
 
 // Function to initialize IR code file
 void initIRcodeFile() {
@@ -21,8 +31,26 @@ void closeIRcodeFile() {
 
 // Function to generate a unique temporary variable name
 char* generateTempVar() {
-    char tempVarName[15]; // Adjust the size as needed
-    snprintf(tempVarName, sizeof(tempVarName), "T%d", tempCounter++);
+    char tempVarName[100]; // Adjust the size as needed
+    snprintf(tempVarName, sizeof(tempVarName), "$t%d", tempCounter++);
+    return strdup(tempVarName);
+}
+
+char* generateTempVar1(const char* assignedValue) {
+    char tempVarName[100]; // Adjust the size as needed
+    snprintf(tempVarName, sizeof(tempVarName), "$t%d", tempCounter++);
+
+    // Check if the variable is already assigned
+    for (int i = 0; i < tempCounter - 1; i++) {
+        if (tempAssignments[i].isAssigned && strcmp(tempAssignments[i].varName, assignedValue) == 0) {
+            return strdup(tempAssignments[i].varName);
+        }
+    }
+
+    // Store the assignment
+    strncpy(tempAssignments[tempCounter - 1].varName, assignedValue, sizeof(tempAssignments[0].varName));
+    tempAssignments[tempCounter - 1].isAssigned = 1;
+
     return strdup(tempVarName);
 }
 
@@ -57,6 +85,10 @@ void emitLabel(char* label) {
 }
 
 // Function to create IR code for a function name and type
-void function(char* type, char* name){
+void IRfunction(char* type, char* name){
     fprintf(IRcode, "function %s %s\n", type, name);
+}
+
+void callIRfunction(char* name){
+    fprintf(IRcode, "calling function %s\n", name);
 }
