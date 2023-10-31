@@ -48,7 +48,7 @@ Grammar
    19               | ε
 
    20 VarDecl: Type ID SEMICOLON
-   21        | Type ID LSB NUMBER RSB SEMICOLON
+   21        | Type ID LSB Expr RSB SEMICOLON
    22        | STRUC ID LCB VarDecl RCB
 
    23 Stmt: ID ASS Expr SEMICOLON
@@ -80,7 +80,7 @@ Terminals, with rules where they appear
     STRUC <string> (262) 22
     FUNCT <string> (263) 1
     ID <string> (264) 1 8 16 20 21 22 23 24 25 27 30 32 34 36
-    NUMBER <string> (265) 21 24 29 31 33 35 37
+    NUMBER <string> (265) 24 29 31 33 35 37
     SEMICOLON <string> (266) 1 2 20 21 23 24 25 26
     COMMA <string> (267) 13 17
     UNDERSCORE <string> (268)
@@ -141,7 +141,7 @@ Nonterminals, with rules where they appear
         on right: 6
     Expr <ast_node> (46)
         on left: 27 28 29 30 31 32 33 34 35 36 37
-        on right: 17 18 23 24 26 30 31 32 33 34 35 36 37
+        on right: 17 18 21 23 24 26 30 31 32 33 34 35 36 37
 
 
 State 0
@@ -665,7 +665,7 @@ State 53
 State 54
 
    20 VarDecl: Type • ID SEMICOLON
-   21        | Type • ID LSB NUMBER RSB SEMICOLON
+   21        | Type • ID LSB Expr RSB SEMICOLON
 
     ID  shift, and go to state 63
 
@@ -733,7 +733,7 @@ State 62
 State 63
 
    20 VarDecl: Type ID • SEMICOLON
-   21        | Type ID • LSB NUMBER RSB SEMICOLON
+   21        | Type ID • LSB Expr RSB SEMICOLON
 
     SEMICOLON  shift, and go to state 69
     LSB        shift, and go to state 70
@@ -790,9 +790,13 @@ State 69
 
 State 70
 
-   21 VarDecl: Type ID LSB • NUMBER RSB SEMICOLON
+   21 VarDecl: Type ID LSB • Expr RSB SEMICOLON
 
-    NUMBER  shift, and go to state 74
+    ID      shift, and go to state 15
+    NUMBER  shift, and go to state 16
+
+    FunctCall  go to state 17
+    Expr       go to state 74
 
 
 State 71
@@ -818,7 +822,7 @@ State 73
 
 State 74
 
-   21 VarDecl: Type ID LSB NUMBER • RSB SEMICOLON
+   21 VarDecl: Type ID LSB Expr • RSB SEMICOLON
 
     RSB  shift, and go to state 77
 
@@ -843,7 +847,7 @@ State 76
 
 State 77
 
-   21 VarDecl: Type ID LSB NUMBER RSB • SEMICOLON
+   21 VarDecl: Type ID LSB Expr RSB • SEMICOLON
 
     SEMICOLON  shift, and go to state 79
 
@@ -857,7 +861,7 @@ State 78
 
 State 79
 
-   21 VarDecl: Type ID LSB NUMBER RSB SEMICOLON •
+   21 VarDecl: Type ID LSB Expr RSB SEMICOLON •
 
     $default  reduce using rule 21 (VarDecl)
 
