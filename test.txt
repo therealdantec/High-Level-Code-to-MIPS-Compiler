@@ -14,7 +14,26 @@ funct int main() {
 
     num3 = num1 + 1 + num2 + 2 + num1 + 1000;
 
-    write num3;
+    REEE num3;
 };
 
-main();
+funct int main2() {
+    int num1;
+    int num2;
+    int num3;
+    char c1;
+    int array[3];
+
+    num1 = 12;
+    num2 = 2500;
+
+    write num1;
+    write num2;
+
+    num3 = num1 - 1 + num2 * 2 + num1 / 1000;
+
+    REEE num3;
+};
+
+write main();
+write main2();
