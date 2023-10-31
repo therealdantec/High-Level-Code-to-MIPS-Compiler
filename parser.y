@@ -181,9 +181,24 @@ VarDecl:
 		showSymTable();
 	}
 	// ARRAY decvlaration. Automatically initialize all values to zero or null or whatever. So some type checking required.
-	| Type ID LSB NUMBER RSB {
+	| Type ID LSB NUMBER RSB SEMICOLON{
 		printf("\n RECOGNIZED RULE: Array Declaration\n");
-		
+
+		//Semantic check
+		int inSymTab = found($2, currentScope);
+
+		if (inSymTab == 0){
+			addItem($2, "Arr", nodeToString($1), 0, currentScope);
+
+			// Add to AST
+
+		}
+		else {
+			printf("SEMANTIC ERROR: Arr %s is already declared\n", $2);
+		}
+
+		showSymTable();
+
 	}
 	//struct decl
 	| STRUC ID LCB VarDecl RCB {
