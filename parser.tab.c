@@ -555,10 +555,17 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
+<<<<<<< Updated upstream
        0,    55,    55,    60,    64,    68,    77,    81,   103,   111,
      119,   123,   127,   131,   139,   143,   147,   154,   162,   166,
      170,   190,   206,   227,   235,   254,   259,   274,   282,   293,
      302,   307,   336,   358,   387,   409,   438,   460,   489
+=======
+       0,    59,    59,    64,    68,    72,    81,    85,    89,    97,
+     105,   109,   113,   117,   125,   129,   133,   140,   148,   152,
+     156,   176,   192,   213,   222,   241,   246,   261,   269,   280,
+     289,   294,   323,   345,   374,   396,   425,   447,   476
+>>>>>>> Stashed changes
 };
 #endif
 
@@ -1443,7 +1450,11 @@ yyreduce:
     break;
 
   case 26: /* Stmt: WRITE ID SEMICOLON  */
+<<<<<<< Updated upstream
 #line 259 "parser.y"
+=======
+#line 246 "parser.y"
+>>>>>>> Stashed changes
                              {
 		printf("\n RECOGNIZED RULE: WRITE statement\n");
 		
@@ -1462,7 +1473,11 @@ yyreduce:
     break;
 
   case 27: /* Stmt: REEE Expr SEMICOLON  */
+<<<<<<< Updated upstream
 #line 274 "parser.y"
+=======
+#line 261 "parser.y"
+>>>>>>> Stashed changes
                               {
 		(yyval.ast_node) = (yyvsp[-1].ast_node);
 	}
@@ -1470,7 +1485,11 @@ yyreduce:
     break;
 
   case 28: /* Expr: ID  */
+<<<<<<< Updated upstream
 #line 282 "parser.y"
+=======
+#line 269 "parser.y"
+>>>>>>> Stashed changes
            { 
 		printf("\n RECOGNIZED RULE: ID, %s\n", (yyvsp[0].string)); 
 		(yyval.ast_node) = astCreateVar((yyvsp[0].string));
@@ -1481,7 +1500,11 @@ yyreduce:
     break;
 
   case 29: /* Expr: FunctCall  */
+<<<<<<< Updated upstream
 #line 293 "parser.y"
+=======
+#line 280 "parser.y"
+>>>>>>> Stashed changes
                     {
 		printf("\n RECOGNIZED RULE: Function Call\n");
 	}
@@ -1489,7 +1512,11 @@ yyreduce:
     break;
 
   case 30: /* Expr: NUMBER  */
+<<<<<<< Updated upstream
 #line 302 "parser.y"
+=======
+#line 289 "parser.y"
+>>>>>>> Stashed changes
                  { 
 		printf("\n RECOGNIZED RULE: NUMBER, %s\n", (yyvsp[0].string)); 
 		(yyval.ast_node) = astCreateInt((yyvsp[0].string));
@@ -1498,7 +1525,11 @@ yyreduce:
     break;
 
   case 31: /* Expr: ID PLUS Expr  */
+<<<<<<< Updated upstream
 #line 307 "parser.y"
+=======
+#line 294 "parser.y"
+>>>>>>> Stashed changes
                        {
 		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", (yyvsp[-2].string));
 
@@ -1532,7 +1563,11 @@ yyreduce:
     break;
 
   case 32: /* Expr: NUMBER PLUS Expr  */
+<<<<<<< Updated upstream
 #line 336 "parser.y"
+=======
+#line 323 "parser.y"
+>>>>>>> Stashed changes
                            {
 		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", (yyvsp[-2].string));
 		
@@ -1559,7 +1594,11 @@ yyreduce:
     break;
 
   case 33: /* Expr: ID MINUS Expr  */
+<<<<<<< Updated upstream
 #line 358 "parser.y"
+=======
+#line 345 "parser.y"
+>>>>>>> Stashed changes
                         {
 		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", (yyvsp[-2].string));
 
@@ -1593,7 +1632,11 @@ yyreduce:
     break;
 
   case 34: /* Expr: NUMBER MINUS Expr  */
+<<<<<<< Updated upstream
 #line 387 "parser.y"
+=======
+#line 374 "parser.y"
+>>>>>>> Stashed changes
                             {
 		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", (yyvsp[-2].string));
 		
@@ -1620,7 +1663,11 @@ yyreduce:
     break;
 
   case 35: /* Expr: ID TIMES Expr  */
+<<<<<<< Updated upstream
 #line 409 "parser.y"
+=======
+#line 396 "parser.y"
+>>>>>>> Stashed changes
                         {
 		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", (yyvsp[-2].string));
 
@@ -1654,7 +1701,11 @@ yyreduce:
     break;
 
   case 36: /* Expr: NUMBER TIMES Expr  */
+<<<<<<< Updated upstream
 #line 438 "parser.y"
+=======
+#line 425 "parser.y"
+>>>>>>> Stashed changes
                             {
 		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", (yyvsp[-2].string));
 		
@@ -1681,7 +1732,11 @@ yyreduce:
     break;
 
   case 37: /* Expr: ID DIVIDE Expr  */
+<<<<<<< Updated upstream
 #line 460 "parser.y"
+=======
+#line 447 "parser.y"
+>>>>>>> Stashed changes
                          {
 		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", (yyvsp[-2].string));
 
@@ -1715,7 +1770,11 @@ yyreduce:
     break;
 
   case 38: /* Expr: NUMBER DIVIDE Expr  */
+<<<<<<< Updated upstream
 #line 489 "parser.y"
+=======
+#line 476 "parser.y"
+>>>>>>> Stashed changes
                              {
 		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", (yyvsp[-2].string));
 		
@@ -1935,7 +1994,11 @@ yyreturnlab:
   return yyresult;
 }
 
+<<<<<<< Updated upstream
 #line 534 "parser.y"
+=======
+#line 521 "parser.y"
+>>>>>>> Stashed changes
 
 int main(int argc, char**argv)
 {

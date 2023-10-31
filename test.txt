@@ -4,7 +4,7 @@ funct int main() {
     int num2;
     int num3;
     char c1;
-    int array[3];
+    int array[5];
 
     num1 = 12;
     num2 = 2500;
@@ -16,6 +16,5 @@ funct int main() {
 
     write num3;
 };
-
 
 main();
