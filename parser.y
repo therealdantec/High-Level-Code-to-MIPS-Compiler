@@ -43,30 +43,31 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%s", $$); } NUMBER;
 
-%type <ast_node> Program Code Type VarDecl Stmt Expr Param ParamsList FunctCall CallParamsList 
+%type <ast_node> Program Code Type VarDecl Expr Stmt Param ParamsList FunctCall CallParamsList 
 
 %start Program
 
 %%
-
-// Start:
-// 	Program
-// ;
 
 // program, the big kahuna, the whole program in a single node
 Program: 
 	// function definition
 	FUNCT Type ID LPRN ParamsList RPRN LCB Code RCB SEMICOLON { 
 		printf("RULE Program: FunctDeclaration\n");
-		$$ = astCreateFunct($4, nodeToString($3), $6, $9);
-		function(nodeToString($2), nodeToString($3));
+		$$ = astCreateFunct($3, nodeToString($2), $5, $8);
+		function(nodeToString($2), $3);
 	}
 	| FunctCall SEMICOLON {
 		printf("RULE Program: FunctCall");
 		$$ = $1;
 	}
 	| Program Program {
+		printf("RULE Program: Program Program");
 		$$ = $1;
+	}
+	| {
+		printf("RULE Program: EMPTY");
+		$$ = NULL;
 	}
 ;
 
@@ -74,21 +75,35 @@ Program:
 // the types of pieces of code
 Code:
 	Code VarDecl {
-		printf("RULE PieceOfCode: VarDeclList\n");
+		printf("RULE Code: VarDecl\n");
 		$$ = $1;
 	}
 	| Code Stmt {
 		printf("RULE Code: Stmt\n");
 		$$ = $1;
 	}
-	| VarDecl {
-        printf("RULE PieceOfCode: VarDeclList\n");
-		$$ = $1;
-    }
-    | Stmt {
-        printf("RULE Code: Stmt\n");
-		$$ = $1;
-    }
+	// | Code ID ASS Expr SEMICOLON {
+	// 	printf("\n RULE ID ASS Expr SEMICOLON\n");
+	// 	// Semantic check
+	// 	// TODO implement type checking
+	// 	if (found($2, currentScope)) {
+	// 		$$ = astCreateVar($2);  
+
+	// 		char* result = generateTempVar();
+	// 		emitAssignment(result, nodeToString($4));
+
+	// 		// char* dante = generateTempReg();
+	// 		emitMIPSAssignment(result, nodeToString($4));
+	// 	} 
+	// 	else {
+	// 		printf("SEMANTIC ERROR: Var %s has not been declared\n", $2);
+	// 	}
+		
+	// }
+	| {
+		printf("RULE Code: EMPTY\n");
+		$$ = NULL;
+	}
 ;
 
 // function call
@@ -129,7 +144,10 @@ ParamsList:
 		printf("RULE ParamsList: Param\n");
 		$$ = $1;
 	}
-	| 
+	| {
+		printf("RULE ParamsList: EMPTY\n");
+		$$ = NULL;
+	}
 ;
 
 Param: 
@@ -148,6 +166,10 @@ CallParamsList:
 	| Expr {
 		printf("RULE CallParamsList: Expr\n");
 		$$ = $1;
+	}
+	| {
+		printf("RULE CallParamsList: EMPTY\n");
+		$$ = NULL;
 	}
 ;
 
@@ -181,7 +203,7 @@ VarDecl:
 		showSymTable();
 	}
 	// ARRAY decvlaration. Automatically initialize all values to zero or null or whatever. So some type checking required.
-	| Type ID LSB NUMBER RSB SEMICOLON{
+	| Type ID LSB Expr RSB SEMICOLON {
 		printf("\n RECOGNIZED RULE: Array Declaration\n");
 
 		//Semantic check
@@ -190,7 +212,8 @@ VarDecl:
 		if (inSymTab == 0){
 			addItem($2, "Arr", nodeToString($1), 0, currentScope);
 
-			// Add to AST
+			// Add to AST. Null for now
+			$$ = NULL;
 
 		}
 		else {
@@ -209,9 +232,8 @@ VarDecl:
 
 
 Stmt:
-	// x = some math or something ;
 	ID ASS Expr SEMICOLON {
-		printf("\n RECOGNIZED RULE: x = some math or something\n");
+		printf("\n RULE ID ASS Expr SEMICOLON\n");
 		// Semantic check
 		// TODO implement type checking
 		if (found($1, currentScope)) {
@@ -231,6 +253,7 @@ Stmt:
 	// array assignment
 	| ID LSB NUMBER RSB ASS Expr SEMICOLON {
 		printf("\n RECOGNIZED RULE: ARRAY ASSIGNMENT\n");
+		$$ = NULL;
 	}
 	// write x;
 	| WRITE ID SEMICOLON {
@@ -241,6 +264,7 @@ Stmt:
 			emitWriteId($2);
 			char* write = generateTempAddr();
 			emitMIPSWriteId(write, $2);
+			$$ = astCreateWrite($2);
 		}
 		else {
 			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", $2, currentScope);
@@ -276,8 +300,8 @@ Expr:
 	// }
 	// a number literal for use in a statement
 	| NUMBER { 
-		$$ = astCreateInt($1);
 		printf("\n RECOGNIZED RULE: NUMBER, %s\n", $1); 
+		$$ = astCreateInt($1);
 	}
 	// x + some math or something
 	| ID PLUS Expr {
@@ -511,9 +535,9 @@ Expr:
 int main(int argc, char**argv)
 {
 
-	#ifdef YYDEBUG
-		yydebug = 1;
-	#endif
+	// #ifdef YYDEBUG
+	// 	yydebug = 1;
+	// #endif
 
 	printf("\n\n##### COMPILER STARTED #####\n\n");
 	
