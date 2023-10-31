@@ -104,8 +104,7 @@ ws          {delim}+
 {NUMBER}	{
                         words++; 
                         chars += strlen(yytext);
-                        printf("%s : NUMBER\n",yytext);
-                        yylval.number = atoi(strdup(yytext)); 
+                        printf("%s : NUMBER\n",yytext); 
                         return NUMBER;
                 }
 			

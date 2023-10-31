@@ -43,15 +43,11 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%s", $$); } NUMBER;
 
-%type <ast_node> Program Code Type VarDecl Stmt Expr Param ParamsList FunctCall CallParamsList 
+%type <ast_node> Program Code Type VarDecl Expr Stmt Param ParamsList FunctCall CallParamsList 
 
 %start Program
 
 %%
-
-// Start:
-// 	Program
-// ;
 
 // program, the big kahuna, the whole program in a single node
 Program: 
@@ -86,6 +82,24 @@ Code:
 		printf("RULE Code: Stmt\n");
 		$$ = $1;
 	}
+	// | Code ID ASS Expr SEMICOLON {
+	// 	printf("\n RULE ID ASS Expr SEMICOLON\n");
+	// 	// Semantic check
+	// 	// TODO implement type checking
+	// 	if (found($2, currentScope)) {
+	// 		$$ = astCreateVar($2);  
+
+	// 		char* result = generateTempVar();
+	// 		emitAssignment(result, nodeToString($4));
+
+	// 		// char* dante = generateTempReg();
+	// 		emitMIPSAssignment(result, nodeToString($4));
+	// 	} 
+	// 	else {
+	// 		printf("SEMANTIC ERROR: Var %s has not been declared\n", $2);
+	// 	}
+		
+	// }
 	| {
 		printf("RULE Code: EMPTY\n");
 		$$ = NULL;
@@ -189,7 +203,7 @@ VarDecl:
 		showSymTable();
 	}
 	// ARRAY decvlaration. Automatically initialize all values to zero or null or whatever. So some type checking required.
-	| Type ID LSB NUMBER RSB SEMICOLON{
+	| Type ID LSB Expr RSB SEMICOLON {
 		printf("\n RECOGNIZED RULE: Array Declaration\n");
 
 		//Semantic check
@@ -218,7 +232,6 @@ VarDecl:
 
 
 Stmt:
-	// x = some math or something ;
 	ID ASS Expr SEMICOLON {
 		printf("\n RULE ID ASS Expr SEMICOLON\n");
 		// Semantic check
@@ -287,8 +300,8 @@ Expr:
 	// }
 	// a number literal for use in a statement
 	| NUMBER { 
-		$$ = astCreateInt($1);
 		printf("\n RECOGNIZED RULE: NUMBER, %s\n", $1); 
+		$$ = astCreateInt($1);
 	}
 	// x + some math or something
 	| ID PLUS Expr {
