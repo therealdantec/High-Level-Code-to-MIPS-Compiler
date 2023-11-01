@@ -94,5 +94,10 @@ void callIRfunction(char* name){
 }
 
 void IRarray(char* name, char* type, char* size){
-    fprintf("DECLARE ARRAY %s, %s, %s", name, type, size);
+    fprintf(IRcode, "DECLARE ARRAY: Name %s, Type %s, Size %s\n", name, type, size);
+}
+
+void IRstruct(char* name, char* tings){
+    fprintf(IRcode, "STRUCT %s { \n%s\n}\n", name, tings);
+
 }

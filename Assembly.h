@@ -14,6 +14,8 @@ void  initAssemblyFile(){
 
     MIPScode = fopen("MIPScode.asm", "a");
     
+    fprintf(MIPScode, ".data\n");
+    // Add .data tings
     fprintf(MIPScode, ".text\n");
     fprintf(MIPScode, "main:\n");
     fprintf(MIPScode, "# -----------------------\n");
@@ -48,7 +50,7 @@ void emitMIPSBinaryOp(char* op, char* xyz, char* id4, char* id3){
 }
 
 void emitMIPSFunction(char* name){
-    fprintf(MIPScode, "Function %s\n", name);
+    fprintf(MIPScode, "\nFunction %s:\n", name);
 }
 
 void emitMIPSjal(){
@@ -76,7 +78,7 @@ void emitMIPSWriteId(char* regi, char * id){
 }
 
 void emitEndOfAssemblyCode(){
-    fprintf(MIPScode, "# -----------------\n");
+    fprintf(MIPScode, "\n# -----------------\n");
     fprintf(MIPScode, "#  Done, terminate program.\n\n");
     fprintf(MIPScode, "li $v0,1   # call code for terminate\n");
     fprintf(MIPScode, "syscall      # system call (terminate)\n");
@@ -84,3 +86,7 @@ void emitEndOfAssemblyCode(){
     fprintf(MIPScode, "syscall      # system call (terminate)\n");
     fprintf(MIPScode, ".end main\n");
 }
+
+// void MIPSdata(){
+    
+// }

@@ -207,7 +207,7 @@ VarDecl:
 		if (inSymTab == 0){
 			addItem($2, "Arr", nodeToString($1), $4, currentScope);
 
-			//IRarray($2, nodeToString($1), nodeToString($4));
+			IRarray($2, nodeToString($1), nodeToString($4));
 
 			// Add to AST. Null for now
 			$$ = NULL;
@@ -223,7 +223,7 @@ VarDecl:
 	//struct decl
 	| STRUC ID LCB VarDecl RCB {
 		printf("\n RECOGNIZED RULE: Struct Declaration\n");
-		
+		IRstruct($2, $4);
 	}
 ;
 
