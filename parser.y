@@ -205,7 +205,9 @@ VarDecl:
 		int inSymTab = found($2, currentScope);
 
 		if (inSymTab == 0){
-			addItem($2, "Arr", nodeToString($1), 0, currentScope);
+			addItem($2, "Arr", nodeToString($1), $4, currentScope);
+
+			//IRarray($2, nodeToString($1), nodeToString($4));
 
 			// Add to AST. Null for now
 			$$ = NULL;
@@ -237,7 +239,6 @@ Stmt:
 			char* result = generateTempVar();
 			emitAssignment(result, nodeToString($3));
 
-			// char* dante = generateTempReg();
 			emitMIPSAssignment(result, nodeToString($3));
 		} 
 		else {
@@ -279,8 +280,8 @@ Expr:
 	ID { 
 		printf("\n RECOGNIZED RULE: ID, %s\n", $1); 
 		$$ = astCreateVar($1);
-		char* result = generateTempVar();
-		emitAssignment(result, $1);
+		// char* result = generateTempVar();
+		// emitAssignment(result, $1);
 	}
 	// array variable
 	| ID LSB NUMBER RSB {
@@ -326,7 +327,7 @@ Expr:
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			emitBinaryOperation("+", result, $1, nodeToString($3));
 			emitMIPSBinaryOp("add", result, $1, nodeToString($3));
-			//$$ = astCreateVar(result);
+			$$ = astCreateVar(result);
 			
 		}		
 	}
@@ -348,7 +349,7 @@ Expr:
 			emitBinaryOperation("+", result, str, str1);
 			emitMIPSBinaryOp("add", result, str, str1);
 			// Update the current expression result
-			//$$ = astCreateVar(result);
+			$$ = astCreateVar(result);
 			$$ = astCreateBinaryOp("+", astCreateInt($1), $3);
 		}
 	}
