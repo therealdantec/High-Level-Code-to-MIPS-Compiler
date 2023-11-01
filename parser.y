@@ -222,7 +222,7 @@ Stmt:
 		if (found($1, currentScope)) {
 			$$ = astCreateVar($1);  
 
-			char* result = generateTempVar($1);
+			char* result = generateTempVar();
 			emitAssignment(result, nodeToString($3));
 
 			// char* dante = generateTempReg();
@@ -237,7 +237,7 @@ Stmt:
 	| ID LSB NUMBER RSB ASS Expr SEMICOLON {
 		printf("\n RECOGNIZED RULE: ARRAY ASSIGNMENT\n");
 		char* arrayRef;
-		sprintf(arrayRef, "%s[%s]", $1, $3)
+		sprintf(arrayRef, "%s[%s]", $1, $3);
 		$$ = astCreateVar(arrayRef);
 	}
 	// write x;
@@ -267,7 +267,7 @@ Expr:
 	ID { 
 		printf("\n RECOGNIZED RULE: ID, %s\n", $1); 
 		$$ = astCreateVar($1);
-		char* result = generateTempVar($1);
+		char* result = generateTempVar();
 		emitAssignment(result, $1);
 	}
 	// array variable
@@ -312,9 +312,8 @@ Expr:
 			//$$ = astCreateVar($1);
 			$$ = astCreateBinaryOp("+", astCreateVar($1), $3);
 			char* result = generateTempVar();  // Generate a temporary variable for the result
-			char* result1 = generateTempVar1($1);
-			emitBinaryOperation("+", result, result1, nodeToString($3));
-			emitMIPSBinaryOp("add", result, result1, nodeToString($3));
+			emitBinaryOperation("+", result, $1, nodeToString($3));
+			emitMIPSBinaryOp("add", result, $1, nodeToString($3));
 			//$$ = astCreateVar(result);
 			
 		}		
@@ -330,11 +329,10 @@ Expr:
 
 		if (semanticCheckPassed) {
 			char* result = generateTempVar();  // Generate a temporary variable for the result
-			char* result1 = generateTempVar1($3)
 			char* str = (char*)malloc(15);
 			char* str1 = (char*)malloc(15);
 			sprintf(str, "%s", $1);
-			sprintf(str1, "%s", result1);
+			sprintf(str1, "%s", nodeToString($3));
 			emitBinaryOperation("+", result, str, str1);
 			emitMIPSBinaryOp("add", result, str, str1);
 			// Update the current expression result
