@@ -144,6 +144,14 @@ node* astCreateWrite(char* id) {
     return new_node;
 };
 
+// Function to create a return statement AST node
+node* astCreateReee(char* value) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "REEE";
+    new_node->data.value = value;
+    return new_node;
+}
+
 // make a string out of the node
 char* nodeToString(node* n) {
     if (strcmp(n->type, "INT_LITERAL") == 0)    return n->data.value;

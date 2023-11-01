@@ -39,6 +39,7 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %token <string> WRITE REEE
 %token <string> PLUS MINUS TIMES DIVIDE
 %token <string> LPRN RPRN LCB RCB LSB RSB
+%type <string> DeclareFunct
 
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%s", $$); } NUMBER;
@@ -52,10 +53,13 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 // program, the big kahuna, the whole program in a single node
 Program: 
 	// function definition
-	FUNCT Type ID LPRN ParamsList RPRN LCB Code RCB SEMICOLON { 
-		printf("RULE Program: FunctDeclaration\n");
-		$$ = astCreateFunct($3, nodeToString($2), $5, $8);
-		IRfunction(nodeToString($2), $3);
+	// FUNCT Type ID LPRN ParamsList RPRN LCB Code RCB SEMICOLON
+	DeclareFunct Code RCB SEMICOLON { 
+		printf("RULE Program: Function\n");
+		// $$ = astCreateFunct($3, nodeToString($2), $5, $8);
+		// IRfunction(nodeToString($2), $3);
+		// emitMIPSFunction($3);
+		emitMIPSjal();
 	}
 	| FunctCall SEMICOLON {
 		printf("RULE Program: FunctCall\n");
@@ -71,6 +75,14 @@ Program:
 	}
 ;
 
+DeclareFunct:
+	FUNCT Type ID LPRN ParamsList RPRN LCB {
+		printf("RULE Function: Function Declaration");
+		IRfunction(nodeToString($2), $3);
+		emitMIPSFunction($3);
+		
+	}
+;
 
 // the types of pieces of code
 Code:
@@ -257,7 +269,7 @@ Stmt:
 	}
 	// return keyword returns node* to expr value
 	| REEE Expr SEMICOLON {
-		$$ = $2;
+		$$ = astCreateReee(nodeToString($2));
 	}
 ;
 

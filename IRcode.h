@@ -36,23 +36,23 @@ char* generateTempVar() {
     return strdup(tempVarName);
 }
 
-char* generateTempVar1(const char* assignedValue) {
-    char tempVarName[100]; // Adjust the size as needed
-    snprintf(tempVarName, sizeof(tempVarName), "$t%d", tempCounter++);
+// char* generateTempVar1(const char* assignedValue) {
+//     char tempVarName[100]; // Adjust the size as needed
+//     snprintf(tempVarName, sizeof(tempVarName), "$t%d", tempCounter++);
 
-    // Check if the variable is already assigned
-    for (int i = 0; i < tempCounter - 1; i++) {
-        if (tempAssignments[i].isAssigned && strcmp(tempAssignments[i].varName, assignedValue) == 0) {
-            return strdup(tempAssignments[i].varName);
-        }
-    }
+//     // Check if the variable is already assigned
+//     for (int i = 0; i < tempCounter - 1; i++) {
+//         if (tempAssignments[i].isAssigned && strcmp(tempAssignments[i].varName, assignedValue) == 0) {
+//             return strdup(tempAssignments[i].varName);
+//         }
+//     }
 
-    // Store the assignment
-    strncpy(tempAssignments[tempCounter - 1].varName, assignedValue, sizeof(tempAssignments[0].varName));
-    tempAssignments[tempCounter - 1].isAssigned = 1;
+//     // Store the assignment
+//     strncpy(tempAssignments[tempCounter - 1].varName, assignedValue, sizeof(tempAssignments[0].varName));
+//     tempAssignments[tempCounter - 1].isAssigned = 1;
 
-    return strdup(tempVarName);
-}
+//     return strdup(tempVarName);
+// }
 
 // Function to emit binary operation with arbitrary number of IDs
 void emitBinaryOperation(char* op, char* reg, char* id1, char* id2) {
@@ -86,9 +86,9 @@ void emitLabel(char* label) {
 
 // Function to create IR code for a function name and type
 void IRfunction(char* type, char* name){
-    fprintf(IRcode, "function %s %s\n", type, name);
+    fprintf(IRcode, "Function: %s %s\n", type, name);
 }
 
 void callIRfunction(char* name){
-    fprintf(IRcode, "calling function %s\n", name);
+    fprintf(IRcode, "Calling Function %s\n", name);
 }
