@@ -36,7 +36,7 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %token <string> LT GT 
 %token <string> LTE GTE NE AND OR EQ
 %token <string> ASS
-%token <string> WRITE REEE
+%token <string> WRITE REEE IF ELSE SWITCH CASE
 %token <string> PLUS MINUS TIMES DIVIDE
 %token <string> LPRN RPRN LCB RCB LSB RSB
 %type <string> DeclareFunct
@@ -227,6 +227,23 @@ VarDecl:
 	}
 ;
 
+SwitchBlock:
+	SwitchBlock CASE Expr LCB Code RCB {
+		$$ = NULL;
+	}
+	| {
+		$$ = NULL;
+	}
+;
+
+ElseBlock:
+	ELSE LCB Code RCB {
+		$$ = NULL;
+	}
+	| {
+		$$ = NULL;
+	}
+;
 
 Stmt:
 	ID ASS Expr SEMICOLON {
@@ -272,7 +289,16 @@ Stmt:
 	| REEE Expr SEMICOLON {
 		$$ = astCreateReee(nodeToString($2));
 	}
+	// if statement
+	| IF LPRN BoolExpr RPRN LCB Code RCB ElseBlock {
+		$$ = NULL;
+	}
+	// switch statment
+	| SWITCH LPRN Expr RPRN LCB SwitchBlock Code RCB {
+		$$ = NULL;
+	}
 ;
+
 
 // some math or somethingdd
 Expr:	
@@ -505,6 +531,34 @@ Expr:
 			//$$ = astCreateVar(result);
 			$$ = astCreateBinaryOp("/", astCreateInt($1), $3);
 		}
+	}
+;
+
+//LT GT LTE GTE NE AND OR EQ 
+BoolExpr:
+	Expr LT Expr {
+		$$ = NULL;
+	}
+	| Expr GT Expr{
+		$$ = NULL;
+	}
+	| Expr LTE Expr{
+		$$ = NULL;
+	}
+	| Expr GTE Expr{
+		$$ = NULL;
+	}
+	| Expr NE Expr{
+		$$ = NULL;
+	}
+	| Expr EQ Expr{
+		$$ = NULL;
+	}
+	| BoolExpr AND BoolExpr{
+		$$ = NULL;
+	}
+	| BoolExpr OR BoolExpr{
+		$$ = NULL;
 	}
 ;
 
