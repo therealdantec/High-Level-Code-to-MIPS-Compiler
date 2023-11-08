@@ -205,7 +205,7 @@ VarDecl:
 		int inSymTab = found($2, currentScope);
 
 		if (inSymTab == 0){
-			addItem($2, "Arr", nodeToString($1), $4, currentScope);
+			addItem($2, "Arr", nodeToString($1), atoi(nodeToString($4)), currentScope);
 
 			IRarray($2, nodeToString($1), nodeToString($4));
 
@@ -223,7 +223,7 @@ VarDecl:
 	//struct decl
 	| STRUC ID LCB VarDecl RCB {
 		printf("\n RECOGNIZED RULE: Struct Declaration\n");
-		IRstruct($2, $4);
+		IRstruct($2, nodeToString($4));
 	}
 ;
 
