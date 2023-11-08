@@ -94,6 +94,34 @@ ws          {delim}+
 			return REEE;
 		}
 
+"if"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return IF;
+		}
+
+"else"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return ELSE;
+		}
+
+"switch"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return SWITCH;
+		}
+
+"case"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return CASE;
+		}
+
 {ID}	{words++; 
                           chars += strlen(yytext);
 			  printf("%s : IDENTIFIER\n",yytext);

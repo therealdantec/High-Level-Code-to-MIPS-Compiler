@@ -36,7 +36,7 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %token <string> LT GT 
 %token <string> LTE GTE NE AND OR EQ
 %token <string> ASS
-%token <string> WRITE REEE
+%token <string> WRITE REEE IF ELSE SWITCH CASE
 %token <string> PLUS MINUS TIMES DIVIDE
 %token <string> LPRN RPRN LCB RCB LSB RSB
 %type <string> DeclareFunct
@@ -205,7 +205,7 @@ VarDecl:
 		int inSymTab = found($2, currentScope);
 
 		if (inSymTab == 0){
-			addItem($2, "Arr", nodeToString($1), $4, currentScope);
+			addItem($2, "Arr", nodeToString($1), atoi(nodeToString($4)), currentScope);
 
 			IRarray($2, nodeToString($1), nodeToString($4));
 
@@ -223,10 +223,27 @@ VarDecl:
 	//struct decl
 	| STRUC ID LCB VarDecl RCB {
 		printf("\n RECOGNIZED RULE: Struct Declaration\n");
-		IRstruct($2, $4);
+		IRstruct($2, nodeToString($4));
 	}
 ;
 
+SwitchBlock:
+	SwitchBlock CASE Expr LCB Code RCB {
+		$$ = NULL;
+	}
+	| {
+		$$ = NULL;
+	}
+;
+
+ElseBlock:
+	ELSE LCB Code RCB {
+		$$ = NULL;
+	}
+	| {
+		$$ = NULL;
+	}
+;
 
 Stmt:
 	ID ASS Expr SEMICOLON {
@@ -272,9 +289,18 @@ Stmt:
 	| REEE Expr SEMICOLON {
 		$$ = astCreateReee(nodeToString($2));
 	}
+	// if statement
+	| IF LPRN BoolExpr RPRN LCB Code RCB ElseBlock {
+		$$ = NULL;
+	}
+	// switch statment
+	| SWITCH LPRN Expr RPRN LCB SwitchBlock Code RCB {
+		$$ = NULL;
+	}
 ;
 
-// some math or something
+
+// some math or somethingdd
 Expr:	
 	// just a variable value for use in a statment
 	ID { 
@@ -505,6 +531,34 @@ Expr:
 			//$$ = astCreateVar(result);
 			$$ = astCreateBinaryOp("/", astCreateInt($1), $3);
 		}
+	}
+;
+
+//LT GT LTE GTE NE AND OR EQ 
+BoolExpr:
+	Expr LT Expr {
+		$$ = NULL;
+	}
+	| Expr GT Expr{
+		$$ = NULL;
+	}
+	| Expr LTE Expr{
+		$$ = NULL;
+	}
+	| Expr GTE Expr{
+		$$ = NULL;
+	}
+	| Expr NE Expr{
+		$$ = NULL;
+	}
+	| Expr EQ Expr{
+		$$ = NULL;
+	}
+	| BoolExpr AND BoolExpr{
+		$$ = NULL;
+	}
+	| BoolExpr OR BoolExpr{
+		$$ = NULL;
 	}
 ;
 
