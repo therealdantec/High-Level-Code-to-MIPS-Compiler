@@ -39,11 +39,12 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %token <string> WRITE REEE
 %token <string> PLUS MINUS TIMES DIVIDE
 %token <string> LPRN RPRN LCB RCB LSB RSB
+%type <string> DeclareFunct
 
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%s", $$); } NUMBER;
 
-%type <ast_node> Program Code Type VarDecl Expr Stmt Param ParamsList FunctCall CallParamsList 
+%type <ast_node> Program Code Type VarDecl Expr Stmt Param ParamsList FunctCall CallParamsList StrucAccess
 
 %start Program
 
@@ -52,25 +53,36 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 // program, the big kahuna, the whole program in a single node
 Program: 
 	// function definition
-	FUNCT Type ID LPRN ParamsList RPRN LCB Code RCB SEMICOLON { 
-		printf("RULE Program: FunctDeclaration\n");
-		$$ = astCreateFunct($3, nodeToString($2), $5, $8);
-		function(nodeToString($2), $3);
+	// FUNCT Type ID LPRN ParamsList RPRN LCB Code RCB SEMICOLON
+	DeclareFunct Code RCB SEMICOLON { 
+		printf("RULE Program: Function\n");
+		// $$ = astCreateFunct($3, nodeToString($2), $5, $8);
+		// IRfunction(nodeToString($2), $3);
+		// emitMIPSFunction($3);
+		emitMIPSjal();
 	}
 	| FunctCall SEMICOLON {
-		printf("RULE Program: FunctCall");
+		printf("RULE Program: FunctCall\n");
 		$$ = $1;
 	}
 	| Program Program {
-		printf("RULE Program: Program Program");
+		printf("RULE Program: Program Program\n");
 		$$ = $1;
 	}
 	| {
-		printf("RULE Program: EMPTY");
+		printf("RULE Program: EMPTY\n");
 		$$ = NULL;
 	}
 ;
 
+DeclareFunct:
+	FUNCT Type ID LPRN ParamsList RPRN LCB {
+		printf("RULE Function: Function Declaration");
+		IRfunction(nodeToString($2), $3);
+		emitMIPSFunction($3);
+		
+	}
+;
 
 // the types of pieces of code
 Code:
@@ -82,24 +94,6 @@ Code:
 		printf("RULE Code: Stmt\n");
 		$$ = $1;
 	}
-	// | Code ID ASS Expr SEMICOLON {
-	// 	printf("\n RULE ID ASS Expr SEMICOLON\n");
-	// 	// Semantic check
-	// 	// TODO implement type checking
-	// 	if (found($2, currentScope)) {
-	// 		$$ = astCreateVar($2);  
-
-	// 		char* result = generateTempVar();
-	// 		emitAssignment(result, nodeToString($4));
-
-	// 		// char* dante = generateTempReg();
-	// 		emitMIPSAssignment(result, nodeToString($4));
-	// 	} 
-	// 	else {
-	// 		printf("SEMANTIC ERROR: Var %s has not been declared\n", $2);
-	// 	}
-		
-	// }
 	| {
 		printf("RULE Code: EMPTY\n");
 		$$ = NULL;
@@ -110,6 +104,7 @@ Code:
 FunctCall:
 	ID LPRN CallParamsList RPRN {
 		printf("RULE RECOGNIZED: FunctCall\n");
+		callIRfunction($1);
 		$$ = $3;
 	}
 ;
@@ -174,14 +169,14 @@ CallParamsList:
 ;
 
 // // struc access
-// StrucAccess:
-// 	StrucAccess PERIOD ID {
-// 		printf("RULE StructAccess: StrucAccess PERIOD ID\n");
-// 	}
-// 	| ID PERIOD ID {
-// 		printf("RULE StructAccess: ID PERIOD ID\n");
-// 	}
-// ;
+StrucAccess:
+	StrucAccess PERIOD ID {
+		printf("RULE StructAccess: StrucAccess PERIOD ID\n");
+	}
+	| ID PERIOD ID {
+		printf("RULE StructAccess: ID PERIOD ID\n");
+	}
+;
 
 
 
@@ -210,7 +205,9 @@ VarDecl:
 		int inSymTab = found($2, currentScope);
 
 		if (inSymTab == 0){
-			addItem($2, "Arr", nodeToString($1), 0, currentScope);
+			addItem($2, "Arr", nodeToString($1), $4, currentScope);
+
+			IRarray($2, nodeToString($1), nodeToString($4));
 
 			// Add to AST. Null for now
 			$$ = NULL;
@@ -226,7 +223,7 @@ VarDecl:
 	//struct decl
 	| STRUC ID LCB VarDecl RCB {
 		printf("\n RECOGNIZED RULE: Struct Declaration\n");
-		
+		IRstruct($2, $4);
 	}
 ;
 
@@ -242,7 +239,6 @@ Stmt:
 			char* result = generateTempVar();
 			emitAssignment(result, nodeToString($3));
 
-			// char* dante = generateTempReg();
 			emitMIPSAssignment(result, nodeToString($3));
 		} 
 		else {
@@ -253,7 +249,9 @@ Stmt:
 	// array assignment
 	| ID LSB NUMBER RSB ASS Expr SEMICOLON {
 		printf("\n RECOGNIZED RULE: ARRAY ASSIGNMENT\n");
-		$$ = NULL;
+		char* arrayRef;
+		sprintf(arrayRef, "%s[%s]", $1, $3);
+		$$ = astCreateVar(arrayRef);
 	}
 	// write x;
 	| WRITE ID SEMICOLON {
@@ -272,7 +270,7 @@ Stmt:
 	}
 	// return keyword returns node* to expr value
 	| REEE Expr SEMICOLON {
-		$$ = $2;
+		$$ = astCreateReee(nodeToString($2));
 	}
 ;
 
@@ -282,22 +280,22 @@ Expr:
 	ID { 
 		printf("\n RECOGNIZED RULE: ID, %s\n", $1); 
 		$$ = astCreateVar($1);
-		char* result = generateTempVar();
-		emitAssignment(result, $1);
+		// char* result = generateTempVar();
+		// emitAssignment(result, $1);
 	}
-	// // array variable
-	// | ID LSB NUMBER RSB {
-	// 	printf("\n RECOGNIZED RULE: Array Variable\n");
-	// }
+	// array variable
+	| ID LSB NUMBER RSB {
+		printf("\n RECOGNIZED RULE: Array Variable\n");
+	}
 	// function call
 	| FunctCall {
 		printf("\n RECOGNIZED RULE: Function Call\n");
 	}
 	// struc access. The period is the access operator
 	// but how to nested strucs?
-	// | StrucAccess {
-	// 	printf("\n RECOGNIZED RULE: Struct Access\n");
-	// }
+	| StrucAccess {
+		printf("\n RECOGNIZED RULE: Struct Access\n");
+	}
 	// a number literal for use in a statement
 	| NUMBER { 
 		printf("\n RECOGNIZED RULE: NUMBER, %s\n", $1); 
@@ -329,7 +327,7 @@ Expr:
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			emitBinaryOperation("+", result, $1, nodeToString($3));
 			emitMIPSBinaryOp("add", result, $1, nodeToString($3));
-			//$$ = astCreateVar(result);
+			$$ = astCreateVar(result);
 			
 		}		
 	}
@@ -351,7 +349,7 @@ Expr:
 			emitBinaryOperation("+", result, str, str1);
 			emitMIPSBinaryOp("add", result, str, str1);
 			// Update the current expression result
-			//$$ = astCreateVar(result);
+			$$ = astCreateVar(result);
 			$$ = astCreateBinaryOp("+", astCreateInt($1), $3);
 		}
 	}

@@ -4,7 +4,7 @@ funct int main() {
     int num2;
     int num3;
     char c1;
-    int array[3];
+    int array[5];
 
     num1 = 12;
     num2 = 2500;
@@ -17,5 +17,23 @@ funct int main() {
     write num3;
 };
 
+funct int main2() {
+    int num4;
+    int num5;
+    int num6;
+    char c2;
+    int array1[3];
+
+    num4 = 12;
+    num5 = 2500;
+
+    write num4;
+    write num5;
+
+    num6 = num4 - 1 + num5 * 2 + num4 / 1000;
+
+    write num6;
+};
 
 main();
+main2();

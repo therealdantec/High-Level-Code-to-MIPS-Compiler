@@ -9,3 +9,4 @@ Need array node
 
 Symtab
 - keeps track of scope, functions and they're paramters. 
+
