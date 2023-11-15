@@ -129,14 +129,14 @@ ws          {delim}+
 			return WHILE;
 		}
 
-"REPEAT"	{words++; 
+"repeat"	{words++; 
                         chars += strlen(yytext);
 			printf("%s : KEYWORD\n", yytext);
 			yylval.string = strdup(yytext); 
 			return REPEAT;
 		}
 
-"UNTIL"	{words++; 
+"until"	{words++; 
                         chars += strlen(yytext);
 			printf("%s : KEYWORD\n", yytext);
 			yylval.string = strdup(yytext); 

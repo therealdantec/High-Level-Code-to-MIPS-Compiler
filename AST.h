@@ -37,7 +37,11 @@ typedef struct node {
             char* id;
             struct node** vars;
         } struc;
-        
+        struct { // for BOOL_EXPR
+            char* op;
+            struct node* left;
+            struct node* right;
+        } bool_expr;
     } data;  
 } node;
 
@@ -150,6 +154,15 @@ node* astCreateReee(char* value) {
     node* new_node = (node*)malloc(sizeof(node));
     new_node->type = "REEE";
     new_node->data.value = value;
+    return new_node;
+}
+
+node* astCreateBoolExpr(char* op, node* left, node* right) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "BOOL_EXPR";
+    new_node->data.bool_expr.op = op;
+    new_node->data.bool_expr.left = left;
+    new_node->data.bool_expr.right = right;
     return new_node;
 }
 

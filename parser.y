@@ -229,18 +229,22 @@ VarDecl:
 
 SwitchBlock:
 	SwitchBlock CASE Expr LCB Code RCB {
+		printf("\n RECOGNIZED RULE: SwitchBlock: SwitchBlock CASE Expr LCB Code RCB\n");
 		$$ = NULL;
 	}
 	| {
+		printf("\n RECOGNIZED RULE: SwitchBlock: EMPTY\n");
 		$$ = NULL;
 	}
 ;
 
 ElseBlock:
 	ELSE LCB Code RCB {
+		printf("\n RECOGNIZED RULE: ElseBlock: ELSE LCB Code RCB\n");
 		$$ = NULL;
 	}
 	| {
+		printf("\n RECOGNIZED RULE: ElseBlock: EMPTY\n");
 		$$ = NULL;
 	}
 ;
@@ -291,16 +295,20 @@ Stmt:
 	}
 	// if statement
 	| IF LPRN BoolExpr RPRN LCB Code RCB ElseBlock {
+		printf("\n RECOGNIZED RULE: Stmt: IF LPRN BoolExpr RPRN LCB Code RCB ElseBlock\n");
 		$$ = NULL;
 	}
 	// switch statment
 	| SWITCH LPRN Expr RPRN LCB SwitchBlock Code RCB {
+		printf("\n RECOGNIZED RULE: SWITCH STATEMENT\n");
 		$$ = NULL;
 	}
 	| WHILE LPRN BoolExpr RPRN LCB Code RCB {
+		printf("\n RECOGNIZED RULE: WHILE LOOP\n");
 		$$ = NULL;
 	}
 	| REPEAT LCB Code RCB UNTIL LPRN BoolExpr RPRN {
+		printf("\n RECOGNIZED RULE: REPEAT STATEMENT\n");
 		$$ = NULL;
 	}
 ;
@@ -543,28 +551,36 @@ Expr:
 //LT GT LTE GTE NE AND OR EQ 
 BoolExpr:
 	Expr LT Expr {
-		$$ = NULL;
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr LT Expr\n");
+		$$ = astCreateBoolExpr($2, $1, $3);
 	}
 	| Expr GT Expr{
-		$$ = NULL;
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr GT Expr\n");
+		$$ = astCreateBoolExpr($2, $1, $3);
 	}
 	| Expr LTE Expr{
-		$$ = NULL;
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr LTE Expr\n");
+		$$ = astCreateBoolExpr($2, $1, $3);
 	}
 	| Expr GTE Expr{
-		$$ = NULL;
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr GTE Expr\n");
+		$$ = astCreateBoolExpr($2, $1, $3);
 	}
 	| Expr NE Expr{
-		$$ = NULL;
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr NE Expr\n");
+		$$ = astCreateBoolExpr($2, $1, $3);
 	}
 	| Expr EQ Expr{
-		$$ = NULL;
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr EQ Expr\n");
+		$$ = astCreateBoolExpr($2, $1, $3);
 	}
 	| BoolExpr AND BoolExpr{
-		$$ = NULL;
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr AND Expr\n");
+		$$ = astCreateBoolExpr($2, $1, $3);
 	}
 	| BoolExpr OR BoolExpr{
-		$$ = NULL;
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr OR Expr\n");
+		$$ = astCreateBoolExpr($2, $1, $3);
 	}
 ;
 
