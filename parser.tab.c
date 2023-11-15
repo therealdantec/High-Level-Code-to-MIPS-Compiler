@@ -1536,7 +1536,7 @@ yyreduce:
 #line 242 "parser.y"
                           {
 		printf("\n RECOGNIZED RULE: ElseBlock: ELSE LCB Code RCB\n");
-		(yyval.ast_node) = NULL;
+		(yyval.ast_node) = (yyvsp[-1].ast_node);
 	}
 #line 1542 "parser.tab.c"
     break;
@@ -1614,7 +1614,7 @@ yyreduce:
 #line 297 "parser.y"
                                                        {
 		printf("\n RECOGNIZED RULE: Stmt: IF LPRN BoolExpr RPRN LCB Code RCB ElseBlock\n");
-		(yyval.ast_node) = NULL;
+		(yyval.ast_node) = astCreateIfElse((yyvsp[-5].ast_node), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
 	}
 #line 1620 "parser.tab.c"
     break;
@@ -1938,7 +1938,7 @@ yyreduce:
 #line 553 "parser.y"
                      {
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr LT Expr\n");
-		(yyval.ast_node) = astCreateBoolExpr((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
+		(yyval.ast_node) = astCreateBinaryOp((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
 	}
 #line 1944 "parser.tab.c"
     break;
@@ -1947,7 +1947,7 @@ yyreduce:
 #line 557 "parser.y"
                       {
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr GT Expr\n");
-		(yyval.ast_node) = astCreateBoolExpr((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
+		(yyval.ast_node) = astCreateBinaryOp((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
 	}
 #line 1953 "parser.tab.c"
     break;
@@ -1956,7 +1956,7 @@ yyreduce:
 #line 561 "parser.y"
                        {
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr LTE Expr\n");
-		(yyval.ast_node) = astCreateBoolExpr((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
+		(yyval.ast_node) = astCreateBinaryOp((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
 	}
 #line 1962 "parser.tab.c"
     break;
@@ -1965,7 +1965,7 @@ yyreduce:
 #line 565 "parser.y"
                        {
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr GTE Expr\n");
-		(yyval.ast_node) = astCreateBoolExpr((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
+		(yyval.ast_node) = astCreateBinaryOp((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
 	}
 #line 1971 "parser.tab.c"
     break;
@@ -1974,7 +1974,7 @@ yyreduce:
 #line 569 "parser.y"
                       {
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr NE Expr\n");
-		(yyval.ast_node) = astCreateBoolExpr((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
+		(yyval.ast_node) = astCreateBinaryOp((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
 	}
 #line 1980 "parser.tab.c"
     break;
@@ -1983,7 +1983,7 @@ yyreduce:
 #line 573 "parser.y"
                       {
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr EQ Expr\n");
-		(yyval.ast_node) = astCreateBoolExpr((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
+		(yyval.ast_node) = astCreateBinaryOp((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
 	}
 #line 1989 "parser.tab.c"
     break;
@@ -1992,7 +1992,7 @@ yyreduce:
 #line 577 "parser.y"
                                {
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr AND Expr\n");
-		(yyval.ast_node) = astCreateBoolExpr((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
+		(yyval.ast_node) = astCreateBinaryOp((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
 	}
 #line 1998 "parser.tab.c"
     break;
@@ -2001,7 +2001,7 @@ yyreduce:
 #line 581 "parser.y"
                               {
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr OR Expr\n");
-		(yyval.ast_node) = astCreateBoolExpr((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
+		(yyval.ast_node) = astCreateBinaryOp((yyvsp[-1].string), (yyvsp[-2].ast_node), (yyvsp[0].ast_node));
 	}
 #line 2007 "parser.tab.c"
     break;
