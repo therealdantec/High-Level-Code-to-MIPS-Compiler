@@ -122,6 +122,27 @@ ws          {delim}+
 			return CASE;
 		}
 
+"while"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return WHILE;
+		}
+
+"REPEAT"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return REPEAT;
+		}
+
+"UNTIL"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return UNTIL;
+		}
+
 {ID}	{words++; 
                           chars += strlen(yytext);
 			  printf("%s : IDENTIFIER\n",yytext);

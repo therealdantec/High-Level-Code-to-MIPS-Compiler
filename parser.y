@@ -36,7 +36,7 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %token <string> LT GT 
 %token <string> LTE GTE NE AND OR EQ
 %token <string> ASS
-%token <string> WRITE REEE IF ELSE SWITCH CASE
+%token <string> WRITE REEE IF ELSE SWITCH CASE WHILE REPEAT UNTIL
 %token <string> PLUS MINUS TIMES DIVIDE
 %token <string> LPRN RPRN LCB RCB LSB RSB
 %type <string> DeclareFunct
@@ -295,6 +295,12 @@ Stmt:
 	}
 	// switch statment
 	| SWITCH LPRN Expr RPRN LCB SwitchBlock Code RCB {
+		$$ = NULL;
+	}
+	| WHILE LPRN BoolExpr RPRN LCB Code RCB {
+		$$ = NULL;
+	}
+	REPEAT LCB Code RCB UNTIL LRPN BoolExpr RPRN {
 		$$ = NULL;
 	}
 ;
