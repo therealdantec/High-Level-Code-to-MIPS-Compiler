@@ -241,7 +241,7 @@ SwitchBlock:
 ElseBlock:
 	ELSE LCB Code RCB {
 		printf("\n RECOGNIZED RULE: ElseBlock: ELSE LCB Code RCB\n");
-		$$ = NULL;
+		$$ = $3;
 	}
 	| {
 		printf("\n RECOGNIZED RULE: ElseBlock: EMPTY\n");
@@ -296,7 +296,7 @@ Stmt:
 	// if statement
 	| IF LPRN BoolExpr RPRN LCB Code RCB ElseBlock {
 		printf("\n RECOGNIZED RULE: Stmt: IF LPRN BoolExpr RPRN LCB Code RCB ElseBlock\n");
-		$$ = NULL;
+		$$ = astCreateIfElse($3, $6, $8);
 	}
 	// switch statment
 	| SWITCH LPRN Expr RPRN LCB SwitchBlock Code RCB {
@@ -552,35 +552,35 @@ Expr:
 BoolExpr:
 	Expr LT Expr {
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr LT Expr\n");
-		$$ = astCreateBoolExpr($2, $1, $3);
+		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 	| Expr GT Expr{
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr GT Expr\n");
-		$$ = astCreateBoolExpr($2, $1, $3);
+		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 	| Expr LTE Expr{
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr LTE Expr\n");
-		$$ = astCreateBoolExpr($2, $1, $3);
+		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 	| Expr GTE Expr{
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr GTE Expr\n");
-		$$ = astCreateBoolExpr($2, $1, $3);
+		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 	| Expr NE Expr{
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr NE Expr\n");
-		$$ = astCreateBoolExpr($2, $1, $3);
+		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 	| Expr EQ Expr{
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr EQ Expr\n");
-		$$ = astCreateBoolExpr($2, $1, $3);
+		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 	| BoolExpr AND BoolExpr{
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr AND Expr\n");
-		$$ = astCreateBoolExpr($2, $1, $3);
+		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 	| BoolExpr OR BoolExpr{
 		printf("\n RECOGNIZED RULE: BoolExpr: Expr OR Expr\n");
-		$$ = astCreateBoolExpr($2, $1, $3);
+		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 ;
 

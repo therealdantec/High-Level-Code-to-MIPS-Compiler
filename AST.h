@@ -36,12 +36,12 @@ typedef struct node {
         struct { // for STRUC
             char* id;
             struct node** vars;
-        } struc;
-        struct { // for BOOL_EXPR
-            char* op;
-            struct node* left;
-            struct node* right;
-        } bool_expr;
+        } struc;\
+        struct {
+            struct node* bool_expr;
+            struct node* true_code;
+            struct node* false_code;
+        } if_else;
     } data;  
 } node;
 
@@ -155,16 +155,17 @@ node* astCreateReee(char* value) {
     new_node->type = "REEE";
     new_node->data.value = value;
     return new_node;
-}
+};
 
-node* astCreateBoolExpr(char* op, node* left, node* right) {
+node* astCreateIfElse(node* bool_expr, node* true_code, node* false_code) {
     node* new_node = (node*)malloc(sizeof(node));
-    new_node->type = "BOOL_EXPR";
-    new_node->data.bool_expr.op = op;
-    new_node->data.bool_expr.left = left;
-    new_node->data.bool_expr.right = right;
+    new_node->type = "IF_ELSE";
+    new_node->data.if_else.bool_expr = bool_expr;  
+    new_node->data.if_else.true_code = true_code;  
+    new_node->data.if_else.false_code = false_code;
     return new_node;
-}
+};
+
 
 // make a string out of the node
 char* nodeToString(node* n) {
@@ -181,6 +182,7 @@ char* nodeToString(node* n) {
     if (strcmp(n->type, "FUNCT_PARAM") == 0)        return n->data.funct_param.id;
     if (strcmp(n->type, "ARRAY") == 0)        return "ARRAY";
     if (strcmp(n->type, "STRUC") == 0)        return "STRUC";
+    if (strcmp(n->type, "IF_ELSE") == 0)        return nodeToString(n->data.if_else.bool_expr);
 };
 
 // freeing da tree
