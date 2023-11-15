@@ -77,16 +77,23 @@ extern int yydebug;
     ASS = 278,                     /* ASS  */
     WRITE = 279,                   /* WRITE  */
     REEE = 280,                    /* REEE  */
-    PLUS = 281,                    /* PLUS  */
-    MINUS = 282,                   /* MINUS  */
-    TIMES = 283,                   /* TIMES  */
-    DIVIDE = 284,                  /* DIVIDE  */
-    LPRN = 285,                    /* LPRN  */
-    RPRN = 286,                    /* RPRN  */
-    LCB = 287,                     /* LCB  */
-    RCB = 288,                     /* RCB  */
-    LSB = 289,                     /* LSB  */
-    RSB = 290                      /* RSB  */
+    IF = 281,                      /* IF  */
+    ELSE = 282,                    /* ELSE  */
+    SWITCH = 283,                  /* SWITCH  */
+    CASE = 284,                    /* CASE  */
+    WHILE = 285,                   /* WHILE  */
+    REPEAT = 286,                  /* REPEAT  */
+    UNTIL = 287,                   /* UNTIL  */
+    PLUS = 288,                    /* PLUS  */
+    MINUS = 289,                   /* MINUS  */
+    TIMES = 290,                   /* TIMES  */
+    DIVIDE = 291,                  /* DIVIDE  */
+    LPRN = 292,                    /* LPRN  */
+    RPRN = 293,                    /* RPRN  */
+    LCB = 294,                     /* LCB  */
+    RCB = 295,                     /* RCB  */
+    LSB = 296,                     /* LSB  */
+    RSB = 297                      /* RSB  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -102,7 +109,7 @@ union YYSTYPE
 	char* string;
 	struct node* ast_node;
 
-#line 106 "parser.tab.h"
+#line 113 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

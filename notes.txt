@@ -1,12 +1,9 @@
 All token values are strings until math happens. 
-How to handle types in AST?
-- We have variable declarations. That's where types are put into the tree. Those type strings are literally what is in the code. Not the node type strings.
-- the astCreateType functions are for creating literal nodes.
-- binaryOp, 
-Need function node
-Need struc node
-Need array node
-
-Symtab
-- keeps track of scope, functions and they're paramters. 
-
+AST Nodes:
+BoolExpr
+if
+else
+switch
+case
+while
+repeat until
