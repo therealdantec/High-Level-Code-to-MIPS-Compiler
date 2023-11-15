@@ -44,7 +44,7 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%s", $$); } NUMBER;
 
-%type <ast_node> Program Code Type VarDecl Expr Stmt Param ParamsList FunctCall CallParamsList StrucAccess
+%type <ast_node> Program Code Type VarDecl Expr Stmt Param ParamsList FunctCall CallParamsList StrucAccess SwitchBlock ElseBlock BoolExpr
 
 %start Program
 
@@ -300,7 +300,7 @@ Stmt:
 	| WHILE LPRN BoolExpr RPRN LCB Code RCB {
 		$$ = NULL;
 	}
-	REPEAT LCB Code RCB UNTIL LRPN BoolExpr RPRN {
+	| REPEAT LCB Code RCB UNTIL LPRN BoolExpr RPRN {
 		$$ = NULL;
 	}
 ;

@@ -37,6 +37,7 @@ typedef struct node {
             char* id;
             struct node** vars;
         } struc;
+        
     } data;  
 } node;
 
