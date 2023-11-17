@@ -49,6 +49,13 @@ funct int main2() {
     num6 = num4 - 1 + num5 * 2 + num4 / 1000;
 
     write num6;
+    
+    switch(num4) {
+        case 12 {
+            write num4;
+        }
+        write num5;
+    }
 };
 
 main();

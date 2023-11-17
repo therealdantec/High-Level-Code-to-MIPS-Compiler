@@ -34,7 +34,7 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %token <string> ID NUMBER
 %token <string> SEMICOLON COMMA UNDERSCORE PERIOD
 %token <string> LT GT 
-%token <string> LTE GTE NE AND OR EQ
+%token <string> LTE GTE NE AND OR EQ TRUTH FALSITY
 %token <string> ASS
 %token <string> WRITE REEE IF ELSE SWITCH CASE WHILE REPEAT UNTIL
 %token <string> PLUS MINUS TIMES DIVIDE
@@ -301,12 +301,14 @@ Stmt:
 	// switch statment
 	| SWITCH LPRN Expr RPRN LCB SwitchBlock Code RCB {
 		printf("\n RECOGNIZED RULE: SWITCH STATEMENT\n");
-		$$ = NULL;
+		$$ = astCreateSwitchStmt($3, $6, $7);
 	}
+	// while loop
 	| WHILE LPRN BoolExpr RPRN LCB Code RCB {
 		printf("\n RECOGNIZED RULE: WHILE LOOP\n");
 		$$ = NULL;
 	}
+	// repeat until loop
 	| REPEAT LCB Code RCB UNTIL LPRN BoolExpr RPRN {
 		printf("\n RECOGNIZED RULE: REPEAT STATEMENT\n");
 		$$ = NULL;
