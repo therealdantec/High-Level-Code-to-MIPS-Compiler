@@ -52,6 +52,10 @@ typedef struct node {
             struct node* expr;
             struct node* code;
         } switch_block;
+        struct { // for LOOP
+            struct node* bool_expr;
+            struct node* code;
+        } loop;
     } data;  
 } node;
 
@@ -194,6 +198,14 @@ node* astCreateSwitchBlock(node* prev_switch_block, node* expr, node* code) {
     return new_node;
 };
 
+node* astCreateLoop(node* bool_expr, node* code) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "LOOP";
+    new_node->data.loop.bool_expr = bool_expr;
+    new_node->data.loop.code = code;
+    return new_node;
+};
+
 // make a string out of the node
 char* nodeToString(node* n) {
     if (strcmp(n->type, "INT_LITERAL") == 0)    return n->data.value;
@@ -212,6 +224,7 @@ char* nodeToString(node* n) {
     if (strcmp(n->type, "IF_ELSE") == 0)        return nodeToString(n->data.if_else.bool_expr);
     if (strcmp(n->type, "SWITCH_STMT") == 0)        return "SWITCH_STMT";
     if (strcmp(n->type, "SWITCH_BLOCK") == 0)        return "SWITCH_BLOCK";
+    if (strcmp(n->type, "LOOP") == 0)        return "LOOP";
 };
 
 // freeing da tree

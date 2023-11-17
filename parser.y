@@ -230,7 +230,7 @@ VarDecl:
 SwitchBlock:
 	SwitchBlock CASE Expr LCB Code RCB {
 		printf("\n RECOGNIZED RULE: SwitchBlock: SwitchBlock CASE Expr LCB Code RCB\n");
-		$$ = NULL;
+		$$ = astCreateSwitchBlock($1, $3, $5);
 	}
 	| {
 		printf("\n RECOGNIZED RULE: SwitchBlock: EMPTY\n");
@@ -306,12 +306,12 @@ Stmt:
 	// while loop
 	| WHILE LPRN BoolExpr RPRN LCB Code RCB {
 		printf("\n RECOGNIZED RULE: WHILE LOOP\n");
-		$$ = NULL;
+		$$ = astCreateLoop($3, $6);
 	}
 	// repeat until loop
 	| REPEAT LCB Code RCB UNTIL LPRN BoolExpr RPRN {
 		printf("\n RECOGNIZED RULE: REPEAT STATEMENT\n");
-		$$ = NULL;
+		$$ = astCreateLoop($7, $3);
 	}
 ;
 
@@ -332,11 +332,13 @@ Expr:
 	// function call
 	| FunctCall {
 		printf("\n RECOGNIZED RULE: Function Call\n");
+		$$ = $1;
 	}
 	// struc access. The period is the access operator
 	// but how to nested strucs?
 	| StrucAccess {
 		printf("\n RECOGNIZED RULE: Struct Access\n");
+		$$ = $1;
 	}
 	// a number literal for use in a statement
 	| NUMBER { 
