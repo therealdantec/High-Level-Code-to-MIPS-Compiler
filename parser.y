@@ -34,7 +34,7 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %token <string> ID NUMBER
 %token <string> SEMICOLON COMMA UNDERSCORE PERIOD
 %token <string> LT GT 
-%token <string> LTE GTE NE AND OR EQ TRUTH FALSITY
+%token <string> LTE GTE NE AND OR EQ
 %token <string> ASS
 %token <string> WRITE REEE IF ELSE SWITCH CASE WHILE REPEAT UNTIL
 %token <string> PLUS MINUS TIMES DIVIDE
@@ -575,18 +575,12 @@ BoolExpr:
 		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 	| BoolExpr AND BoolExpr{
-		printf("\n RECOGNIZED RULE: BoolExpr: Expr AND Expr\n");
+		printf("\n RECOGNIZED RULE: BoolExpr: BoolExpr AND BoolExpr\n");
 		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 	| BoolExpr OR BoolExpr{
-		printf("\n RECOGNIZED RULE: BoolExpr: Expr OR Expr\n");
+		printf("\n RECOGNIZED RULE: BoolExpr: BoolExpr OR BoolExpr\n");
 		$$ = astCreateBinaryOp($2, $1, $3);
-	}
-	| TRUTH {
-
-	}
-	| FALSITY {
-
 	}
 ;
 
