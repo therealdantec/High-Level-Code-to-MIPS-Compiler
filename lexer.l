@@ -143,6 +143,20 @@ ws          {delim}+
 			return UNTIL;
 		}
 
+"truth"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return TRUTH;
+		}
+
+"falsity"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return FALSITY;
+		}
+
 {ID}	{words++; 
                           chars += strlen(yytext);
 			  printf("%s : IDENTIFIER\n",yytext);

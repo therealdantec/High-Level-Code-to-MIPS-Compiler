@@ -39,6 +39,8 @@ $t17 = 1 + num5
 $t18 = num4 - 1
 $t19 = num4
 output num6
+output num4
+output num5
 
 Calling Function main
 

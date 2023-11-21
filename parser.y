@@ -34,7 +34,7 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %token <string> ID NUMBER
 %token <string> SEMICOLON COMMA UNDERSCORE PERIOD
 %token <string> LT GT 
-%token <string> LTE GTE NE AND OR EQ
+%token <string> LTE GTE NE AND OR EQ TRUTH FALSITY
 %token <string> ASS
 %token <string> WRITE REEE IF ELSE SWITCH CASE WHILE REPEAT UNTIL
 %token <string> PLUS MINUS TIMES DIVIDE
@@ -230,7 +230,7 @@ VarDecl:
 SwitchBlock:
 	SwitchBlock CASE Expr LCB Code RCB {
 		printf("\n RECOGNIZED RULE: SwitchBlock: SwitchBlock CASE Expr LCB Code RCB\n");
-		$$ = NULL;
+		$$ = astCreateSwitchBlock($1, $3, $5);
 	}
 	| {
 		printf("\n RECOGNIZED RULE: SwitchBlock: EMPTY\n");
@@ -301,15 +301,17 @@ Stmt:
 	// switch statment
 	| SWITCH LPRN Expr RPRN LCB SwitchBlock Code RCB {
 		printf("\n RECOGNIZED RULE: SWITCH STATEMENT\n");
-		$$ = NULL;
+		$$ = astCreateSwitchStmt($3, $6, $7);
 	}
+	// while loop
 	| WHILE LPRN BoolExpr RPRN LCB Code RCB {
 		printf("\n RECOGNIZED RULE: WHILE LOOP\n");
-		$$ = NULL;
+		$$ = astCreateLoop($3, $6);
 	}
+	// repeat until loop
 	| REPEAT LCB Code RCB UNTIL LPRN BoolExpr RPRN {
 		printf("\n RECOGNIZED RULE: REPEAT STATEMENT\n");
-		$$ = NULL;
+		$$ = astCreateLoop($7, $3);
 	}
 ;
 
@@ -330,11 +332,13 @@ Expr:
 	// function call
 	| FunctCall {
 		printf("\n RECOGNIZED RULE: Function Call\n");
+		$$ = $1;
 	}
 	// struc access. The period is the access operator
 	// but how to nested strucs?
 	| StrucAccess {
 		printf("\n RECOGNIZED RULE: Struct Access\n");
+		$$ = $1;
 	}
 	// a number literal for use in a statement
 	| NUMBER { 
@@ -575,11 +579,11 @@ BoolExpr:
 		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 	| BoolExpr AND BoolExpr{
-		printf("\n RECOGNIZED RULE: BoolExpr: Expr AND Expr\n");
+		printf("\n RECOGNIZED RULE: BoolExpr: BoolExpr AND BoolExpr\n");
 		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 	| BoolExpr OR BoolExpr{
-		printf("\n RECOGNIZED RULE: BoolExpr: Expr OR Expr\n");
+		printf("\n RECOGNIZED RULE: BoolExpr: BoolExpr OR BoolExpr\n");
 		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 ;

@@ -74,26 +74,28 @@ extern int yydebug;
     AND = 275,                     /* AND  */
     OR = 276,                      /* OR  */
     EQ = 277,                      /* EQ  */
-    ASS = 278,                     /* ASS  */
-    WRITE = 279,                   /* WRITE  */
-    REEE = 280,                    /* REEE  */
-    IF = 281,                      /* IF  */
-    ELSE = 282,                    /* ELSE  */
-    SWITCH = 283,                  /* SWITCH  */
-    CASE = 284,                    /* CASE  */
-    WHILE = 285,                   /* WHILE  */
-    REPEAT = 286,                  /* REPEAT  */
-    UNTIL = 287,                   /* UNTIL  */
-    PLUS = 288,                    /* PLUS  */
-    MINUS = 289,                   /* MINUS  */
-    TIMES = 290,                   /* TIMES  */
-    DIVIDE = 291,                  /* DIVIDE  */
-    LPRN = 292,                    /* LPRN  */
-    RPRN = 293,                    /* RPRN  */
-    LCB = 294,                     /* LCB  */
-    RCB = 295,                     /* RCB  */
-    LSB = 296,                     /* LSB  */
-    RSB = 297                      /* RSB  */
+    TRUTH = 278,                   /* TRUTH  */
+    FALSITY = 279,                 /* FALSITY  */
+    ASS = 280,                     /* ASS  */
+    WRITE = 281,                   /* WRITE  */
+    REEE = 282,                    /* REEE  */
+    IF = 283,                      /* IF  */
+    ELSE = 284,                    /* ELSE  */
+    SWITCH = 285,                  /* SWITCH  */
+    CASE = 286,                    /* CASE  */
+    WHILE = 287,                   /* WHILE  */
+    REPEAT = 288,                  /* REPEAT  */
+    UNTIL = 289,                   /* UNTIL  */
+    PLUS = 290,                    /* PLUS  */
+    MINUS = 291,                   /* MINUS  */
+    TIMES = 292,                   /* TIMES  */
+    DIVIDE = 293,                  /* DIVIDE  */
+    LPRN = 294,                    /* LPRN  */
+    RPRN = 295,                    /* RPRN  */
+    LCB = 296,                     /* LCB  */
+    RCB = 297,                     /* RCB  */
+    LSB = 298,                     /* LSB  */
+    RSB = 299                      /* RSB  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -109,7 +111,7 @@ union YYSTYPE
 	char* string;
 	struct node* ast_node;
 
-#line 113 "parser.tab.h"
+#line 115 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
