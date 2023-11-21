@@ -60,6 +60,12 @@ lw $t19, num4
 lw $a10, num6
 li $v0, 1
 syscall
+lw $a11, num4
+li $v0, 1
+syscall
+lw $a12, num5
+li $v0, 1
+syscall
 jal
 
 # -----------------

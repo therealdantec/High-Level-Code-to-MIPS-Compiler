@@ -1,6 +1,8 @@
 Terminals unused in grammar
 
     UNDERSCORE
+    TRUTH
+    FALSITY
 
 
 State 0 conflicts: 2 shift/reduce
@@ -112,75 +114,77 @@ Terminals, with rules where they appear
     AND <string> (275) 57
     OR <string> (276) 58
     EQ <string> (277) 56
-    ASS <string> (278) 30 31
-    WRITE <string> (279) 32
-    REEE <string> (280) 33
-    IF <string> (281) 34
-    ELSE <string> (282) 28
-    SWITCH <string> (283) 35
-    CASE <string> (284) 26
-    WHILE <string> (285) 36
-    REPEAT <string> (286) 37
-    UNTIL <string> (287) 37
-    PLUS <string> (288) 43 44
-    MINUS <string> (289) 45 46
-    TIMES <string> (290) 47 48
-    DIVIDE <string> (291) 49 50
-    LPRN <string> (292) 5 9 34 35 36 37
-    RPRN <string> (293) 5 9 34 35 36 37
-    LCB <string> (294) 5 25 26 28 34 35 36 37
-    RCB <string> (295) 1 25 26 28 34 35 36 37
-    LSB <string> (296) 24 31 39
-    RSB <string> (297) 24 31 39
+    TRUTH <string> (278)
+    FALSITY <string> (279)
+    ASS <string> (280) 30 31
+    WRITE <string> (281) 32
+    REEE <string> (282) 33
+    IF <string> (283) 34
+    ELSE <string> (284) 28
+    SWITCH <string> (285) 35
+    CASE <string> (286) 26
+    WHILE <string> (287) 36
+    REPEAT <string> (288) 37
+    UNTIL <string> (289) 37
+    PLUS <string> (290) 43 44
+    MINUS <string> (291) 45 46
+    TIMES <string> (292) 47 48
+    DIVIDE <string> (293) 49 50
+    LPRN <string> (294) 5 9 34 35 36 37
+    RPRN <string> (295) 5 9 34 35 36 37
+    LCB <string> (296) 5 25 26 28 34 35 36 37
+    RCB <string> (297) 1 25 26 28 34 35 36 37
+    LSB <string> (298) 24 31 39
+    RSB <string> (299) 24 31 39
 
 
 Nonterminals, with rules where they appear
 
-    $accept (43)
+    $accept (45)
         on left: 0
-    Program <ast_node> (44)
+    Program <ast_node> (46)
         on left: 1 2 3 4
         on right: 0 3
-    DeclareFunct <string> (45)
+    DeclareFunct <string> (47)
         on left: 5
         on right: 1
-    Code <ast_node> (46)
+    Code <ast_node> (48)
         on left: 6 7 8
         on right: 1 6 7 26 28 34 35 36 37
-    FunctCall <ast_node> (47)
+    FunctCall <ast_node> (49)
         on left: 9
         on right: 2 40
-    Type <ast_node> (48)
+    Type <ast_node> (50)
         on left: 10 11 12 13
         on right: 5 17 23 24
-    ParamsList <ast_node> (49)
+    ParamsList <ast_node> (51)
         on left: 14 15 16
         on right: 5 14
-    Param <ast_node> (50)
+    Param <ast_node> (52)
         on left: 17
         on right: 14 15
-    CallParamsList <ast_node> (51)
+    CallParamsList <ast_node> (53)
         on left: 18 19 20
         on right: 9 18
-    StrucAccess <ast_node> (52)
+    StrucAccess <ast_node> (54)
         on left: 21 22
         on right: 21 41
-    VarDecl <ast_node> (53)
+    VarDecl <ast_node> (55)
         on left: 23 24 25
         on right: 6 25
-    SwitchBlock <ast_node> (54)
+    SwitchBlock <ast_node> (56)
         on left: 26 27
         on right: 26 35
-    ElseBlock <ast_node> (55)
+    ElseBlock <ast_node> (57)
         on left: 28 29
         on right: 34
-    Stmt <ast_node> (56)
+    Stmt <ast_node> (58)
         on left: 30 31 32 33 34 35 36 37
         on right: 7
-    Expr <ast_node> (57)
+    Expr <ast_node> (59)
         on left: 38 39 40 41 42 43 44 45 46 47 48 49 50
         on right: 18 19 24 26 30 31 33 35 43 44 45 46 47 48 49 50 51 52 53 54 55 56
-    BoolExpr <ast_node> (58)
+    BoolExpr <ast_node> (60)
         on left: 51 52 53 54 55 56 57 58
         on right: 34 36 37 57 58
 

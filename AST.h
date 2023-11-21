@@ -42,6 +42,20 @@ typedef struct node {
             struct node* true_code;
             struct node* false_code;
         } if_else;
+        struct { // for SWITCH_STMT
+            struct node* expr;
+            struct node* switch_block;
+            struct node* def_code;
+        } switch_stmt;
+        struct { // for SWITCH_BLOCK
+            struct node* pre_switch_block;
+            struct node* expr;
+            struct node* code;
+        } switch_block;
+        struct { // for LOOP
+            struct node* bool_expr;
+            struct node* code;
+        } loop;
     } data;  
 } node;
 
@@ -166,6 +180,31 @@ node* astCreateIfElse(node* bool_expr, node* true_code, node* false_code) {
     return new_node;
 };
 
+node* astCreateSwitchStmt(node* expr, node* switch_block, node* def_code) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "SWITCH_STMT";
+    new_node->data.switch_stmt.expr = expr;
+    new_node->data.switch_stmt.switch_block = switch_block;
+    new_node->data.switch_stmt.def_code = def_code;
+    return new_node;
+};
+
+node* astCreateSwitchBlock(node* prev_switch_block, node* expr, node* code) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "SWITCH_BLOCK";
+    new_node->data.switch_block.pre_switch_block = prev_switch_block;
+    new_node->data.switch_block.expr = expr;
+    new_node->data.switch_block.code = code;
+    return new_node;
+};
+
+node* astCreateLoop(node* bool_expr, node* code) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->type = "LOOP";
+    new_node->data.loop.bool_expr = bool_expr;
+    new_node->data.loop.code = code;
+    return new_node;
+};
 
 // make a string out of the node
 char* nodeToString(node* n) {
@@ -183,6 +222,9 @@ char* nodeToString(node* n) {
     if (strcmp(n->type, "ARRAY") == 0)        return "ARRAY";
     if (strcmp(n->type, "STRUC") == 0)        return "STRUC";
     if (strcmp(n->type, "IF_ELSE") == 0)        return nodeToString(n->data.if_else.bool_expr);
+    if (strcmp(n->type, "SWITCH_STMT") == 0)        return "SWITCH_STMT";
+    if (strcmp(n->type, "SWITCH_BLOCK") == 0)        return "SWITCH_BLOCK";
+    if (strcmp(n->type, "LOOP") == 0)        return "LOOP";
 };
 
 // freeing da tree
