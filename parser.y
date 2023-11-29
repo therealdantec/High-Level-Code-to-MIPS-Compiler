@@ -56,7 +56,7 @@ Program:
 	// FUNCT Type ID LPRN ParamsList RPRN LCB Code RCB SEMICOLON
 	DeclareFunct Code RCB SEMICOLON { 
 		printf("RULE Program: Function\n");
-		// $$ = astCreateFunct($3, nodeToString($2), $5, $8);
+		// $$ = astCreateFunct($3, nodeToString($2));
 		// IRfunction(nodeToString($2), $3);
 		// emitMIPSFunction($3);
 		emitMIPSjal();
@@ -393,7 +393,7 @@ Expr:
 			emitBinaryOperation("+", result, str, str1);
 			emitMIPSBinaryOp("add", result, str, str1);
 			// Update the current expression result
-			$$ = astCreateVar(result);
+			// $$ = astCreateVar(result);
 			$$ = astCreateBinaryOp("+", astCreateInt($1), $3);
 		}
 	}
