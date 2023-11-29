@@ -1261,7 +1261,7 @@ yyreduce:
 #line 57 "parser.y"
                                         { 
 		printf("RULE Program: Function\n");
-		// $$ = astCreateFunct($3, nodeToString($2), $5, $8);
+		// $$ = astCreateFunct($3, nodeToString($2));
 		// IRfunction(nodeToString($2), $3);
 		// emitMIPSFunction($3);
 		emitMIPSjal();
@@ -1748,7 +1748,7 @@ yyreduce:
 			emitBinaryOperation("+", result, str, str1);
 			emitMIPSBinaryOp("add", result, str, str1);
 			// Update the current expression result
-			(yyval.ast_node) = astCreateVar(result);
+			// $$ = astCreateVar(result);
 			(yyval.ast_node) = astCreateBinaryOp("+", astCreateInt((yyvsp[-2].string)), (yyvsp[0].ast_node));
 		}
 	}
