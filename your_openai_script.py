@@ -10,7 +10,6 @@ openai.api_key = apiKey
 import sys
 
 def generate_mips_from_ir(api_key, ir_code):
-    print("I AM CALELERLELELALAED")
     OpenAI.api_key = api_key
 
     messages = [
