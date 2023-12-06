@@ -237,18 +237,3 @@ void free_ast(node* root) {
     }
     free(root);
 };
-
-
-// void print_ast(node* root) {
-//     if (root == NULL) return;
-
-//     if (root->type == NUM) {
-//         printf("%d", root->data.value);  
-//     } else if (root->type == BINARY_OP) {
-//         printf("(");
-//         print_ast(root->data.binary_op.left);  
-//         printf(" %c ", root->data.binary_op.op);  
-//         print_ast(root->data.binary_op.right);  
-//         printf(")");
-//     }
-// };
