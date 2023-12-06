@@ -83,3 +83,11 @@ void IRstruct(char* name, char* tings){
     fprintf(IRcode, "STRUCT %s { \n%s\n}\n", name, tings);
 
 }
+
+void IR_Boolean(char* boolexpr, char* expr1, char* expr2){
+    fprintf(IRcode, "BOOLEAN EXPRESSION: %s %s %s\n", expr1, boolexpr, expr2);
+}
+
+void IR_Loop(char* name, char* expr1, char* expr2, char* op){
+    fprintf(IRcode, "LOOP: %s %s %s %s\n", name, expr1, op, expr2);
+}

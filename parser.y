@@ -331,6 +331,7 @@ Stmt:
 	// while loop
 	| WHILE LPRN BoolExpr RPRN LCB Code RCB {
 		printf("\n RECOGNIZED RULE: WHILE LOOP\n");
+		// IR_Loop($1, nodeToString($3->data.binary_op.left), nodeToString($3->data.binary_op.right), nodeToString($3->data.binary_op));
 		$$ = astCreateLoop($3, $6);
 	}
 	// repeat until loop
