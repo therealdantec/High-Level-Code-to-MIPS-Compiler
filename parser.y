@@ -7,14 +7,12 @@
 #include "symbolTable.h"
 #include "AST.h"
 #include "IRcode.h"
-#include "Assembly.h"
 
 extern int yylex();
 extern int yyparse();
 extern FILE* yyin;
 
 FILE * IRcode;
-//FILE * MIPScode;
 
 
 void yyerror(const char* s);
@@ -28,7 +26,8 @@ char* generateMIPSFromIR(char* irCode) {
 
     // Construct the command to call the Python script (assuming it's a separate script)
     char command[1000];
-    snprintf(command, sizeof(command), "python3 your_openai_script.py \"%s\" \"%s\"", apiKey, irCode);
+	printf("LOOK AT THIS SUPER COOL IR CODE: %s\n", irCode);
+    snprintf(command, sizeof(command), "python3 OpenAI_API.py \"%s\" \"%s\"", apiKey, irCode);
 	printf("%s\n", command);
 
     // Execute the command and capture the output
@@ -38,13 +37,16 @@ char* generateMIPSFromIR(char* irCode) {
         exit(EXIT_FAILURE);
     }
 
-    char* result = malloc(4096);  // Adjust the buffer size as needed
-    if (!result) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
+	char buffer[4096];
+	char* result = malloc(1); // Start with a small buffer
+	result[0] = '\0'; // Null-terminate the empty string
+	size_t len = 0;
 
-    fgets(result, 4096, pipe);
+	while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+		len += strlen(buffer);
+		result = realloc(result, len + 1); // Resize the result buffer
+		strcat(result, buffer); // Append the new line
+	}
 
     // Close the pipe
     pclose(pipe);
@@ -83,14 +85,11 @@ char* generateMIPSFromIR(char* irCode) {
 
 // program, the big kahuna, the whole program in a single node
 Program: 
+
 	// function definition
 	// FUNCT Type ID LPRN ParamsList RPRN LCB Code RCB SEMICOLON
 	DeclareFunct Code RCB SEMICOLON { 
 		printf("RULE Program: Function\n");
-		// $$ = astCreateFunct($3, nodeToString($2));
-		// IRfunction(nodeToString($2), $3);
-		// emitMIPSFunction($3);
-		emitMIPSjal();
 	}
 	| FunctCall SEMICOLON {
 		printf("RULE Program: FunctCall\n");
@@ -110,7 +109,6 @@ DeclareFunct:
 	FUNCT Type ID LPRN ParamsList RPRN LCB {
 		printf("RULE Function: Function Declaration");
 		IRfunction(nodeToString($2), $3);
-		emitMIPSFunction($3);
 		
 	}
 ;
@@ -290,8 +288,6 @@ Stmt:
 
 			char* result = generateTempVar();
 			emitAssignment(result, nodeToString($3));
-
-			emitMIPSAssignment(result, nodeToString($3));
 		} 
 		else {
 			printf("SEMANTIC ERROR: Var %s has not been declared\n", $1);
@@ -312,8 +308,6 @@ Stmt:
 		// Check if identifiers have been declared
 		if(found($2, currentScope)) {
 			emitWriteId($2);
-			char* write = generateTempAddr();
-			emitMIPSWriteId(write, $2);
 			$$ = astCreateWrite($2);
 		}
 		else {
@@ -353,8 +347,6 @@ Expr:
 	ID { 
 		printf("\n RECOGNIZED RULE: ID, %s\n", $1); 
 		$$ = astCreateVar($1);
-		// char* result = generateTempVar();
-		// emitAssignment(result, $1);
 	}
 	// array variable
 	| ID LSB NUMBER RSB {
@@ -388,32 +380,17 @@ Expr:
 			semanticCheckPassed = 0;
 		}
 		
-		// see if types are compatible, currently causing segfault cuz nodes
-		// if (!compareTypes($1, $3, currentScope);) {
-		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
-		// 	semanticCheckPassed = 0;
-		// }
-
-
 		// this is some wizard temp register shit
 		if (semanticCheckPassed) {
-			//$$ = astCreateVar($1);
 			$$ = astCreateBinaryOp("+", astCreateVar($1), $3);
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			emitBinaryOperation("+", result, $1, nodeToString($3));
-			emitMIPSBinaryOp("add", result, $1, nodeToString($3));
 			$$ = astCreateVar(result);
 			
 		}		
 	}
 	| NUMBER PLUS Expr {
 		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", $1);
-		
-		// see if types are compatible, currently causing segfault cuz nodes
-		// if (!compareTypes($1, $3, currentScope);) {
-		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
-		// 	semanticCheckPassed = 0;
-		// }
 
 		if (semanticCheckPassed) {
 			char* result = generateTempVar();  // Generate a temporary variable for the result
@@ -422,9 +399,7 @@ Expr:
 			sprintf(str, "%s", $1);
 			sprintf(str1, "%s", nodeToString($3));
 			emitBinaryOperation("+", result, str, str1);
-			emitMIPSBinaryOp("add", result, str, str1);
 			// Update the current expression result
-			// $$ = astCreateVar(result);
 			$$ = astCreateBinaryOp("+", astCreateInt($1), $3);
 		}
 	}
@@ -438,34 +413,18 @@ Expr:
 			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", $1, currentScope);
 			semanticCheckPassed = 0;
 		}
-		
-		// see if types are compatible, currently causing segfault cuz nodes
-		// if (!compareTypes($1, $3, currentScope);) {
-		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
-		// 	semanticCheckPassed = 0;
-		// }
-
 
 		// this is some wizard temp register shit
 		if (semanticCheckPassed) {
-			//$$ = astCreateVar($1);
 			$$ = astCreateBinaryOp("-", astCreateVar($1), $3);
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			emitBinaryOperation("-", result, $1, nodeToString($3));
-			emitMIPSBinaryOp("sub", result, $1, nodeToString($3));
-			//$$ = astCreateVar(result);
-			
 		}		
+
 	}
 	| NUMBER MINUS Expr {
 		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", $1);
 		
-		// see if types are compatible, currently causing segfault cuz nodes
-		// if (!compareTypes($1, $3, currentScope);) {
-		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
-		// 	semanticCheckPassed = 0;
-		// }
-
 		if (semanticCheckPassed) {
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			char* str = (char*)malloc(15);
@@ -473,9 +432,7 @@ Expr:
 			sprintf(str, "%s", $1);
 			sprintf(str1, "%s", nodeToString($3));
 			emitBinaryOperation("-", result, str, str1);
-			emitMIPSBinaryOp("sub", result, str, str1);
 			// Update the current expression result
-			//$$ = astCreateVar(result);
 			$$ = astCreateBinaryOp("-", astCreateInt($1), $3);
 		}
 	}
@@ -489,33 +446,18 @@ Expr:
 			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", $1, currentScope);
 			semanticCheckPassed = 0;
 		}
-		
-		// see if types are compatible, currently causing segfault cuz nodes
-		// if (!compareTypes($1, $3, currentScope);) {
-		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
-		// 	semanticCheckPassed = 0;
-		// }
 
 
 		// this is some wizard temp register shit
 		if (semanticCheckPassed) {
-			//$$ = astCreateVar($1);
 			$$ = astCreateBinaryOp("*", astCreateVar($1), $3);
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			emitBinaryOperation("*", result, $1, nodeToString($3));
-			emitMIPSBinaryOp("mult", result, $1, nodeToString($3));
-			//$$ = astCreateVar(result);
 			
 		}		
 	}
 	| NUMBER TIMES Expr {
 		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", $1);
-		
-		// see if types are compatible, currently causing segfault cuz nodes
-		// if (!compareTypes($1, $3, currentScope);) {
-		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
-		// 	semanticCheckPassed = 0;
-		// }
 
 		if (semanticCheckPassed) {
 			char* result = generateTempVar();  // Generate a temporary variable for the result
@@ -524,50 +466,32 @@ Expr:
 			sprintf(str, "%s", $1);
 			sprintf(str1, "%s", nodeToString($3));
 			emitBinaryOperation("*", result, str, str1);
-			emitMIPSBinaryOp("mult", result, str, str1);
 			// Update the current expression result
-			//$$ = astCreateVar(result);
 			$$ = astCreateBinaryOp("*", astCreateInt($1), $3);
 		}
+
 	}
 	| ID DIVIDE Expr {
 		printf("\n RECOGNIZED RULE: ID PLUS Expr, ID is %s \n", $1);
-
-		
 
 		// Check if identifiers have been declared
 		if (!found($1, currentScope)) {
 			printf("SEMANTIC ERROR: Variable %s has NOT been declared in scope %s \n", $1, currentScope);
 			semanticCheckPassed = 0;
 		}
-		
-		// see if types are compatible, currently causing segfault cuz nodes
-		// if (!compareTypes($1, $3, currentScope);) {
-		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
-		// 	semanticCheckPassed = 0;
-		// }
 
 
 		// this is some wizard temp register shit
 		if (semanticCheckPassed) {
-			//$$ = astCreateVar($1);
 			$$ = astCreateBinaryOp("/", astCreateVar($1), $3);
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			emitBinaryOperation("/", result, $1, nodeToString($3));
-			emitMIPSBinaryOp("div", result, $1, nodeToString($3));
-			//$$ = astCreateVar(result);
-			
-		}		
+		}	
+
 	}
 	| NUMBER DIVIDE Expr {
 		printf("\n RECOGNIZED RULE: NUMBER PLUS Expr, %s\n", $1);
 		
-		// see if types are compatible, currently causing segfault cuz nodes
-		// if (!compareTypes($1, $3, currentScope);) {
-		// 	printf("SEMANTIC ERROR: Type mismatch for variables %s and %s \n", $1, $3);
-		// 	semanticCheckPassed = 0;
-		// }
-
 		if (semanticCheckPassed) {
 			char* result = generateTempVar();  // Generate a temporary variable for the result
 			char* str = (char*)malloc(15);
@@ -575,9 +499,7 @@ Expr:
 			sprintf(str, "%s", $1);
 			sprintf(str1, "%s", nodeToString($3));
 			emitBinaryOperation("/", result, str, str1);
-			emitMIPSBinaryOp("div", result, str, str1);
 			// Update the current expression result
-			//$$ = astCreateVar(result);
 			$$ = astCreateBinaryOp("/", astCreateInt($1), $3);
 		}
 	}
@@ -619,34 +541,9 @@ BoolExpr:
 	}
 ;
 
-// VarDeclList:
-// 	VarDeclList VarDecl {
-// 		printf("RULE VarDeclList: VarDeclList VarDecl\n");
-// 		$$ = $2;
-// 	}
-// 	| VarDecl {
-// 		printf("RULE VarDeclList: VarDecl\n");
-// 		$$ = $1;
-// 	}
-// ;
-
-// // statements, anything that involves operators, or isn't a function or vardecl
-// StmtList:	
-// 	Stmt StmtList {
-// 		$$ = $2;
-// 	}
-// 	| Stmt {
-// 		$$ = $1;
-// 	}
-// ;
-
 %%
 int main(int argc, char**argv)
 {
-
-	// #ifdef YYDEBUG
-	// 	yydebug = 1;
-	// #endif
 
 	printf("\n\n##### COMPILER STARTED #####\n\n");
 	
@@ -660,7 +557,6 @@ int main(int argc, char**argv)
 
 	// Initialize IR and MIPS files
 	initIRcodeFile();
-	initAssemblyFile();
 
 	// Start parser
 	yyparse();
@@ -674,7 +570,7 @@ int main(int argc, char**argv)
 
 	if (irFile == NULL) {
 		perror("IRcode.ir");
-		printf("irfile not opened\n");
+		printf("IR file not opened\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -705,9 +601,9 @@ int main(int argc, char**argv)
 	printf("MIPS Code:\n%s\n", mipsCode);
 
 	// Write MIPS code to a file
-	FILE* mipsFile = fopen("output_mips_code.txt", "w");
+	FILE* mipsFile = fopen("MIPS_Code.asm", "w");
 	if (!mipsFile) {
-		perror("output_mips_code.txt");
+		perror("MIPS_Code.asm");
 		exit(EXIT_FAILURE);
 	}
 
@@ -720,11 +616,6 @@ int main(int argc, char**argv)
 	free(mipsCode);
 
     printf("\n##### COMPILER FINISHED #####\n");
-
-	// initAssemblyFile();
-	// Add the closing part required for any MIPS file
-	emitEndOfAssemblyCode();
-
 
 	return 0;
 }

@@ -1,4 +1,4 @@
-# your_openai_script.py
+# OpenAI_API.py
 
 from openai import OpenAI
 import openai
@@ -13,7 +13,7 @@ def generate_mips_from_ir(api_key, ir_code):
     OpenAI.api_key = api_key
 
     messages = [
-        {"role": "user", "content": f"Convert the following IR code to MIPS Assembly:\n{ir_code}"}
+        {"role": "user", "content": f"Convert the following IR code to Standard MIPS Assembly to be run in QTSpim. Don't use subi. Do not use the array() method:\n{ir_code}"}
     ]
 
     # Use 'gpt-3.5-turbo' as the model name
@@ -23,11 +23,12 @@ def generate_mips_from_ir(api_key, ir_code):
         model=model_name,
         messages=messages,
         temperature=1.0,
-        max_tokens=200,
+        max_tokens=2000,
         n=1
     )
 
     mips_code = response.choices[0].message.content.strip()
+    # one_line_code = mips_code.replace('\n', ' ')
     print(mips_code)
 
 if __name__ == "__main__":
@@ -37,9 +38,7 @@ if __name__ == "__main__":
 
     api_key = sys.argv[1]
     ir_code = sys.argv[2]
-
-    print("I AM ALIVE")
-    print(ir_code)
+    
 
     generate_mips_from_ir(api_key, ir_code)
 

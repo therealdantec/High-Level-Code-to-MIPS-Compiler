@@ -36,24 +36,6 @@ char* generateTempVar() {
     return strdup(tempVarName);
 }
 
-// char* generateTempVar1(const char* assignedValue) {
-//     char tempVarName[100]; // Adjust the size as needed
-//     snprintf(tempVarName, sizeof(tempVarName), "$t%d", tempCounter++);
-
-//     // Check if the variable is already assigned
-//     for (int i = 0; i < tempCounter - 1; i++) {
-//         if (tempAssignments[i].isAssigned && strcmp(tempAssignments[i].varName, assignedValue) == 0) {
-//             return strdup(tempAssignments[i].varName);
-//         }
-//     }
-
-//     // Store the assignment
-//     strncpy(tempAssignments[tempCounter - 1].varName, assignedValue, sizeof(tempAssignments[0].varName));
-//     tempAssignments[tempCounter - 1].isAssigned = 1;
-
-//     return strdup(tempVarName);
-// }
-
 // Function to emit binary operation with arbitrary number of IDs
 void emitBinaryOperation(char* op, char* reg, char* id1, char* id2) {
     fprintf(IRcode, "%s = %s %s %s\n", reg, id1, op, id2);
@@ -71,7 +53,7 @@ void emitConstantIntAssignment(char* id, char* value) {
 
 // Function to emit output
 void emitWriteId(char* id) {
-    fprintf(IRcode, "output %s\n", id);
+    fprintf(IRcode, "print %s\n", id);
 }
 
 // Function to emit input
