@@ -34,9 +34,9 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %token <string> ID NUMBER
 %token <string> SEMICOLON COMMA UNDERSCORE PERIOD
 %token <string> LT GT 
-%token <string> LTE GTE NE AND OR EQ
+%token <string> LTE GTE NE AND OR EQ TRUTH FALSITY
 %token <string> ASS
-%token <string> WRITE REEE
+%token <string> WRITE REEE IF ELSE SWITCH CASE WHILE REPEAT UNTIL
 %token <string> PLUS MINUS TIMES DIVIDE
 %token <string> LPRN RPRN LCB RCB LSB RSB
 %type <string> DeclareFunct
@@ -44,7 +44,7 @@ int semanticCheckPassed = 1; // flags to record correctness of semantic checks
 %printer { fprintf(yyoutput, "%s", $$); } ID;
 %printer { fprintf(yyoutput, "%s", $$); } NUMBER;
 
-%type <ast_node> Program Code Type VarDecl Expr Stmt Param ParamsList FunctCall CallParamsList StrucAccess
+%type <ast_node> Program Code Type VarDecl Expr Stmt Param ParamsList FunctCall CallParamsList StrucAccess SwitchBlock ElseBlock BoolExpr
 
 %start Program
 
@@ -56,7 +56,7 @@ Program:
 	// FUNCT Type ID LPRN ParamsList RPRN LCB Code RCB SEMICOLON
 	DeclareFunct Code RCB SEMICOLON { 
 		printf("RULE Program: Function\n");
-		// $$ = astCreateFunct($3, nodeToString($2), $5, $8);
+		// $$ = astCreateFunct($3, nodeToString($2));
 		// IRfunction(nodeToString($2), $3);
 		// emitMIPSFunction($3);
 		emitMIPSjal();
@@ -205,7 +205,7 @@ VarDecl:
 		int inSymTab = found($2, currentScope);
 
 		if (inSymTab == 0){
-			addItem($2, "Arr", nodeToString($1), $4, currentScope);
+			addItem($2, "Arr", nodeToString($1), atoi(nodeToString($4)), currentScope);
 
 			IRarray($2, nodeToString($1), nodeToString($4));
 
@@ -223,10 +223,31 @@ VarDecl:
 	//struct decl
 	| STRUC ID LCB VarDecl RCB {
 		printf("\n RECOGNIZED RULE: Struct Declaration\n");
-		IRstruct($2, $4);
+		IRstruct($2, nodeToString($4));
 	}
 ;
 
+SwitchBlock:
+	SwitchBlock CASE Expr LCB Code RCB {
+		printf("\n RECOGNIZED RULE: SwitchBlock: SwitchBlock CASE Expr LCB Code RCB\n");
+		$$ = astCreateSwitchBlock($1, $3, $5);
+	}
+	| {
+		printf("\n RECOGNIZED RULE: SwitchBlock: EMPTY\n");
+		$$ = NULL;
+	}
+;
+
+ElseBlock:
+	ELSE LCB Code RCB {
+		printf("\n RECOGNIZED RULE: ElseBlock: ELSE LCB Code RCB\n");
+		$$ = $3;
+	}
+	| {
+		printf("\n RECOGNIZED RULE: ElseBlock: EMPTY\n");
+		$$ = NULL;
+	}
+;
 
 Stmt:
 	ID ASS Expr SEMICOLON {
@@ -272,9 +293,30 @@ Stmt:
 	| REEE Expr SEMICOLON {
 		$$ = astCreateReee(nodeToString($2));
 	}
+	// if statement
+	| IF LPRN BoolExpr RPRN LCB Code RCB ElseBlock {
+		printf("\n RECOGNIZED RULE: Stmt: IF LPRN BoolExpr RPRN LCB Code RCB ElseBlock\n");
+		$$ = astCreateIfElse($3, $6, $8);
+	}
+	// switch statment
+	| SWITCH LPRN Expr RPRN LCB SwitchBlock Code RCB {
+		printf("\n RECOGNIZED RULE: SWITCH STATEMENT\n");
+		$$ = astCreateSwitchStmt($3, $6, $7);
+	}
+	// while loop
+	| WHILE LPRN BoolExpr RPRN LCB Code RCB {
+		printf("\n RECOGNIZED RULE: WHILE LOOP\n");
+		$$ = astCreateLoop($3, $6);
+	}
+	// repeat until loop
+	| REPEAT LCB Code RCB UNTIL LPRN BoolExpr RPRN {
+		printf("\n RECOGNIZED RULE: REPEAT STATEMENT\n");
+		$$ = astCreateLoop($7, $3);
+	}
 ;
 
-// some math or something
+
+// some math or somethingdd
 Expr:	
 	// just a variable value for use in a statment
 	ID { 
@@ -290,11 +332,13 @@ Expr:
 	// function call
 	| FunctCall {
 		printf("\n RECOGNIZED RULE: Function Call\n");
+		$$ = $1;
 	}
 	// struc access. The period is the access operator
 	// but how to nested strucs?
 	| StrucAccess {
 		printf("\n RECOGNIZED RULE: Struct Access\n");
+		$$ = $1;
 	}
 	// a number literal for use in a statement
 	| NUMBER { 
@@ -349,7 +393,7 @@ Expr:
 			emitBinaryOperation("+", result, str, str1);
 			emitMIPSBinaryOp("add", result, str, str1);
 			// Update the current expression result
-			$$ = astCreateVar(result);
+			// $$ = astCreateVar(result);
 			$$ = astCreateBinaryOp("+", astCreateInt($1), $3);
 		}
 	}
@@ -505,6 +549,42 @@ Expr:
 			//$$ = astCreateVar(result);
 			$$ = astCreateBinaryOp("/", astCreateInt($1), $3);
 		}
+	}
+;
+
+//LT GT LTE GTE NE AND OR EQ 
+BoolExpr:
+	Expr LT Expr {
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr LT Expr\n");
+		$$ = astCreateBinaryOp($2, $1, $3);
+	}
+	| Expr GT Expr{
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr GT Expr\n");
+		$$ = astCreateBinaryOp($2, $1, $3);
+	}
+	| Expr LTE Expr{
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr LTE Expr\n");
+		$$ = astCreateBinaryOp($2, $1, $3);
+	}
+	| Expr GTE Expr{
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr GTE Expr\n");
+		$$ = astCreateBinaryOp($2, $1, $3);
+	}
+	| Expr NE Expr{
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr NE Expr\n");
+		$$ = astCreateBinaryOp($2, $1, $3);
+	}
+	| Expr EQ Expr{
+		printf("\n RECOGNIZED RULE: BoolExpr: Expr EQ Expr\n");
+		$$ = astCreateBinaryOp($2, $1, $3);
+	}
+	| BoolExpr AND BoolExpr{
+		printf("\n RECOGNIZED RULE: BoolExpr: BoolExpr AND BoolExpr\n");
+		$$ = astCreateBinaryOp($2, $1, $3);
+	}
+	| BoolExpr OR BoolExpr{
+		printf("\n RECOGNIZED RULE: BoolExpr: BoolExpr OR BoolExpr\n");
+		$$ = astCreateBinaryOp($2, $1, $3);
 	}
 ;
 

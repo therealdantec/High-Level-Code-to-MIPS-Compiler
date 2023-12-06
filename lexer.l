@@ -94,6 +94,69 @@ ws          {delim}+
 			return REEE;
 		}
 
+"if"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return IF;
+		}
+
+"else"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return ELSE;
+		}
+
+"switch"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return SWITCH;
+		}
+
+"case"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return CASE;
+		}
+
+"while"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return WHILE;
+		}
+
+"repeat"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return REPEAT;
+		}
+
+"until"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return UNTIL;
+		}
+
+"truth"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return TRUTH;
+		}
+
+"falsity"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return FALSITY;
+		}
+
 {ID}	{words++; 
                           chars += strlen(yytext);
 			  printf("%s : IDENTIFIER\n",yytext);
