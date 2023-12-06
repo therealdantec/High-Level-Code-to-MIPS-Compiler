@@ -20,6 +20,37 @@ FILE * IRcode;
 void yyerror(const char* s);
 char* currentScope = "global"; // "global" or the name of the function
 int semanticCheckPassed = 1; // flags to record correctness of semantic checks
+
+// Function to call OpenAI API and get MIPS code
+char* generateMIPSFromIR(char* irCode) {
+    // Use your OpenAI API key
+    const char* apiKey = "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";  // Replace with your actual API key
+
+    // Construct the command to call the Python script (assuming it's a separate script)
+    char command[1000];
+    snprintf(command, sizeof(command), "python3 your_openai_script.py \"%s\" \"%s\"", apiKey, irCode);
+	printf("%s\n", command);
+
+    // Execute the command and capture the output
+    FILE* pipe = popen(command, "r");
+    if (!pipe) {
+        perror("popen");
+        exit(EXIT_FAILURE);
+    }
+
+    char* result = malloc(4096);  // Adjust the buffer size as needed
+    if (!result) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    fgets(result, 4096, pipe);
+
+    // Close the pipe
+    pclose(pipe);
+
+    return result;
+}
 %}
 
 
@@ -634,11 +665,68 @@ int main(int argc, char**argv)
 	// Start parser
 	yyparse();
 
+	closeIRcodeFile();
+
+	// Read the generated IR code from the file
+	FILE* irFile = fopen("IRcode.ir", "r");
+	char* irCode;
+	long irFileSize;
+
+	if (irFile == NULL) {
+		perror("IRcode.ir");
+		printf("irfile not opened\n");
+		exit(EXIT_FAILURE);
+	}
+
+	fseek(irFile, 0, SEEK_END);
+	irFileSize = ftell(irFile);
+	rewind(irFile);
+
+	irCode = malloc(irFileSize + 1);
+
+	if (irCode == NULL) {
+		perror("malloc");
+		printf("malloc didn't work\n");
+		exit(EXIT_FAILURE);
+	}
+
+	fread(irCode, sizeof(char), irFileSize, irFile);
+	irCode[irFileSize] = '\0';
+
+	fclose(irFile);
+
+	// Print IR code for debugging
+	printf("IR Code:\n%s\n", irCode);
+
+	// Call OpenAI API to convert IR to MIPS
+	char* mipsCode = generateMIPSFromIR(irCode);
+
+	// Print MIPS code for debugging
+	printf("MIPS Code:\n%s\n", mipsCode);
+
+	// Write MIPS code to a file
+	FILE* mipsFile = fopen("output_mips_code.txt", "w");
+	if (!mipsFile) {
+		perror("output_mips_code.txt");
+		exit(EXIT_FAILURE);
+	}
+
+	fprintf(mipsFile, "%s", mipsCode);
+
+	fclose(mipsFile);
+
+	// Cleanup allocated memory
+	free(irCode);
+	free(mipsCode);
+
+    printf("\n##### COMPILER FINISHED #####\n");
 
 	// initAssemblyFile();
 	// Add the closing part required for any MIPS file
 	emitEndOfAssemblyCode();
 
+
+	return 0;
 }
 
 void yyerror(const char* s) {
