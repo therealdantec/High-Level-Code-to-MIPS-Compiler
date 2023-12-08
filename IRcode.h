@@ -2,9 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_TEMP_VARS 100
+
+// hi
 FILE* IRcode = NULL;
 int numIds;
 int tempCounter = 0; // To generate temporary variable names
+
+struct TempVarAssignment {
+    char varName[100];
+    int isAssigned;
+};
+
+struct TempVarAssignment tempAssignments[MAX_TEMP_VARS];
 
 // Function to initialize IR code file
 void initIRcodeFile() {
@@ -21,8 +31,8 @@ void closeIRcodeFile() {
 
 // Function to generate a unique temporary variable name
 char* generateTempVar() {
-    char tempVarName[15]; // Adjust the size as needed
-    snprintf(tempVarName, sizeof(tempVarName), "T%d", tempCounter++);
+    char tempVarName[100]; // Adjust the size as needed
+    snprintf(tempVarName, sizeof(tempVarName), "$t%d", tempCounter++);
     return strdup(tempVarName);
 }
 
@@ -43,7 +53,7 @@ void emitConstantIntAssignment(char* id, char* value) {
 
 // Function to emit output
 void emitWriteId(char* id) {
-    fprintf(IRcode, "output %s\n", id);
+    fprintf(IRcode, "print %s\n", id);
 }
 
 // Function to emit input
@@ -56,3 +66,20 @@ void emitLabel(char* label) {
     fprintf(IRcode, "%s:\n", label);
 }
 
+// Function to create IR code for a function name and type
+void IRfunction(char* type, char* name){
+    fprintf(IRcode, "\nfunction %s:\n", name);
+}
+
+void callIRfunction(char* name){
+    fprintf(IRcode, "\njump to %s\n", name);
+}
+
+void IRarray(char* name, char* type, char* size){
+    fprintf(IRcode, "array: Name %s, Type %s, Size %s\n", name, type, size);
+}
+
+void IRstruct(char* name, char* tings){
+    fprintf(IRcode, "STRUCT %s { \n%s\n}\n", name, tings);
+
+}

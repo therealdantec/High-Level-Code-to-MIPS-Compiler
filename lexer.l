@@ -17,63 +17,174 @@ letter      [a-zA-Z]
 digit       [0-9]
 ID          {letter}({letter}|{digit})*
 delim       [ \t\n]
-NUMBER         {digit}+(\.{digit}+)?(E[+\-]?(digit)+)?
+NUMBER      {digit}+(\.{digit}+)?(E[+\-]?(digit)+)?
 ws          {delim}+
 
 %%
-"/*"    				{
-							int c;
-							while((c = input()) != 0) {
-								if(c == '*') {
-									if((c = input()) == '/')
-										break;
-									else
-										unput(c);
-								}
-							}
-						}
+"/*"    {
+                int c;
+                while((c = input()) != 0) {
+                        if(c == '*') {
+                                if((c = input()) == '/')
+                                        break;
+                                else
+                                        unput(c);
+                        }
+                }
+        }
 						
-"int"	{words++; chars += strlen(yytext);
-		 printf("%s : TYPE\n", yytext);
-                 yylval.string = strdup(yytext); 
-		 return TYPE;
+"int"	        {
+                        words++; 
+                        chars += strlen(yytext);
+                        printf("%s : TYPE\n", yytext);
+                        yylval.string = strdup(yytext); 
+                        return INT;
 		}
 
-"char"	{words++; chars += strlen(yytext);
-		 printf("%s : TYPE\n", yytext);
-                 yylval.string = strdup(yytext); 
-		 return WRITE;
+"char"	        {
+                        words++; 
+                        chars += strlen(yytext);
+                        printf("%s : TYPE\n", yytext);
+                        yylval.string = strdup(yytext); 
+                        return CHAR;
+		}
+
+"string"	{
+                        words++; 
+                        chars += strlen(yytext);
+                        printf("%s : TYPE\n", yytext);
+                        yylval.string = strdup(yytext); 
+                        return STRING;
+		}
+
+"bool"	        {
+                        words++; 
+                        chars += strlen(yytext);
+                        printf("%s : TYPE\n", yytext);
+                        yylval.string = strdup(yytext); 
+                        return BOOL;
+		}
+
+"struc"	        {
+                        words++; 
+                        chars += strlen(yytext);
+                        printf("%s : TYPE\n", yytext);
+                        yylval.string = strdup(yytext); 
+                        return STRUC;
 		}
 		
-"write"	{words++; chars += strlen(yytext);
+"write"	{words++; 
+                        chars += strlen(yytext);
 			printf("%s : KEYWORD\n", yytext);
 			yylval.string = strdup(yytext); 
 			return WRITE;
 		}
+        
+"funct"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return FUNCT;
+		}
 		
-{ID}	{words++; chars += strlen(yytext);
+"reee"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return REEE;
+		}
+
+"if"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return IF;
+		}
+
+"else"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return ELSE;
+		}
+
+"switch"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return SWITCH;
+		}
+
+"case"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return CASE;
+		}
+
+"while"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return WHILE;
+		}
+
+"repeat"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return REPEAT;
+		}
+
+"until"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return UNTIL;
+		}
+
+"truth"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return TRUTH;
+		}
+
+"falsity"	{words++; 
+                        chars += strlen(yytext);
+			printf("%s : KEYWORD\n", yytext);
+			yylval.string = strdup(yytext); 
+			return FALSITY;
+		}
+
+{ID}	{words++; 
+                          chars += strlen(yytext);
 			  printf("%s : IDENTIFIER\n",yytext);
 			  yylval.string = strdup(yytext); 
 			  return ID;
 			}
 			
-{NUMBER}		{words++; chars += strlen(yytext);
-			  printf("%s : NUMBER\n",yytext);
-			  yylval.number = atoi(strdup(yytext)); 
-			  return NUMBER;
-			}
+{NUMBER}	{
+                        words++; 
+                        chars += strlen(yytext);
+                        printf("%s : NUMBER\n",yytext);
+                        yylval.string = strdup(yytext);
+                        return NUMBER;
+                }
 			
-";"		{chars++;
-		  printf("%s : SEMICOLON\n", yytext);
-		  yylval.string = strdup(yytext); 
-		  return SEMICOLON;
-		}
+";"	{
+                chars++;
+                printf("%s : SEMICOLON\n", yytext);
+                yylval.string = strdup(yytext); 
+                return SEMICOLON;
+        }
 		
-"="		{chars++;
-		  printf("%s : EQ\n", yytext);
-		  yylval.string = strdup(yytext); 
-		  return EQ;
-		}
+"="	{
+                chars++;
+                printf("%s : ASS\n", yytext);
+                yylval.string = strdup(yytext); 
+                return ASS;
+        }
 		
 "+"     {chars++;
          printf("%s : ADD_OP\n", yytext);
@@ -102,110 +213,113 @@ ws          {delim}+
 "_"     {chars++;
          printf("%s : UNDERSCORE\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return UNDERSCORE;
         }
 
 "("     {chars++;
          printf("%s : OPEN_PAREN\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return LPRN;
         }
 
 ")"     {chars++;
          printf("%s : CLOSED_PAREN\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return RPRN;
         }
 
 "{"     {chars++;
          printf("%s : OPEN_BRACE\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return LCB;
         }
 
 "}"     {chars++;
          printf("%s : CLOSED_BRACE\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return RCB;
         }
 
 "["     {chars++;
          printf("%s : OPEN_BRACKET\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return LSB;
         }
 
 "]"     {chars++;
          printf("%s : CLOSED_BRACKET\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return RSB;
         }
 
 "<"     {chars++;
          printf("%s : LESS_THAN\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return LT;
         }
 
 ">"     {chars++;
          printf("%s : GREATER_THAN\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return GT;
         }
 
 "<="     {chars++;
          printf("%s : LESS_OR_EQUAL\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return LTE;
         }
 
 ">="     {chars++;
          printf("%s : GREATER_OR_EQUAL\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return GTE;
         }
 
 ","     {chars++;
          printf("%s : PUNCTUATION\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return COMMA;
         }
 
 "!="     {chars++;
          printf("%s : NOT_EQUAL\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return NE;
         }
 
 "."     {chars++;
          printf("%s : PUNCTUATION\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return PERIOD;
         }
 
 "&&"     {chars++;
          printf("%s : AND_OP\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return AND;
         }
 
 "=="     {chars++;
          printf("%s : EQUALS\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return EQ;
         }
 
-"|"     {chars++;
+"||"     {chars++;
          printf("%s : PIPE\n", yytext);
          yylval.string = strdup(yytext); 
-	 return KEY;
+	 return OR;
         }
 
-\n		{lines++; chars=0;}
+\n	{lines++; chars=0;}
+
 [ \t]	{chars++;}
-.		{chars++;
-         printf("%s : Unrecognized symbol at line %d char %d\n", yytext,lines,chars);
-		}
+
+.	{
+                chars++;
+                printf("%s : Unrecognized symbol at line %d char %d\n", yytext,lines,chars);
+	}
 		
 
 

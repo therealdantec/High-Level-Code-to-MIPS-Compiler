@@ -1,0 +1,9 @@
+All token values are strings until math happens. 
+AST Nodes:
+BoolExpr
+if
+else
+switch
+case
+while
+repeat until

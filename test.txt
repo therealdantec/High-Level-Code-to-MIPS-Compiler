@@ -1,13 +1,62 @@
-int num1;
-int num2;
-int num3;
 
-num1 = 12;
-num2 = 2500;
+funct int main22() {
+    int num1;
+    int num2;
+    int num3;
+    char c1;
+    int array[5];
 
-write num1;
-write num2;
+    num1 = 12;
+    num2 = 2500;
 
-num3 = num1 + 1 + num2 + 2 + num1 + 1000;
+    write num1;
+    write num2;
 
-write num3;
+    num3 = num1 + 1 + num2 + 2 + num1 + 1000;
+
+    write num3;
+    while ( num1 < 20) {
+        write num1;
+        num1 = num1 + 1;
+    }
+    repeat {
+        write num2;
+        num2 = num2 - 500;
+    } until (num2 < 0)
+    if (num2 < 0) {
+        write num2;
+    }
+    if (num3 >= 1000) {
+        write num3;
+    } else {
+        write num1;
+    }
+};
+
+funct int main2() {
+    int num4;
+    int num5;
+    int num6;
+    char c2;
+    int array1[3];
+
+    num4 = 12;
+    num5 = 2500;
+
+    write num4;
+    write num5;
+
+    num6 = num4 - 1 + num5 * 2 + num4 / 1000;
+
+    write num6;
+    
+    switch(num4) {
+        case 12 {
+            write num4;
+        }
+        write num5;
+    }
+};
+
+main22();
+main2();

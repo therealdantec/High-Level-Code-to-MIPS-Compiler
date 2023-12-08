@@ -2,13 +2,14 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+//#include "AST.h"
 
 struct Entry
 {
 	int itemID;
 	char itemName[50];  //the name of the identifier
-	char itemKind[8];  //is it a function or a variable?
-	char itemType[8];  // Is it int, char, etc.?
+	char itemKind[20];  //is it a function or a variable?
+	char itemType[20];  // Is it int, char, etc.?
 	int arrayLength;
 	char scope[50];     // global, or the name of the function
 };
@@ -17,7 +18,7 @@ struct Entry symTabItems[100];
 int symTabIndex = 0;
 int SYMTAB_SIZE = 20;
 
-void addItem(char itemName[50], char itemKind[8], char itemType[8], int arrayLength, char scope[50]){
+void addItem(char *itemName, char *itemKind, char *itemType, int arrayLength, char *scope){
 	
 
 		// what about scope? should you add scope to this function?
@@ -88,4 +89,63 @@ int compareTypes(char itemName1[50], char itemName2[50],char scope[50]){
 		return 1; // types are matching
 	}
 	else return 0;
+}
+
+// Function to find the parameters of a function based on its name and scope
+int findFunctionParameters(const char* functionName, const char* scope){
+	int count = 0;
+
+	// Loop through the symbol table to find parameters of the specified function
+	for (int i = 0; i < symTabIndex; i++){
+		if(strcmp(symTabItems[i].itemName, functionName) == 0 && 
+		   strcmp(symTabItems[i].itemKind, "Param") == 0 && 
+		   strcmp(symTabItems[i].scope, scope) == 0){
+			count++;
+		}
+	}
+
+	return count;
+}
+
+// Function to count the number of arguments in a function call
+int countArguments(const char* functionName, const char* scope){
+	int count = 0;
+
+	// Loop through the symbol table to find function calls with matching names and scope
+	for (int i = 0; i < symTabIndex; i++){
+		if(strcmp(symTabItems[i].itemName, functionName) == 0 && 
+		   strcmp(symTabItems[i].itemKind, "Funct") == 0 && 
+		   strcmp(symTabItems[i].scope, scope) == 0){
+			count++;
+		}
+	}
+
+	return count;
+}
+
+int countParameters(const char* functionName, const char* scope){
+	int count = 0;
+
+	for (int i = 0; i < symTabIndex; i++){
+		if(strcmp(symTabItems[i].itemName, functionName) == 0 && 
+		   strcmp(symTabItems[i].itemKind, "Param") == 0 && 
+		   strcmp(symTabItems[i].scope, scope) == 0){
+			count++;
+		}
+	}
+
+	return count;
+}
+
+int areTypesCompatible(char* type1, char* type2){
+	if(strcmp(type1, type2) == 0){
+		// Types match exactly
+		return 1;
+	} else if ((strcmp(type1, "INT") == 0 && strcmp(type2, "CHAR") == 0) ||
+	            strcmp(type1, "CHAR") == 0 && strcmp(type2, "INT") == 0){
+					// INT and CHAR are considered compatible
+					return 1;
+				}
+	// Types are not compatible
+	return 0;
 }
