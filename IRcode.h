@@ -68,15 +68,15 @@ void emitLabel(char* label) {
 
 // Function to create IR code for a function name and type
 void IRfunction(char* type, char* name){
-    fprintf(IRcode, "\nFunction: %s %s\n", type, name);
+    fprintf(IRcode, "\nfunction %s:\n", name);
 }
 
 void callIRfunction(char* name){
-    fprintf(IRcode, "\nCalling Function %s\n", name);
+    fprintf(IRcode, "\njump to %s\n", name);
 }
 
 void IRarray(char* name, char* type, char* size){
-    fprintf(IRcode, "DECLARE ARRAY: Name %s, Type %s, Size %s\n", name, type, size);
+    fprintf(IRcode, "array: Name %s, Type %s, Size %s\n", name, type, size);
 }
 
 void IRstruct(char* name, char* tings){

@@ -1,5 +1,5 @@
 
-funct int main() {
+funct int main22() {
     int num1;
     int num2;
     int num3;
@@ -58,5 +58,5 @@ funct int main2() {
     }
 };
 
-main();
+main22();
 main2();
