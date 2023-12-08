@@ -3,8 +3,8 @@
 #### IR Code ####
 
 
-Function: int main
-DECLARE ARRAY: Name array, Type int, Size 5
+function main22:
+array: Name array, Type int, Size 5
 $t0 = 12
 $t1 = 2500
 print num1
@@ -26,8 +26,8 @@ print num2
 print num3
 print num1
 
-Function: int main2
-DECLARE ARRAY: Name array1, Type int, Size 3
+function main2:
+array: Name array1, Type int, Size 3
 $t12 = 12
 $t13 = 2500
 print num4
@@ -42,6 +42,6 @@ print num6
 print num4
 print num5
 
-Calling Function main
+jump to main22
 
-Calling Function main2
+jump to main2

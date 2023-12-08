@@ -564,7 +564,7 @@ int main(int argc, char**argv)
 	closeIRcodeFile();
 
 	// Read the generated IR code from the file
-	FILE* irFile = fopen("IRcode.ir", "r");
+	FILE* irFile = fopen("test.txt", "r");
 	char* irCode;
 	long irFileSize;
 

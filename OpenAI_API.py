@@ -3,8 +3,8 @@
 from openai import OpenAI
 import openai
 
-apiKey = "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"
-
+apiKey = "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"
+# this is christian's key
 # client = OpenAI(api_key=apiKey)
 openai.api_key = apiKey
 import sys
@@ -13,11 +13,11 @@ def generate_mips_from_ir(api_key, ir_code):
     OpenAI.api_key = api_key
 
     messages = [
-        {"role": "user", "content": f"Convert the following IR code to Standard MIPS Assembly to be run in QTSpim. Don't use subi. Do not use the array() method:\n{ir_code}"}
+        {"role": "user", "content": f"Convert the following code to Standard MIPS Assembly to be run in QTSpim. Don't use subi or addiu. prints have a newline. the default case in the switch statements aren't labeled, and come after the case code blocks. Give me only the MIPS code, do not say anything else:\n{ir_code}"}
     ]
 
-    # Use 'gpt-3.5-turbo' as the model name
-    model_name = "gpt-3.5-turbo"
+    # Use 'gpt-4' as the model name
+    model_name = "gpt-4"
 
     response = openai.chat.completions.create(
         model=model_name,
@@ -28,7 +28,17 @@ def generate_mips_from_ir(api_key, ir_code):
     )
 
     mips_code = response.choices[0].message.content.strip()
-    # one_line_code = mips_code.replace('\n', ' ')
+    
+    response = openai.chat.completions.create(
+        model=model_name,
+        messages=[
+        {"role": "user", "content": f"Check the following Standard MIPS Assembly to be run in QTSpim for errors and fix them. Don't use subi. Give me only the MIPS code, do not say anything else.\n{mips_code}"}
+        ],
+        temperature=1.0,
+        max_tokens=2000,
+        n=1
+    )
+    mips_code = response.choices[0].message.content.strip()
     print(mips_code)
 
 if __name__ == "__main__":
