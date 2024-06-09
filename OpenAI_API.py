@@ -3,7 +3,12 @@
 from openai import OpenAI
 import openai
 
-apiKey = "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"
+# ------------------------------------------------------------------------------
+# Enter your OpenAI API key here
+
+apiKey = ""
+
+# ------------------------------------------------------------------------------
 
 # client = OpenAI(api_key=apiKey)
 openai.api_key = apiKey
